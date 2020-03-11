@@ -30,7 +30,7 @@ namespace TTBackEndApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
+            services.InsideConfigServices(Configuration);
             //Add the swagger
             services.AddSwaggerGen(c=>
             {

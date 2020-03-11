@@ -4,6 +4,8 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TTBackEndApi.Models.DataContext;
+using URF.Core.Abstractions.Services;
 
 namespace TTBackEndApi.Controllers
 {
@@ -16,18 +18,20 @@ namespace TTBackEndApi.Controllers
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
-
+        IService<IswRequests> _sv;
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IService<IswRequests> sv)
         {
             _logger = logger;
+            _sv = sv;
         }
 
         
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
+            var ttt = _sv.Query();
             _logger.LogInformation("Thu test log");
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast

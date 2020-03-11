@@ -1,3 +1,15 @@
 /TTBackEndApi/bin
 /TTBackEndApi/obj
 /.vs
+/URF.Core.Abstractions/bin
+/URF.Core.Abstractions.Services/obj
+/URF.Core.Abstractions.Services/bin
+/URF.Core.Abstractions/obj
+/URF.Core.Abstractions.Trackable/bin
+/URF.Core.Abstractions.Trackable/obj
+/URF.Core.EF/bin
+/URF.Core.EF/obj
+/URF.Core.EF.Trackable/bin
+/URF.Core.EF.Trackable/obj
+/URF.Core.Services/bin
+/URF.Core.Services/obj
