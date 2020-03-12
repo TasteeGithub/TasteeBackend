@@ -55,3 +55,25 @@ namespace TTBackEndApi.Controllers
 }
 
 //Scaffold-DbContext "Host=13.229.0.235;Port=4432;Database=sw_inside;Username=u_inside;Password=7mjJGj7dc7waQah" Npgsql.EntityFrameworkCore.PostgreSQL -OutputDir Models/DataContext -Force -Tables ISW_REQUESTS,ISW_REQUEST_HISTORY,ISW_HOLD_UNHOLD_MAPPING
+
+//    -- Table: public."Operator"
+
+//-- DROP TABLE public."Operator";
+
+//CREATE TABLE public."Operator"
+//(
+//    "UserId" bigint NOT NULL,
+//    "UserName" character varying(50) COLLATE pg_catalog."default" NOT NULL,
+//    "Password" character varying(100) COLLATE pg_catalog."default" NOT NULL,
+//    "FullName" character varying(200) COLLATE pg_catalog."default" NOT NULL,
+//    "CreatedDate" timestamp without time zone NOT NULL,
+//    "Email" character varying COLLATE pg_catalog."default" NOT NULL,
+//    CONSTRAINT "Operator_pkey" PRIMARY KEY ("UserId")
+//)
+//WITH(
+//    OIDS = FALSE
+//)
+//TABLESPACE pg_default;
+
+//ALTER TABLE public."Operator"
+//    OWNER to devhn;

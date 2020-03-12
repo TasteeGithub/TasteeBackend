@@ -21,14 +21,14 @@ namespace TTBackEndApi
     {
         public static IServiceCollection InsideConfigServices(this IServiceCollection services, IConfiguration Configuration)
         {
-            services.AddScoped<DbContext, sw_insideContext>();
+            services.AddScoped<DbContext, SW_InsideContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<ITrackableRepository<IswRequests>, TrackableRepository<IswRequests>>();
-            //services.AddScoped<ITrackableRepository<IswRequestHistory>, TrackableRepository<IswRequestHistory>>();
-
-            //services.AddScoped(typeof(IRepository<IswRequests>), typeof(Repository<IswRequests>));
+            services.AddScoped<ITrackableRepository<Operator>, TrackableRepository<Operator>>();
+            
             services.AddScoped<IRequestService, RequestService>();
+            services.AddScoped<IService<Operator>, Service<Operator>>();
 
             //services.AddScoped(typeof(IRepository<IswRequestHistory>), typeof(Repository<IswRequestHistory>));
             //services.AddScoped(typeof(IService<IswRequestHistory>), typeof(Service<IswRequestHistory>));

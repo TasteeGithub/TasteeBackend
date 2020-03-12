@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TTBackEndApi.Models.DataContext;
 using TTBackEndApi.Services;
+using URF.Core.Abstractions.Services;
 
 namespace TTBackEndApi.Controllers
 {
@@ -15,23 +16,24 @@ namespace TTBackEndApi.Controllers
     [ApiController]
     public class RequestsController : ControllerBase
     {
-        private readonly sw_insideContext _context;
-        IRequestService _sv;
-        public RequestsController(ILogger<WeatherForecastController> logger, IRequestService sv)
+        private readonly SW_InsideContext _context;
+        IService<Operator> _sv;
+        public RequestsController(ILogger<RequestsController> logger, IService<Operator> sv)
         {
             _sv = sv;
         }
 
         // GET: api/Requests
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<IswRequests>>> Get()
+        public async Task<ActionResult<IEnumerable<Operator>>> Get()
         {
-            return await _sv.Queryable().Take(5).ToListAsync();// _context.IswRequests.ToListAsync();
+            return await _sv.Queryable().ToListAsync();
+            //return await _sv.Queryable().Take(5).ToListAsync();// _context.IswRequests.ToListAsync();
         }
 
         // GET: api/Requests/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<IswRequests>> Get(string id)
+        public async Task<ActionResult<Operator>> Get(string id)
         {
             var iswRequests = await _sv.FindAsync(id);// _context.IswRequests.FindAsync(id);
 
@@ -47,9 +49,9 @@ namespace TTBackEndApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(string id, IswRequests iswRequests)
+        public async Task<IActionResult> Put(int id, Operator iswRequests)
         {
-            if (id != iswRequests.RequestId)
+            if (id != iswRequests.UserId)
             {
                 return BadRequest();
             }
@@ -79,16 +81,16 @@ namespace TTBackEndApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<IswRequests>> Post(IswRequests iswRequests)
+        public async Task<ActionResult<Operator>> Post(Operator iswRequests)
         {
-            _context.IswRequests.Add(iswRequests);
+            _context.Operator.Add(iswRequests);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (IswRequestsExists(iswRequests.RequestId))
+                if (IswRequestsExists(iswRequests.UserId))
                 {
                     return Conflict();
                 }
@@ -98,28 +100,28 @@ namespace TTBackEndApi.Controllers
                 }
             }
 
-            return CreatedAtAction("GetIswRequests", new { id = iswRequests.RequestId }, iswRequests);
+            return CreatedAtAction("GetIswRequests", new { id = iswRequests.UserId }, iswRequests);
         }
 
         // DELETE: api/Requests/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<IswRequests>> Delete(string id)
+        public async Task<ActionResult<Operator>> Delete(string id)
         {
-            var iswRequests = await _context.IswRequests.FindAsync(id);
+            var iswRequests = await _context.Operator.FindAsync(id);
             if (iswRequests == null)
             {
                 return NotFound();
             }
 
-            _context.IswRequests.Remove(iswRequests);
+            _context.Operator.Remove(iswRequests);
             await _context.SaveChangesAsync();
 
             return iswRequests;
         }
 
-        private bool IswRequestsExists(string id)
+        private bool IswRequestsExists(long id)
         {
-            return _context.IswRequests.Any(e => e.RequestId == id);
+            return _context.Operator.Any(e => e.UserId == id);
         }
     }
 }
