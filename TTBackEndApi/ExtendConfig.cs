@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TTBackEndApi.Models.DataContext;
+//using TTBackEndApi.Repositories;
+using TTBackEndApi.Services;
 using URF.Core.Abstractions;
 using URF.Core.Abstractions.Services;
 using URF.Core.Abstractions.Trackable;
@@ -23,13 +25,13 @@ namespace TTBackEndApi
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<ITrackableRepository<IswRequests>, TrackableRepository<IswRequests>>();
-            services.AddScoped<ITrackableRepository<IswRequestHistory>, TrackableRepository<IswRequestHistory>>();
+            //services.AddScoped<ITrackableRepository<IswRequestHistory>, TrackableRepository<IswRequestHistory>>();
 
-            services.AddScoped(typeof(IRepository<IswRequests>), typeof(Repository<IswRequests>));
-            services.AddScoped(typeof(IService<IswRequests>), typeof(Service<IswRequests>));
+            //services.AddScoped(typeof(IRepository<IswRequests>), typeof(Repository<IswRequests>));
+            services.AddScoped<IRequestService, RequestService>();
 
-            services.AddScoped(typeof(IRepository<IswRequestHistory>), typeof(Repository<IswRequestHistory>));
-            services.AddScoped(typeof(IService<IswRequestHistory>), typeof(Service<IswRequestHistory>));
+            //services.AddScoped(typeof(IRepository<IswRequestHistory>), typeof(Repository<IswRequestHistory>));
+            //services.AddScoped(typeof(IService<IswRequestHistory>), typeof(Service<IswRequestHistory>));
 
             //services.AddScoped(typeof(IRepository<IswHoldUnholdMapping>), typeof(Repository<IswHoldUnholdMapping>));
             //services.AddScoped(typeof(IService<IswHoldUnholdMapping>), typeof(Service<IswHoldUnholdMapping>));
