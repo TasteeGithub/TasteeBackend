@@ -19,10 +19,10 @@ namespace TTBackEndApi.Controllers
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
-        IRequestService _sv;
+        ITTService<Operator> _sv;
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, IRequestService sv)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, ITTService<Operator> sv)
         {
             _logger = logger;
             _sv = sv;
@@ -54,7 +54,7 @@ namespace TTBackEndApi.Controllers
     }
 }
 
-//Scaffold-DbContext "Host=13.229.0.235;Port=4432;Database=sw_inside;Username=u_inside;Password=7mjJGj7dc7waQah" Npgsql.EntityFrameworkCore.PostgreSQL -OutputDir Models/DataContext -Force -Tables ISW_REQUESTS,ISW_REQUEST_HISTORY,ISW_HOLD_UNHOLD_MAPPING
+//Scaffold-DbContext "Host=localhost;Port=5432;Database=SW_Inside;Username=devhn;Password=devhn@2019" Npgsql.EntityFrameworkCore.PostgreSQL -OutputDir Models/DataContext -Force -Tables Operator
 
 //    -- Table: public."Operator"
 
