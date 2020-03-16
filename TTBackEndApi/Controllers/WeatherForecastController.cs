@@ -10,7 +10,7 @@ using URF.Core.Abstractions.Services;
 
 namespace TTBackEndApi.Controllers
 {
-    //[Authorize(]
+    [Authorize(]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase

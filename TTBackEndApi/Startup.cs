@@ -50,11 +50,12 @@ namespace TTBackEndApi
                 options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters() { 
                     ValidateIssuer = true,
                     ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
                     ValidAudience = Configuration["Jwt:Audience"],
                     ValidIssuer = Configuration["Jwt:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-            };
-
+                };
             });
         }
 

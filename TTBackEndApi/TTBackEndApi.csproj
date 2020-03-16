@@ -35,6 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TTBackEnd.Shared\TTBackEnd.Shared.csproj" />
     <ProjectReference Include="..\URF.Core.Abstractions.Services\URF.Core.Abstractions.Services.csproj" />
     <ProjectReference Include="..\URF.Core.Abstractions.Trackable\URF.Core.Abstractions.Trackable.csproj" />
     <ProjectReference Include="..\URF.Core.Abstractions\URF.Core.Abstractions.csproj" />
