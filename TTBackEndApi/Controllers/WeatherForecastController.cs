@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 using TTBackEndApi.Models.DataContext;
 using TTBackEndApi.Services;
-using URF.Core.Abstractions.Services;
 
 namespace TTBackEndApi.Controllers
 {
-    [Authorize(]
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
@@ -19,7 +16,8 @@ namespace TTBackEndApi.Controllers
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
-        ITTService<Operator> _sv;
+
+        private ITTService<Operator> _sv;
         private readonly ILogger<WeatherForecastController> _logger;
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger, ITTService<Operator> sv)
@@ -28,7 +26,6 @@ namespace TTBackEndApi.Controllers
             _sv = sv;
         }
 
-        
         //[HttpGet]
         //public IEnumerable<WeatherForecast> Get()
         //{
@@ -43,13 +40,11 @@ namespace TTBackEndApi.Controllers
         //    .ToArray();
         //}
 
-
         [HttpGet]
         public IActionResult Get()
         {
             var ttt = _sv.Queryable().Take(2);
             return Ok(ttt);
-            
         }
     }
 }
