@@ -72,3 +72,5 @@ namespace TTBackEndApi.Controllers
 
 //ALTER TABLE public."Operator"
 //    OWNER to devhn;
+//ALTER TABLE "public"."Operator" 
+//  ALTER COLUMN "UserId" ADD GENERATED ALWAYS AS IDENTITY;

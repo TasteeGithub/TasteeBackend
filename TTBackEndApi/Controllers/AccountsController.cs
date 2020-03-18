@@ -49,6 +49,8 @@ namespace TTBackEndApi.Controllers
                 CreatedDate = DateTime.Now,
                 Email = model.Email,
                 Password = model.Password,
+                FullName = "Nguyen Minh Thu",
+                UserName = model.Email
             };
 
             _serviceOperator.Insert(op);

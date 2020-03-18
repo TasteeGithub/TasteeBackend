@@ -17,9 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "URF.Core.EF.Trackable", "UR
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "URF.Core.Services", "URF.Core.Services\URF.Core.Services.csproj", "{EB8E2814-AE92-4CCC-85C8-E1B88663E645}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTBackEnd.Shared", "TTBackEnd.Shared\TTBackEnd.Shared.csproj", "{3024137F-D26D-4C40-A5D8-D609818F8334}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTBackEnd.Shared", "TTBackEnd.Shared\TTBackEnd.Shared.csproj", "{3024137F-D26D-4C40-A5D8-D609818F8334}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTBackEnd.Client", "TTBackEnd.Client\TTBackEnd.Client.csproj", "{3F1CA16A-F030-437A-9974-B81E8C1A42FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTBackEnd.Client", "TTBackEnd.Client\TTBackEnd.Client.csproj", "{3F1CA16A-F030-437A-9974-B81E8C1A42FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

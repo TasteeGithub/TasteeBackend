@@ -22,7 +22,7 @@ namespace TTBackEndApi.Models.DataContext
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseNpgsql("Host=localho55555st;Port=5432;Database=SW_Inside;Username=devhn;Password=devhn@2019");
+                optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=SW_Inside;Username=devhn;Password=devhn@2019");
             }
         }
 
@@ -33,7 +33,7 @@ namespace TTBackEndApi.Models.DataContext
                 entity.HasKey(e => e.UserId)
                     .HasName("Operator_pkey");
 
-                entity.Property(e => e.UserId).ValueGeneratedNever();
+                entity.Property(e => e.UserId).UseIdentityAlwaysColumn();
 
                 entity.Property(e => e.Email)
                     .IsRequired()

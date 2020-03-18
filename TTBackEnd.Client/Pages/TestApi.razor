@@ -1,0 +1,39 @@
+﻿@page "/testapi"
+@using Blazored.LocalStorage
+@inject ILocalStorageService localStorage
+
+<h3>TestApi</h3>
+<h4>@result </h4>
+<button @onclick=Test>click</button>
+@code {
+
+    string result = string.Empty;
+    private async Task<string> Test()
+    {
+        var tt = new HttpClient()
+        {
+            BaseAddress = new Uri("https://localhost:44313")
+        };
+        try
+        {
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (token != null && token.Length > 0)
+            {
+                tt.DefaultRequestHeaders.Add("authorization", $"bearer {token}");
+                var kk = await tt.GetAsync("/WeatherForecast");
+                result = kk.Content.ReadAsStringAsync().Result;
+            }
+            else
+            {
+                result = "No login";
+            }
+        }
+        catch (Exception ex)
+        {
+
+            throw;
+        }
+
+        return "";
+    }
+}
