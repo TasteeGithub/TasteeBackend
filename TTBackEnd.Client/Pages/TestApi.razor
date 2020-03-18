@@ -8,12 +8,14 @@
 @code {
 
     string result = string.Empty;
+    
     private async Task<string> Test()
     {
         var tt = new HttpClient()
         {
             BaseAddress = new Uri("https://localhost:44313")
         };
+
         try
         {
             var token = await localStorage.GetItemAsync<string>("authToken");
