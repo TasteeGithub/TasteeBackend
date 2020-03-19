@@ -40,7 +40,7 @@ namespace TTBackEnd.Client.Services
             if (result.Successful)
             {
                 await _localStorage.SetItemAsync("authToken", result.Token);
-                ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(result.Token);
+                ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(loginModel.Email);
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Token);
 
                 return result;

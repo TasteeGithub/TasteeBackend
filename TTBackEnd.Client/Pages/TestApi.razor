@@ -1,14 +1,19 @@
 ﻿@page "/testapi"
 @using Blazored.LocalStorage
 @inject ILocalStorageService localStorage
-
+@inject NavigationManager NavigationManager
+@attribute [Authorize]
 <h3>TestApi</h3>
 <h4>@result </h4>
 <button @onclick=Test>click</button>
+
+@functions
+{
+    int k = 10;
+}
 @code {
 
     string result = string.Empty;
-    
     private async Task<string> Test()
     {
         var tt = new HttpClient()
@@ -21,13 +26,14 @@
             var token = await localStorage.GetItemAsync<string>("authToken");
             if (token != null && token.Length > 0)
             {
-                tt.DefaultRequestHeaders.Add("authorization", $"bearer {token}");
+                tt.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("bearer", token);
+                //tt.DefaultRequestHeaders.Add("authorization", $"bearer {token}");
                 var kk = await tt.GetAsync("/WeatherForecast");
                 result = kk.Content.ReadAsStringAsync().Result;
             }
             else
             {
-                result = "No login";
+                NavigationManager.NavigateTo("login");
             }
         }
         catch (Exception ex)
