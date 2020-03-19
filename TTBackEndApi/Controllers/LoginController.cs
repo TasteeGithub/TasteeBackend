@@ -39,10 +39,16 @@ namespace TTBackEndApi.Controllers
 
             if (op == null) return BadRequest(new LoginResult { Successful = false, Error = "Username and password are invalid." });
 
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.Name, login.Email)
-            };
+            //var claims = new[]
+            //{
+            //    new Claim(ClaimTypes.Name, login.Email)
+            //};
+
+            var claims = new List<Claim>();
+            claims.Add(new Claim(ClaimTypes.Name, login.Email));
+
+            claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

@@ -40,6 +40,7 @@ namespace TTBackEndApi.Controllers
         //    .ToArray();
         //}
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Get()
         {
@@ -72,5 +73,5 @@ namespace TTBackEndApi.Controllers
 
 //ALTER TABLE public."Operator"
 //    OWNER to devhn;
-//ALTER TABLE "public"."Operator" 
+//ALTER TABLE "public"."Operator"
 //  ALTER COLUMN "UserId" ADD GENERATED ALWAYS AS IDENTITY;
