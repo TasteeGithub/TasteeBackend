@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TTBackEnd.Shared;
 using TTBackEndApi.Models.DataContext;
+using TTBackEndApi.Models.SqlDataContext;
 using TTBackEndApi.Services;
 using URF.Core.Abstractions;
 
@@ -17,43 +18,47 @@ namespace TTBackEndApi.Controllers
     [Route("api/[controller]")]
     public class AccountsController : Controller
     {
-        private static UserModel LoggedOutUser = new UserModel { IsAuthenticated = false };
+        //private static readonly UserModel LoggedOutUser = new UserModel { IsAuthenticated = false };
 
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly ITTService<Operator> _serviceOperator;
+        //private readonly UserManager<IdentityUser> _userManager;
+        private readonly ITTService<Users> _serviceUsers;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AccountsController> _logger;
 
         public AccountsController(
             ILogger<AccountsController> logger,
             ITTService<Operator> serviceOperator,
-            IUnitOfWork unitOfWork
+            IUnitOfWork unitOfWork,
+            ITTService<Users> serviceUsers
             )
         {
-            _serviceOperator = serviceOperator;
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _serviceUsers = serviceUsers;
         }
 
         // POST api/<controller>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]RegisterModel model)
         {
-            if (OperatorExists(model.Email))
+            if (UsersIsExists(model.Email))
             {
                 return Conflict();
             }
 
-            Operator op = new Operator()
+            var passwordHasher = new Microsoft.AspNetCore.Identity.PasswordHasher<RegisterModel>();
+            var passwordHash = passwordHasher.HashPassword(model, model.Password);
+
+            Users newUsers = new Users()
             {
                 CreatedDate = DateTime.Now,
                 Email = model.Email,
-                Password = model.Password,
-                FullName = "Nguyen Minh Thu",
-                UserName = model.Email
+                Id = Guid.NewGuid().ToString(),
+                PasswordHash = passwordHash,
+                FullName = model.FullName
             };
 
-            _serviceOperator.Insert(op);
+            _serviceUsers.Insert(newUsers);
 
             try
             {
@@ -67,9 +72,9 @@ namespace TTBackEndApi.Controllers
             return Ok(new RegisterResult { Successful = true });
         }
 
-        private bool OperatorExists(string email)
+        private bool UsersIsExists(string email)
         {
-            return _serviceOperator.Queryable().Any(e => e.Email == email);
+            return _serviceUsers.Queryable().Any(e => e.Email == email);
         }
     }
 }

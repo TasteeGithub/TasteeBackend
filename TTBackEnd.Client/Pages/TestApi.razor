@@ -2,16 +2,17 @@
 @using Blazored.LocalStorage
 @inject ILocalStorageService localStorage
 @inject NavigationManager NavigationManager
-@attribute [Authorize]
+@attribute [Authorize(Roles = "SupperAdmin")]
 <h3>TestApi</h3>
 <h4>@result </h4>
 <button @onclick=Test>click</button>
 
-@functions
-{
-    int k = 10;
-}
-@code {
+@code {        
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Test();
+    }
 
     string result = string.Empty;
     private async Task<string> Test()

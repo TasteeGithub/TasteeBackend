@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using TTBackEndApi.Models.DataContext;
+using TTBackEndApi.Models.SqlDataContext;
 using TTBackEndApi.Services;
 
 namespace TTBackEndApi.Controllers
@@ -17,10 +18,10 @@ namespace TTBackEndApi.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private ITTService<Operator> _sv;
+        private ITTService<Roles> _sv;
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, ITTService<Operator> sv)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, ITTService<Roles> sv)
         {
             _logger = logger;
             _sv = sv;
@@ -40,11 +41,11 @@ namespace TTBackEndApi.Controllers
         //    .ToArray();
         //}
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Get()
         {
-            var ttt = _sv.Queryable().Take(2);
+            var ttt = _sv.Queryable();
             return Ok(ttt);
         }
     }
@@ -75,3 +76,5 @@ namespace TTBackEndApi.Controllers
 //    OWNER to devhn;
 //ALTER TABLE "public"."Operator"
 //  ALTER COLUMN "UserId" ADD GENERATED ALWAYS AS IDENTITY;
+
+//Scaffold-DbContext "Server=MINHTHU-PC\SQLEXPRESS;Database=TT;Trusted_Connection=True;MultipleActiveResultSets=true" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models/SqlDataContext -Force

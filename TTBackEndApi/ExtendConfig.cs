@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TTBackEndApi.Models.DataContext;
+using TTBackEndApi.Models.SqlDataContext;
 using TTBackEndApi.Services;
 using URF.Core.Abstractions;
 using URF.Core.Abstractions.Trackable;
@@ -18,11 +19,26 @@ namespace TTBackEndApi
             services.AddDbContext<SW_InsideContext>(options =>
             options.UseNpgsql(Configuration.GetSection(CONNECTION_STRING_NAME).Value));
 
-            services.AddScoped<DbContext, SW_InsideContext>();
+            services.AddDbContext<TTContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            //services.AddScoped<DbContext, SW_InsideContext>();
+            services.AddScoped<DbContext, TTContext>();
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<ITrackableRepository<Operator>, TrackableRepository<Operator>>();
             services.AddScoped<ITTService<Operator>, TTService<Operator>>();
+
+            services.AddScoped<ITrackableRepository<Users>, TrackableRepository<Users>>();
+            services.AddScoped<ITTService<Users>, TTService<Users>>();
+
+            services.AddScoped<ITrackableRepository<Roles>, TrackableRepository<Roles>>();
+            services.AddScoped<ITTService<Roles>, TTService<Roles>>();
+
+            services.AddScoped<ITrackableRepository<UserRoles>, TrackableRepository<UserRoles>>();
+            services.AddScoped<ITTService<UserRoles>, TTService<UserRoles>>();
+
 
 
             return services;
