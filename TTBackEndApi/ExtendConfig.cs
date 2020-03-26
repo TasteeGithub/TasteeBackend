@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TTBackEndApi.Models.DataContext;
-using TTBackEndApi.Models.SqlDataContext;
-using TTBackEndApi.Services;
+using TTFrontEnd.Models.DataContext;
+using TTFrontEnd.Models.SqlDataContext;
+using TTFrontEnd.Services;
 using URF.Core.Abstractions;
 using URF.Core.Abstractions.Trackable;
 using URF.Core.EF;
 using URF.Core.EF.Trackable;
 
-namespace TTBackEndApi
+namespace TTFrontEnd
 {
     public static class ExtendConfig
     {

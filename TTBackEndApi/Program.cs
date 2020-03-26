@@ -8,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 
-namespace TTBackEndApi
+namespace TTFrontEnd
 {
     public class Program
     {

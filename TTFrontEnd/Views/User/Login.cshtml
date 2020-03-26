@@ -1,0 +1,53 @@
+﻿@model TTBackEnd.Shared.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+    <form asp-action="Login" asp-controller="User" method="post">
+        <fieldset>
+            <legend>Mvc Simple Login Application Demo</legend>
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+            @if (@ViewBag.Message != null)
+            {
+                <div style="border: 1px solid red">
+                    @ViewBag.Message
+                </div>
+            }
+        <table>
+            <tr>
+                <td>
+                    <label asp-for="Email"></label>
+                </td>
+                <td><input asp-for="Email" type="email" /></td>
+                <td><span asp-validation-for="Email" class="text-danger"></span></td>
+            </tr>
+            <tr>
+                <td>
+                    <label asp-for="Password"></label>
+                </td>
+                <td>
+                    <input type="password" asp-for="Password" />
+                </td>
+                <td>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input asp-for="RememberMe" />
+                    <label asp-for="RememberMe"></label>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input class="btn btn-primary btn-sm" type="submit" value="Login" />
+                </td>
+                <td></td>
+            </tr>
+        </table>
+        </fieldset>
+    </form>

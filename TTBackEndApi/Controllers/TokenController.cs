@@ -6,9 +6,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using TTBackEndApi.Models;
+using TTFrontEnd.Models;
 
-namespace TTBackEndApi.Controllers
+namespace TTFrontEnd.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

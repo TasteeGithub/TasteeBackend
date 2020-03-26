@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using URF.Core.EF.Trackable;
 
-namespace TTBackEndApi.Models.DataContext
+namespace TTFrontEnd.Models.DataContext
 {
     public partial class Operator : Entity
     {

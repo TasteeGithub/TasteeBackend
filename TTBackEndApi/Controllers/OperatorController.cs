@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using TTBackEndApi.Models.DataContext;
-using TTBackEndApi.Services;
+using TTFrontEnd.Models.DataContext;
+using TTFrontEnd.Services;
 using URF.Core.Abstractions;
 
-namespace TTBackEndApi
+namespace TTFrontEnd
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace TTBackEndApi.Models.DataContext
+namespace TTFrontEnd.Models.DataContext
 {
     public partial class SW_InsideContext : DbContext
     {

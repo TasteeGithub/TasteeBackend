@@ -1,6 +1,6 @@
 using System;
 
-namespace TTBackEndApi
+namespace TTFrontEnd
 {
     public class WeatherForecast
     {

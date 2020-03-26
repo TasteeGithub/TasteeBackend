@@ -5,14 +5,14 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TTBackEnd.Shared;
-using TTBackEndApi.Models.DataContext;
-using TTBackEndApi.Models.SqlDataContext;
-using TTBackEndApi.Services;
+using TTFrontEnd.Models.DataContext;
+using TTFrontEnd.Models.SqlDataContext;
+using TTFrontEnd.Services;
 using URF.Core.Abstractions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace TTBackEndApi.Controllers
+namespace TTFrontEnd.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

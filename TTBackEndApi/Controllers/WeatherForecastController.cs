@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Linq;
-using TTBackEndApi.Models.DataContext;
-using TTBackEndApi.Models.SqlDataContext;
-using TTBackEndApi.Services;
+using TTFrontEnd.Models.DataContext;
+using TTFrontEnd.Models.SqlDataContext;
+using TTFrontEnd.Services;
 
-namespace TTBackEndApi.Controllers
+namespace TTFrontEnd.Controllers
 {
     [Authorize]
     [ApiController]

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TTBackEndApi.Models.DataContext;
+using TTFrontEnd.Models.DataContext;
 using URF.Core.Services;
 using URF.Core.Abstractions.Trackable;
 using TrackableEntities.Common.Core;
 
-namespace TTBackEndApi.Services
+namespace TTFrontEnd.Services
 {
     public class TTService<T> : Service<T> , ITTService<T> where T : class, ITrackable
     {

@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-namespace TTBackEndApi
+namespace TTFrontEnd
 {
     public class Startup
     {
