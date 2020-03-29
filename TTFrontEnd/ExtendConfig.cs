@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using TTFrontEnd.Models.SqlDataContext;
 using TTFrontEnd.Services;
 using URF.Core.Abstractions;
@@ -13,6 +16,7 @@ namespace TTFrontEnd
     public static class ExtendConfig
     {
         const string CONNECTION_STRING_NAME = "DbConnectString";
+        const string API_BACK_END = "ApiBackEnd";
         public static IServiceCollection InsideConfigServices(this IServiceCollection services, IConfiguration Configuration)
         {
             //services.AddDbContext<SW_InsideContext>(options =>
@@ -38,6 +42,31 @@ namespace TTFrontEnd
             services.AddScoped<ITrackableRepository<UserRoles>, TrackableRepository<UserRoles>>();
             services.AddScoped<ITTService<UserRoles>, TTService<UserRoles>>();
 
+            services.AddHttpClient("LoginClient", option =>
+                option.BaseAddress = new System.Uri(Configuration.GetSection(API_BACK_END).Value)
+                ); ;
+
+            // [Asma Khalid]: Authorization settings.  
+            services.AddAuthentication(options =>
+            {
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }).AddCookie(options =>
+            {
+                options.LoginPath = new PathString("/User/Login");
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(5.0);
+                options.ReturnUrlParameter = "RequestPath";
+                //options.Cookie = new CookieBuilder()
+                //{
+                //    HttpOnly = true,
+                //    Name = ".aspNetCoreDemo.Security.Cookie",
+                //    Path = "/",
+                //    SameSite = SameSiteMode.Lax,
+                //    SecurePolicy = CookieSecurePolicy.SameAsRequest
+                //};
+                //options.SlidingExpiration = true;
+            });
 
 
             return services;

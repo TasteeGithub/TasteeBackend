@@ -1,0 +1,6 @@
+﻿[
+  {
+    "outputFile": "wwwroot/dist/css/theme.css",
+    "inputFile": "wwwroot/src/scss/theme.scss"
+  }
+]

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,10 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using TTBackEnd.Shared;
+//using TTBackEndApi.Models.DataContext;
 using TTFrontEnd.Models.SqlDataContext;
 using TTFrontEnd.Services;
+using URF.Core.Abstractions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,27 +22,28 @@ namespace TTFrontEnd.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LoginApiController : Controller
+    public class AccountsApiController : Controller
     {
-        private readonly IConfiguration _configuration;
-
-        //private readonly SignInManager<IdentityUser> _signInManager;
-        //private readonly ITTService<Operator> _serviceOperator;
-
         private readonly ITTService<Users> _serviceUsers;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<AccountsApiController> _logger;
+
+        private readonly IConfiguration _configuration;
         private readonly ITTService<UserRoles> _serviceUserRole;
         private readonly ITTService<Roles> _serviceRoles;
 
-        public LoginApiController(IConfiguration configuration,
-            //ITTService<Operator> serviceOperator,
+        public AccountsApiController(
+            IConfiguration configuration,
+            ILogger<AccountsApiController> logger,
+            IUnitOfWork unitOfWork,
             ITTService<Users> serviceUsers,
             ITTService<UserRoles> serviceUserRole,
             ITTService<Roles> serviceRoles
             )
         {
             _configuration = configuration;
-            //_signInManager = signInManager;
-            //_serviceOperator = serviceOperator;
+            _unitOfWork = unitOfWork;
+            _logger = logger;
             _serviceUsers = serviceUsers;
             _serviceRoles = serviceRoles;
             _serviceUserRole = serviceUserRole;
@@ -47,7 +51,48 @@ namespace TTFrontEnd.Controllers
 
         // POST api/<controller>
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] LoginModel login)
+        public async Task<IActionResult> Post([FromBody]RegisterModel model)
+        {
+            if (UsersIsExists(model.Email))
+            {
+                return Conflict();
+            }
+
+            var passwordHasher = new PasswordHasher<RegisterModel>();
+            var passwordHash = passwordHasher.HashPassword(model, model.Password);
+
+            Users newUsers = new Users()
+            {
+                CreatedDate = DateTime.Now,
+                Email = model.Email,
+                Id = Guid.NewGuid().ToString(),
+                PasswordHash = passwordHash,
+                FullName = model.FullName,
+            };
+
+            _serviceUsers.Insert(newUsers);
+
+            try
+            {
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error:{0}", ex.ToString());
+                return Ok(new RegisterResult { Successful = false, Errors= new string[] { ex.Message } });
+            }
+            return Ok(new RegisterResult { Successful = true });
+        }
+
+        private bool UsersIsExists(string email)
+        {
+            return _serviceUsers.Queryable().Any(e => e.Email == email);
+        }
+
+        // POST api/<controller>
+        [HttpPost]
+        [Route("Login")]
+        public IActionResult Login([FromBody] LoginModel login)
         {
             var passwordHasher = new Microsoft.AspNetCore.Identity.PasswordHasher<LoginModel>();
             var passwordHash = passwordHasher.HashPassword(login, login.Password);
@@ -69,8 +114,6 @@ namespace TTFrontEnd.Controllers
                 claims.Add(new Claim(ClaimTypes.Role, _serviceRoles.Queryable().Where(x => x.Id == item.RoleId).FirstOrDefault().Name));
             }
 
-            //claims.Add(new Claim(ClaimTypes.Role, "Admin"));
-
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expiry = DateTime.Now.AddMinutes(Convert.ToInt32(_configuration["Jwt:ExpiryInDays"]));
@@ -85,5 +128,14 @@ namespace TTFrontEnd.Controllers
 
             return Ok(new LoginResult { Successful = true, Token = new JwtSecurityTokenHandler().WriteToken(token) });
         }
+
+        //[HttpGet]
+        //[Route("GetAccounts")]
+        //public IActionResult GetAccounts(
+            
+        //    )
+        //{
+
+        //}
     }
 }

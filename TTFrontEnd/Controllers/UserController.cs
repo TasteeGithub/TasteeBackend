@@ -1,23 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.UI.V3.Pages.Account.Internal;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using TTBackEnd.Shared;
 using TTFrontEnd.Models.SqlDataContext;
 using TTFrontEnd.Services;
+using LoginModel = TTBackEnd.Shared.LoginModel;
 
 namespace TTFrontEnd.Controllers
 {
     public class UserController : Controller
     {
-        ITTService<Users> _userService;
+
+        private readonly HttpClient _httpClient;
+        private readonly ITTService<Users> _userService;
         public UserController(
-            ITTService<Users> userService
+            ITTService<Users> userService,
+            IHttpClientFactory httpClientFactory
          )
         {
             _userService = userService;
+            //_httpClientFactory = httpClientFactory;
+            _httpClient = httpClientFactory.CreateClient("LoginClient");
         }
         public IActionResult Login()
         {
@@ -26,97 +40,43 @@ namespace TTFrontEnd.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(LoginModel model)
+        public async Task<IActionResult> Login(LoginModel model, string returnUrl = "")
         {
             if(ModelState.IsValid)
             {
-                var tt = _userService.Queryable().Where(x => x.Email == model.Email).FirstOrDefault();
-                return RedirectToAction("Index", "Home");
-            }    
+                var responseResult = await _httpClient.PostAsJsonAsync<LoginModel>($"api/AccountsApi/Login", model);
+                var result = JsonConvert.DeserializeObject<LoginResult>(responseResult.Content.ReadAsStringAsync().Result);
+                
+                if (result.Successful)
+                {
+                    var claims = new List<Claim>();
+                    claims.Add(new Claim(ClaimTypes.Name, model.Email));
+                    var claimIdenties = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var claimPrincipal = new ClaimsPrincipal(claimIdenties);
 
+                    var auManager = Request.HttpContext;
+                    await auManager.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimPrincipal, new AuthenticationProperties()
+                    {
+                        IsPersistent = model.RememberMe
+                    });
+
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                        return Redirect(returnUrl);
+                    else
+                        return RedirectToAction("Index", "Home");
+                }
+            }    
             return View(model);
         }
 
-
-        // GET: User
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        // GET: User/Details/5
-        public IActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: User/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: User/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> LogOut()
         {
-            try
-            {
-                // TODO: Add insert logic here
+            await HttpContext.SignOutAsync(scheme: CookieAuthenticationDefaults.AuthenticationScheme);
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction("Login");
         }
 
-        // GET: User/Edit/5
-        public IActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: User/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: User/Delete/5
-        public IActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: User/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

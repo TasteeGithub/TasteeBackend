@@ -21,9 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTBackEnd.Shared", "TTBackE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTBackEnd.Client", "TTBackEnd.Client\TTBackEnd.Client.csproj", "{3F1CA16A-F030-437A-9974-B81E8C1A42FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTFrontEnd", "TTFrontEnd\TTFrontEnd.csproj", "{F1D183AA-F8F9-45F3-AF8B-F70740C3AC05}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TTFrontEndTestAuthen", "TTFrontEndTestAuthen\TTFrontEndTestAuthen.csproj", "{7C353C8E-48D6-4273-ACDA-D60403BE7C2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTFrontEnd", "TTFrontEnd\TTFrontEnd.csproj", "{F1D183AA-F8F9-45F3-AF8B-F70740C3AC05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,10 +69,6 @@ Global
 		{F1D183AA-F8F9-45F3-AF8B-F70740C3AC05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1D183AA-F8F9-45F3-AF8B-F70740C3AC05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1D183AA-F8F9-45F3-AF8B-F70740C3AC05}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7C353C8E-48D6-4273-ACDA-D60403BE7C2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C353C8E-48D6-4273-ACDA-D60403BE7C2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7C353C8E-48D6-4273-ACDA-D60403BE7C2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7C353C8E-48D6-4273-ACDA-D60403BE7C2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

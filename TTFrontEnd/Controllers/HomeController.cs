@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TTFrontEnd.Models;
 
 namespace TTFrontEnd.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -20,7 +22,10 @@ namespace TTFrontEnd.Controllers
 
         public IActionResult Index()
         {
+            //if (this.User.Identity.IsAuthenticated)
             return View();
+            //else
+            //    return RedirectToAction("Login", "User");
         }
 
         public IActionResult Privacy()
