@@ -1,0 +1,174 @@
+﻿@model IEnumerable<TTFrontEnd.Models.DataContext.Users>
+@using TTBackEnd.Shared
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="table-responsive">
+    <table class="table" id="dataTable" width="100%" cellspacing="0">
+        <thead class="card-header">
+            <tr class="detail-value">
+                <th>No</th>
+                <th class="p-3">Email</th>
+                <th class="p-3">Phone</th>
+                <th class="p-3">Full Name</th>
+                <th class="p-3">Gender</th>
+                <th class="p-3">Birthday</th>
+                <th class="p-3">Created Date</th>
+                <th class="p-3">Status</th>
+                <th class="p-3">Last Login</th>
+                <th class="p-3">Update</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+
+@*<h1>Index</h1>
+
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PasswordHash)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PhoneNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FullName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CreatedDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsLocked)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Birthday)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Gender)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Address)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Role)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UserLevel)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MerchantLevel)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Avatar)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LastLogin)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PasswordHash)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsLocked)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Birthday)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gender)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Role)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserLevel)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MerchantLevel)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Avatar)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastLogin)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>*@
+
+
+
+@section Scripts {
+
+    @{await Html.RenderPartialAsync("_PaggerPartial",
+                                                       new PaggerSettingModel()
+                                                       {
+                                                           AjaxLink = "/AccountManager/LoadUser/",
+                                                           Columns = new Column[]
+                                                                 {
+                                                                     new Column(){ render="function (data, type, row, meta){return '<div class=\"text-center\">' +(meta.row + meta.settings._iDisplayStart + 1) +'</div>';}"},
+                                                                 new Column(){ data = "email", autoWidth = true },
+                                                                 new Column(){ data = "phoneNumber", autoWidth = true },
+                                                                 new Column(){ data = "fullName", autoWidth = true, render="function (data, type, row, meta) { return '<a class=\"high-light\" href=\"/ManageUser/Details/' + row.userId + '\">' + data + '</a>'; }"},
+                                                                 new Column(){ data = "gender", autoWidth = true, render="function (data, type, row, meta) { return '<a class=\"high-light\" href=\"/ManageUser/Details/' + row.userId + '\">' + data + '</a>'; }"},
+                                                                 new Column(){ data = "birthday", autoWidth = true, render="function (data, type, full, meta) { return '<span class=\"pl-2\">' + moment(data).format('DD/MM/YYYY - HH:mm:ss') + '</span>'; }"},
+                                                                new Column(){ data = "createdDate", autoWidth = true, render="function (data, type, full, meta) { return '<span class=\"pl-2\">' + moment(data).format('DD/MM/YYYY - HH:mm:ss') + '</span>'; }"},
+                                                               new Column(){ data = "status", autoWidth = true},
+                                                               new Column(){ data = "lastLogin", autoWidth = true, render="function (data, type, row, meta) { return (data == '0001-01-01T00:00:00' ? '' : moment(data).format('DD/MM/YYYY - HH:mm:ss')); }"},
+
+                                                                 },
+                                                           PageSizeSetting = new int[] {1, 20, 50, 100 },
+                                                           TableId = "dataTable",
+                                                         //        FilterFiled = new FilterField[]
+                                                         //          {
+                                                         //new FilterField(){ FieldName = "SearchUserName", InputControlId = "username"},
+                                                         //new FilterField(){ FieldName = "SearchEmail", InputControlId = "email"},
+                                                         //new FilterField(){ FieldName = "SearchPhone", InputControlId = "phone"},
+                                                         //new FilterField(){ FieldName = "SearchAccountStatus", InputControlId = "status"},
+                                                         //new FilterField(){ FieldName = "SearchDate", InputControlId = "SearchDate"},
+                                                         //}
+                                                     }
+                                  );}
+    }

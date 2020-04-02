@@ -11,12 +11,14 @@
             <div class="col-xl-5 col-lg-7 col-md-8 my-auto">
                 <div class="authentication-form mx-auto">
 
-                    <h3>Sign In</h3>
+                    <h3>Log In</h3>
 
-                    <form asp-action="Login" asp-controller="User" method="post" asp-route-returnurl="@returnUrl">
+                    <form asp-action="Login" asp-controller="Authen" method="post" asp-route-returnurl="@returnUrl">
+
                         <div class="form-group">
                             <input type="email" asp-for="Email" class="form-control" placeholder="Email" required="" maxlength="200">
                             <i class="ik ik-user"></i>
+                            <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <input type="password" asp-for="Password" class="form-control" placeholder="Password" required="" maxlength="100">

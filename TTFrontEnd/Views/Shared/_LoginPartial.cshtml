@@ -13,7 +13,7 @@
             <a class="dropdown-item" href="#"><span class="float-right"><span class="badge badge-primary">6</span></span><i class="ik ik-mail dropdown-icon"></i> Inbox</a>
             <a class="dropdown-item" href="#"><i class="ik ik-navigation dropdown-icon"></i> Message</a>
 
-            <form class="form-inline" asp-action="Logout" asp-controller="User" method="post">
+            <form class="form-inline" asp-action="Logout" asp-controller="Authen" method="post">
                 <button type="submit" class="dropdown-item"><i class="ik ik-power dropdown-icon"></i>Logout</button>
             </form>
         </div>
@@ -32,7 +32,7 @@ else
 {
 
 <div class="dropdown">
-    <a asp-action="Login" asp-controller="User" class="dropdown-item" data-toggle="tooltip" data-placement="top" title="Login">
+    <a asp-action="Login" asp-controller="Authen" class="dropdown-item" data-toggle="tooltip" data-placement="top" title="Login">
     <i class="ik ik-user"></i> Login</a>
 </div>
 <div class="dropdown">

@@ -10,7 +10,7 @@ using TTFrontEnd.Models;
 
 namespace TTFrontEnd.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

@@ -2,15 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace TTFrontEnd.Models.SqlDataContext
+namespace TTFrontEnd.Models.DataContext
 {
-    public partial class TTContext : DbContext
+    public partial class SW_InsideContext : DbContext
     {
-        public TTContext()
+        public SW_InsideContext()
         {
         }
 
-        public TTContext(DbContextOptions<TTContext> options)
+        public SW_InsideContext(DbContextOptions<SW_InsideContext> options)
             : base(options)
         {
         }
@@ -24,7 +24,7 @@ namespace TTFrontEnd.Models.SqlDataContext
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=MINHTHU-PC\\SQLEXPRESS;Database=TT;Trusted_Connection=True;MultipleActiveResultSets=true");
+                optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=SW_Inside;Username=devhn;Password=devhn@2019");
             }
         }
 
@@ -34,13 +34,15 @@ namespace TTFrontEnd.Models.SqlDataContext
             {
                 entity.Property(e => e.Id).HasMaxLength(200);
 
-                entity.Property(e => e.Name).HasMaxLength(256);
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(256);
             });
 
             modelBuilder.Entity<UserRoles>(entity =>
             {
                 entity.HasKey(e => new { e.UserId, e.RoleId })
-                    .HasName("PK_UserRoles_1");
+                    .HasName("UserRoles_pkey");
 
                 entity.Property(e => e.UserId).HasMaxLength(200);
 
@@ -49,15 +51,17 @@ namespace TTFrontEnd.Models.SqlDataContext
 
             modelBuilder.Entity<Users>(entity =>
             {
+                entity.ToTable("users");
+
                 entity.Property(e => e.Id).HasMaxLength(200);
 
                 entity.Property(e => e.Address).HasMaxLength(500);
 
                 entity.Property(e => e.Avatar).HasMaxLength(50);
 
-                entity.Property(e => e.Birthday).HasColumnType("datetime");
+                entity.Property(e => e.Birthday).HasColumnType("timestamp(3) without time zone");
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedDate).HasColumnType("timestamp(3) without time zone");
 
                 entity.Property(e => e.Email)
                     .IsRequired()
@@ -67,15 +71,13 @@ namespace TTFrontEnd.Models.SqlDataContext
 
                 entity.Property(e => e.Gender).HasMaxLength(10);
 
-                entity.Property(e => e.LastLogin).HasColumnType("datetime");
+                entity.Property(e => e.LastLogin).HasColumnType("timestamp(3) without time zone");
 
                 entity.Property(e => e.PasswordHash).IsRequired();
 
                 entity.Property(e => e.Role).HasMaxLength(50);
 
-                entity.Property(e => e.Status)
-                    .HasMaxLength(50)
-                    .HasComment("pending/ active/ inactive/ lock/ closed");
+                entity.Property(e => e.Status).HasMaxLength(50);
             });
 
             OnModelCreatingPartial(modelBuilder);

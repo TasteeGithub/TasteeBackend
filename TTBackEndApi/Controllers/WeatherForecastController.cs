@@ -51,30 +51,5 @@ namespace TTFrontEnd.Controllers
     }
 }
 
-//Scaffold-DbContext "Host=localhost;Port=5432;Database=SW_Inside;Username=devhn;Password=devhn@2019" Npgsql.EntityFrameworkCore.PostgreSQL -OutputDir Models/DataContext -Force -Tables Operator
-
-//    -- Table: public."Operator"
-
-//-- DROP TABLE public."Operator";
-
-//CREATE TABLE public."Operator"
-//(
-//    "UserId" bigint NOT NULL,
-//    "UserName" character varying(50) COLLATE pg_catalog."default" NOT NULL,
-//    "Password" character varying(100) COLLATE pg_catalog."default" NOT NULL,
-//    "FullName" character varying(200) COLLATE pg_catalog."default" NOT NULL,
-//    "CreatedDate" timestamp without time zone NOT NULL,
-//    "Email" character varying COLLATE pg_catalog."default" NOT NULL,
-//    CONSTRAINT "Operator_pkey" PRIMARY KEY ("UserId")
-//)
-//WITH(
-//    OIDS = FALSE
-//)
-//TABLESPACE pg_default;
-
-//ALTER TABLE public."Operator"
-//    OWNER to devhn;
-//ALTER TABLE "public"."Operator"
-//  ALTER COLUMN "UserId" ADD GENERATED ALWAYS AS IDENTITY;
-
+//Scaffold-DbContext "Host=localhost;Port=5432;Database=SW_Inside;Username=devhn;Password=devhn@2019" Npgsql.EntityFrameworkCore.PostgreSQL -OutputDir Models/DataContext -Force
 //Scaffold-DbContext "Server=MINHTHU-PC\SQLEXPRESS;Database=TT;Trusted_Connection=True;MultipleActiveResultSets=true" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models/SqlDataContext -Force

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using LinqKit;
+using Mapster;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -11,8 +13,9 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using TTBackEnd.Shared;
+using TTFrontEnd.Models.DataContext;
 //using TTBackEndApi.Models.DataContext;
-using TTFrontEnd.Models.SqlDataContext;
+//using TTFrontEnd.Models.SqlDataContext;
 using TTFrontEnd.Services;
 using URF.Core.Abstractions;
 
@@ -98,8 +101,10 @@ namespace TTFrontEnd.Controllers
             var passwordHash = passwordHasher.HashPassword(login, login.Password);
 
             var user = _serviceUsers.Queryable().Where(x => x.Email == login.Email).FirstOrDefault();
-
             if (user == null) return BadRequest(new LoginResult { Successful = false, Error = "Username and password are invalid." });
+            user.LastLogin = DateTime.Now;
+            _serviceUsers.Update(user);
+            _unitOfWork.SaveChangesAsync();
 
             var verifyResult = passwordHasher.VerifyHashedPassword(login, user.PasswordHash, login.Password);
             if (verifyResult == PasswordVerificationResult.Failed) return BadRequest(new LoginResult { Successful = false, Error = "Username and password are invalid." });
@@ -129,10 +134,65 @@ namespace TTFrontEnd.Controllers
             return Ok(new LoginResult { Successful = true, Token = new JwtSecurityTokenHandler().WriteToken(token) });
         }
 
+        // GET: api/ManageUser
+        [HttpGet]
+        [Route("GetAccounts")]
+        public async Task<PaggingModel<Users>> Get(
+            //string userName
+            //, string email
+            //, string phone, int? status
+            //, DateTime? fdate
+            //, DateTime? tdate
+            //, 
+
+            int pageSize, int? pageIndex
+            )
+        {
+            ExpressionStarter<Users> searCondition = PredicateBuilder.New<Users>(true);
+
+            //if (userName != null && userName.Length > 0)
+            //{
+            //    searCondition = searCondition.And(x => x.FullName.ToLower().Contains(userName.ToLower()));
+            //}
+            //if (email != null && email.Length > 0)
+            //{
+            //    searCondition = searCondition.And(x => x.Email.ToLower().Contains(email.ToLower()));
+            //}
+
+            //if (phone != null && phone.Length > 0)
+            //{
+            //    searCondition = searCondition.And(x => x.Phone.Contains(phone));
+            //}
+            //if (status != null && status > 0)
+            //{
+            //    searCondition = searCondition.And(x => x.Status == status);
+            //}
+            //if (fdate != null && tdate != null)
+            //{
+            //    searCondition = searCondition.And(x => x.DateCreated >= fdate && x.DateCreated <= tdate);
+            //}
+
+            //var listUser = _serviceUsers.QueryableSql($"SELECT * FROM (SELECT [RANK] = ROW_NUMBER() OVER (ORDER BY Id),* FROM Users) A WHERE A.[RANK] BETWEEN {pageIndex} AND {pageSize}");
+
+             var listUser = _serviceUsers.Queryable().Where(searCondition).OrderByDescending(x => x.CreatedDate);
+
+            pageSize = pageSize == 0 ? Constants.DEFAULT_PAGE_SIZE : pageSize;
+            var pagedListUser = await PaginatedList<Users>.CreateAsync(listUser, pageIndex ?? 1, pageSize);
+            //var pagedListUser = await PaginatedList<Users>.CreateAsync(listUser,pageSize);
+            PaggingModel<Users> returnResult = new PaggingModel<Users>()
+            {
+                ListData = pagedListUser.Adapt<List<Users>>(),
+                TotalRows = pagedListUser.TotalRows,
+            };
+
+            return returnResult;
+        }
+
+
         //[HttpGet]
         //[Route("GetAccounts")]
         //public IActionResult GetAccounts(
-            
+
         //    )
         //{
 
