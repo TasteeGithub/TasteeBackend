@@ -1,9 +1,9 @@
 import React from 'react';
-import {AuthenTicatedState} from '../../store/Login';
+import {AuthenticatedState} from '../../store/Login';
 import {ApplicationState} from '../../store/index';
 import { connect } from 'react-redux';
 
-class LoginStatus extends React.Component<AuthenTicatedState>{
+class LoginStatus extends React.Component<AuthenticatedState>{
 
     public render(){
         return (

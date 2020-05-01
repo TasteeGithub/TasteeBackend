@@ -1,7 +1,7 @@
 import { Action,Reducer } from 'redux'
 import { SET_AUTHENTICATED,SET_UNAUTHENTICATED} from './types';
 
-export interface AuthenTicatedState {
+export interface AuthenticatedState {
     authenticated : boolean,
     name: string
 }
@@ -28,7 +28,7 @@ export const actionCreator = {
     setUnAuthen: () => ({type: SET_UNAUTHENTICATED } as SetUnAuthenticatedAction)
 }
 
-export const AuthenticatedReducer : Reducer<AuthenTicatedState> = (state: AuthenTicatedState | undefined,action:Action) : AuthenTicatedState => {
+export const AuthenticatedReducer : Reducer<AuthenticatedState> = (state: AuthenticatedState | undefined,action:Action) : AuthenticatedState => {
     if(state === undefined) return {authenticated:false, name : "Un know"}
     const incomAction = action as KnownAction;
     switch (incomAction.type) {
