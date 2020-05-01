@@ -1,4 +1,5 @@
 import React from 'react';
+import LoginStatus from './Authentication/LoginStatus';
 
 const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) => {
     return (
@@ -73,16 +74,7 @@ const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) =>
                                 </div>
                             </div>
                             <button type="button" className="nav-link ml-10" id="apps_modal_btn" data-toggle="modal" data-target="#appsModal"><i className="ik ik-grid"></i></button>
-                            <div className="dropdown">
-                                <a className="dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img className="avatar" src="img/user.jpg" alt="" /></a>
-                                <div className="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                                    <a className="dropdown-item" href="profile.html"><i className="ik ik-user dropdown-icon"></i> Profile</a>
-                                    <a className="dropdown-item" href="#"><i className="ik ik-settings dropdown-icon"></i> Settings</a>
-                                    <a className="dropdown-item" href="#"><span className="float-right"><span className="badge badge-primary">6</span></span><i className="ik ik-mail dropdown-icon"></i> Inbox</a>
-                                    <a className="dropdown-item" href="#"><i className="ik ik-navigation dropdown-icon"></i> Message</a>
-                                    <a className="dropdown-item" href="/login"><i className="ik ik-power dropdown-icon"></i> Logout</a>
-                                </div>
-                            </div>
+                            <LoginStatus/>
 
                         </div>
                     </div>

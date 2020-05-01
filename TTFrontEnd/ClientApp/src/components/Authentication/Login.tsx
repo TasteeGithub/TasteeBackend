@@ -13,6 +13,7 @@ const Login: React.FunctionComponent<AuthenProps> = (props: AuthenProps) => {
 
     const [email, setEmail] = useState("");
     const [pass, setPass] = useState("");
+
     const handleEmailChange = (e: React.FormEvent<HTMLInputElement>) => {
         setEmail(e.currentTarget.value);
     }
@@ -21,7 +22,7 @@ const Login: React.FunctionComponent<AuthenProps> = (props: AuthenProps) => {
         setPass(e.currentTarget.value);
     }
     const handleLoginIn = () => {
-        if(email === "thunm@sendo.vn" && pass === "123456") {
+        if(email === "t@v" && pass === "1") {
             localStorage.setItem("email",email);
             localStorage.setItem("isAuthen","true");
             props.setAuthen(
@@ -29,6 +30,10 @@ const Login: React.FunctionComponent<AuthenProps> = (props: AuthenProps) => {
                     email: email, password: pass
                 });
         }
+        else{
+            alert("email or password is invalid");
+        }
+
         
     }
     
