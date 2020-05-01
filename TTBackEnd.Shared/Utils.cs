@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Globalization;
+using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -93,6 +94,15 @@ namespace TTBackEnd.Shared
                     DateFormatHandling = DateFormatHandling.MicrosoftDateFormat
                 };
             }
+        }
+
+        public static string GetUniqueFileName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            return Path.GetFileNameWithoutExtension(fileName)
+                      + "_"
+                      + Guid.NewGuid().ToString().Substring(0, 4)
+                      + Path.GetExtension(fileName);
         }
 
         //public static DateRange ParseDateRange(string dateRange, char splitChar)
