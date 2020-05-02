@@ -9,8 +9,6 @@ interface IState {
     isLogout: boolean
 }
 
-const initialState: IState = { isLogout: false }
-
 class LoginStatus extends React.PureComponent<AuthenticatedState, IState>{
     constructor(props: AuthenticatedState) {
         super(props);
