@@ -20,6 +20,12 @@ export default function (state = initialState,action:any) {
                 loading: false,
                 ...action.payload
             }
-        default:
+            case LOADING_USER:
+                return {
+                ...state,
+                loading: true
+                };
+                default:
+                return state;
     }
 }
