@@ -9,7 +9,8 @@ interface MyRouteProps extends RouteProps {
     rest?:any
 }
 
-const PrivateRoute: React.SFC<MyRouteProps> = ({component:Component, authenticated, ...rest}:any)  =>(
+const PrivateRoute: React.SFC<MyRouteProps> = ({ component: Component, authenticated, ...rest }: any) => (
+    
     <Route
         {...rest}
         render = {(props) => authenticated ? <Component {...props} />: <Redirect to = '/login' />}
