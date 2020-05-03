@@ -4,6 +4,7 @@ import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { ApplicationState } from '../store';
 import * as WeatherForecastsStore from '../store/WeatherForecasts';
+import Main from './Main';
 
 // At runtime, Redux will merge together...
 type WeatherForecastProps =
@@ -25,12 +26,12 @@ class FetchData extends React.PureComponent<WeatherForecastProps> {
 
   public render() {
     return (
-      <React.Fragment>
+      <Main>
         <h1 id="tabelLabel">Weather forecast</h1>
         <p>This component demonstrates fetching data from the server and working with URL parameters.</p>
         {this.renderForecastsTable()}
         {this.renderPagination()}
-      </React.Fragment>
+      </Main>
     );
   }
 

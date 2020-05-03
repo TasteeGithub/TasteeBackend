@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { ApplicationState } from '../store';
 import * as CounterStore from '../store/Counter';
+import Main from './Main';
 
 type CounterProps =
     CounterStore.CounterState &
@@ -13,6 +14,7 @@ class Counter extends React.PureComponent<CounterProps> {
     public render() {
         return (
             <React.Fragment>
+                <Main>
                 <h1>Counter</h1>
 
                 <p>This is a simple example of a React component.</p>
@@ -22,8 +24,9 @@ class Counter extends React.PureComponent<CounterProps> {
                 <button type="button"
                     className="btn btn-primary btn-lg"
                     onClick={() => { this.props.increment(); }}>
-                    Increment
+                        Increment
                 </button>
+                    </Main>
             </React.Fragment>
         );
     }

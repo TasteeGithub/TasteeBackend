@@ -1,9 +1,11 @@
 import React from 'react';
 import LoginStatus from './Authentication/LoginStatus';
+import NavMenu from './NavMenu';
 
 const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) => {
     return (
         <>
+            
             <header className="header-top" header-theme="light">
                 <div className="container-fluid">
                     <div className="d-flex justify-content-between">
@@ -83,7 +85,7 @@ const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) =>
             <div className="page-wrap">
                 <div className="app-sidebar colored">
                     <div className="sidebar-header">
-                        <a className="header-brand" href="index.html">
+                        <a className="header-brand" href="/">
                             <div className="logo-img">
                                 <img src="src/img/brand-white.svg" className="header-brand-img" alt="lavalite" />
                             </div>
@@ -98,7 +100,7 @@ const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) =>
                             <nav id="main-menu-navigation" className="navigation-main">
                                 <div className="nav-lavel">Navigation</div>
                                 <div className="nav-item active">
-                                    <a href="index.html"><i className="ik ik-bar-chart-2"></i><span>Dashboard</span></a>
+                                    <a href="/"><i className="ik ik-bar-chart-2"></i><span>Dashboard</span></a>
                                 </div>
                                 <div className="nav-item">
                                     <a href="pages/navbar.html"><i className="ik ik-menu"></i><span>Navigation</span> <span className="badge badge-success">New</span></a>
@@ -234,6 +236,7 @@ const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) =>
                 </div>
                 <div className="main-content">
                     <div className="container-fluid">
+                        <NavMenu />
                         {props.children}
                     </div>
                 </div>
