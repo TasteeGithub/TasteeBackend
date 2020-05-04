@@ -16,7 +16,7 @@ export const CheckAuthentication = {
                 localStorage.setItem('token', `Bearer ${response.data.token}`);//setting token to local storage
                 axios.defaults.headers.common['Authorization'] = token;//setting authorize token to header in axios
 
-                this.isAuthenticated = false;
+                this.isAuthenticated = true;
                 setTimeout(cb, 1); //Fake Asynch
                 console.log(response.data.token);
             }

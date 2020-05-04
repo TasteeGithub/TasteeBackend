@@ -54,7 +54,7 @@ const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) =>
                                             </span>
                                         </a>
                                     </div>
-                                    <div className="footer"><a href="javascript:void(0);">See all activity</a></div>
+                                    <div className="footer"><a href="#" onClick={ev => ev.preventDefault()} >See all activity</a></div>
                                 </div>
                             </div>
                             <button type="button" className="nav-link ml-10 right-sidebar-toggle"><i className="ik ik-message-square"></i><span className="badge bg-success">3</span></button>
@@ -106,7 +106,7 @@ const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) =>
                                     <a href="pages/navbar.html"><i className="ik ik-menu"></i><span>Navigation</span> <span className="badge badge-success">New</span></a>
                                 </div>
                                 <div className="nav-item has-sub">
-                                    <a href="javascript:void(0)"><i className="ik ik-layers"></i><span>Widgets</span> <span className="badge badge-danger">150+</span></a>
+                                    <a href="#" onClick={ev => ev.preventDefault()}><i className="ik ik-layers"></i><span>Widgets</span> <span className="badge badge-danger">150+</span></a>
                                     <div className="submenu-content">
                                         <a href="pages/widgets.html" className="menu-item">Basic</a>
                                         <a href="pages/widget-statistic.html" className="menu-item">Statistic</a>
@@ -205,30 +205,30 @@ const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) =>
                                 </div>
                                 <div className="nav-lavel">Other</div>
                                 <div className="nav-item has-sub">
-                                    <a href="javascript:void(0)"><i className="ik ik-list"></i><span>Menu Levels</span></a>
+                                    <a href="#" onClick={ev => ev.preventDefault()}><i className="ik ik-list"></i><span>Menu Levels</span></a>
                                     <div className="submenu-content">
-                                        <a href="javascript:void(0)" className="menu-item">Menu Level 2.1</a>
+                                        <a href="#" onClick={ev => ev.preventDefault()} className="menu-item">Menu Level 2.1</a>
                                         <div className="nav-item has-sub">
-                                            <a href="javascript:void(0)" className="menu-item">Menu Level 2.2</a>
+                                            <a href="#" onClick={ev => ev.preventDefault()} className="menu-item">Menu Level 2.2</a>
                                             <div className="submenu-content">
-                                                <a href="javascript:void(0)" className="menu-item">Menu Level 3.1</a>
+                                                <a href="#" onClick={ev => ev.preventDefault()} className="menu-item">Menu Level 3.1</a>
                                             </div>
                                         </div>
-                                        <a href="javascript:void(0)" className="menu-item">Menu Level 2.3</a>
+                                        <a href="#" onClick={ev => ev.preventDefault()} className="menu-item">Menu Level 2.3</a>
                                     </div>
                                 </div>
                                 <div className="nav-item">
-                                    <a href="javascript:void(0)" className="disabled"><i className="ik ik-slash"></i><span>Disabled Menu</span></a>
+                                    <a href="#" onClick={ev => ev.preventDefault()} className="disabled"><i className="ik ik-slash"></i><span>Disabled Menu</span></a>
                                 </div>
                                 <div className="nav-item">
-                                    <a href="javascript:void(0)"><i className="ik ik-award"></i><span>Sample Page</span></a>
+                                    <a href="#" onClick={ev => ev.preventDefault()}><i className="ik ik-award"></i><span>Sample Page</span></a>
                                 </div>
                                 <div className="nav-lavel">Support</div>
                                 <div className="nav-item">
-                                    <a href="javascript:void(0)"><i className="ik ik-monitor"></i><span>Documentation</span></a>
+                                    <a href="#" onClick={ev => ev.preventDefault()}><i className="ik ik-monitor"></i><span>Documentation</span></a>
                                 </div>
                                 <div className="nav-item">
-                                    <a href="javascript:void(0)"><i className="ik ik-help-circle"></i><span>Submit Issue</span></a>
+                                    <a href="#" onClick={ev => ev.preventDefault()}><i className="ik ik-help-circle"></i><span>Submit Issue</span></a>
                                 </div>
                             </nav>
                         </div>
@@ -254,37 +254,37 @@ const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) =>
                         </div>
                         <div className="chat-list">
                             <div className="list-group row">
-                                <a href="javascript:void(0)" className="list-group-item" data-chat-user="Gene Newman">
+                                <a href="#" onClick={ev => ev.preventDefault()} className="list-group-item" data-chat-user="Gene Newman">
                                     <figure className="user--online">
                                         <img src="img/users/1.jpg" className="rounded-circle" alt="" />
                                     </figure><span><span className="name">Gene Newman</span>  <span className="username">@gene_newman</span> </span>
                                 </a>
-                                <a href="javascript:void(0)" className="list-group-item" data-chat-user="Billy Black">
+                                <a href="#" onClick={ev => ev.preventDefault()} className="list-group-item" data-chat-user="Billy Black">
                                     <figure className="user--online">
                                         <img src="img/users/2.jpg" className="rounded-circle" alt="" />
                                     </figure><span><span className="name">Billy Black</span>  <span className="username">@billyblack</span> </span>
                                 </a>
-                                <a href="javascript:void(0)" className="list-group-item" data-chat-user="Herbert Diaz">
+                                <a href="#" onClick={ev => ev.preventDefault()} className="list-group-item" data-chat-user="Herbert Diaz">
                                     <figure className="user--online">
                                         <img src="img/users/3.jpg" className="rounded-circle" alt="" />
                                     </figure><span><span className="name">Herbert Diaz</span>  <span className="username">@herbert</span> </span>
                                 </a>
-                                <a href="javascript:void(0)" className="list-group-item" data-chat-user="Sylvia Harvey">
+                                <a href="#" onClick={ev => ev.preventDefault()} className="list-group-item" data-chat-user="Sylvia Harvey">
                                     <figure className="user--busy">
                                         <img src="img/users/4.jpg" className="rounded-circle" alt="" />
                                     </figure><span><span className="name">Sylvia Harvey</span>  <span className="username">@sylvia</span> </span>
                                 </a>
-                                <a href="javascript:void(0)" className="list-group-item active" data-chat-user="Marsha Hoffman">
+                                <a href="#" onClick={ev => ev.preventDefault()} className="list-group-item active" data-chat-user="Marsha Hoffman">
                                     <figure className="user--busy">
                                         <img src="img/users/5.jpg" className="rounded-circle" alt="" />
                                     </figure><span><span className="name">Marsha Hoffman</span>  <span className="username">@m_hoffman</span> </span>
                                 </a>
-                                <a href="javascript:void(0)" className="list-group-item" data-chat-user="Mason Grant">
+                                <a href="#" onClick={ev => ev.preventDefault()} className="list-group-item" data-chat-user="Mason Grant">
                                     <figure className="user--offline">
                                         <img src="img/users/1.jpg" className="rounded-circle" alt="" />
                                     </figure><span><span className="name">Mason Grant</span>  <span className="username">@masongrant</span> </span>
                                 </a>
-                                <a href="javascript:void(0)" className="list-group-item" data-chat-user="Shelly Sullivan">
+                                <a href="#" onClick={ev => ev.preventDefault()} className="list-group-item" data-chat-user="Shelly Sullivan">
                                     <figure className="user--offline">
                                         <img src="img/users/2.jpg" className="rounded-circle" alt="" />
                                     </figure><span><span className="name">Shelly Sullivan</span>  <span className="username">@shelly</span></span>
@@ -297,7 +297,7 @@ const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) =>
                 <div className="chat-panel" hidden>
                     <div className="card">
                         <div className="card-header d-flex justify-content-between">
-                            <a href="javascript:void(0);"><i className="ik ik-message-square text-success"></i></a>
+                            <a href="#" onClick={ev => ev.preventDefault()}><i className="ik ik-message-square text-success"></i></a>
                             <span className="user-name">John Doe</span>
                             <button type="button" className="close" aria-label="Close"><span aria-hidden="true">×</span></button>
                         </div>
@@ -368,7 +368,7 @@ const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) =>
                                 </div>
                             </div>
                         </div>
-                        <form action="javascript:void(0)" className="card-footer" method="post">
+                        <form className="card-footer" method="post">
                             <div className="d-flex justify-content-end">
                                 <textarea className="border-0 flex-1" rows={1} placeholder="Type your message here"></textarea>
                                 <button className="btn btn-icon" type="submit"><i className="ik ik-arrow-right text-success"></i></button>

@@ -113,6 +113,7 @@ namespace TTFrontEnd.Controllers
             //if (verifyResult == PasswordVerificationResult.Failed) return Ok(new LoginResult { Successful = false, Error = "Username and password are invalid." });
             
             ////Cheat to test
+            if(login.Email != "thunm@sendo.vn" ) return Ok(new LoginResult { Successful = false, Error = "Username and password are invalid." });
             var user = new Users() { Email = "thunm@sendo.vn", CreatedDate = DateTime.Now, FullName = "Nguyen Minh Thu", Id = "10445" };
             ////Cheat to test
             
