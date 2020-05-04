@@ -2,34 +2,44 @@ import axios from 'axios';
 
 export const CheckAuthentication = {
     isAuthenticated: false,
-    authenError:"",
-    Authenticate(cb: (...args: any[]) => void) {
+    authenError: "",
+    Login(cb: (...args: any[]) => void,loginInfo:any) {
         axios.post("/api/Accounts/Login", {
-            email: "thunm@sendo.vn",
-            password: "123123",
-            rememberme: false,
-            returnurl: "http://abc.com"
+            email: loginInfo.email,
+            password: loginInfo.password
         }).then((response) => {
 
             if (response.data.successful) {
                 const token = `Bearer ${response.data.token}`;
                 localStorage.setItem('token', `Bearer ${response.data.token}`);//setting token to local storage
                 axios.defaults.headers.common['Authorization'] = token;//setting authorize token to header in axios
-
                 this.isAuthenticated = true;
-                setTimeout(cb, 1); //Fake Asynch
                 console.log(response.data.token);
+                setTimeout(cb, 100); //Fake Asynch
             }
             else {
                 this.authenError = response.data.error;
                 console.log(response.data.error);
+                setTimeout(cb, 100); //Fake Asynch
             }
         }).catch((e) => console.log(e));
+    },
+
+    IsSigning(): boolean {
+        this.isAuthenticated = localStorage.token != null;
+        return this.isAuthenticated;
+    },
+
+    Authenticate(cb: (...args: any[]) => void) {
+        this.isAuthenticated = true;
+        setTimeout(cb, 100); //Fake Asynch
     }
     ,
     Sigout(cb: (...args: any[]) => void) {
         this.isAuthenticated = false;
-        setTimeout(cb, 1); //fake asynch
+        localStorage.removeItem('token');
+        delete axios.defaults.headers.common['Authorization']
+        setTimeout(cb, 100); //fake asynch
             
     }
 }

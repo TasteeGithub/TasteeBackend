@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using LinqKit;
+using Mapster;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -11,8 +13,9 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using TTBackEnd.Shared;
+using TTFrontEnd.Models.DataContext;
 //using TTBackEndApi.Models.DataContext;
-using TTFrontEnd.Models.SqlDataContext;
+//using TTFrontEnd.Models.SqlDataContext;
 using TTFrontEnd.Services;
 using URF.Core.Abstractions;
 
@@ -24,9 +27,6 @@ namespace TTFrontEnd.Controllers
     [Route("api/[controller]")]
     public class AccountsController : ControllerBase
     {
-        //private static readonly UserModel LoggedOutUser = new UserModel { IsAuthenticated = false };
-
-        //private readonly UserManager<IdentityUser> _userManager;
         private readonly ITTService<Users> _serviceUsers;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AccountsController> _logger;
@@ -52,9 +52,6 @@ namespace TTFrontEnd.Controllers
             _serviceUserRole = serviceUserRole;
         }
 
-        [HttpGet]
-        public string Get() => "OK";
-
         // POST api/<controller>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]RegisterModel model)
@@ -64,7 +61,7 @@ namespace TTFrontEnd.Controllers
                 return Conflict();
             }
 
-            var passwordHasher = new Microsoft.AspNetCore.Identity.PasswordHasher<RegisterModel>();
+            var passwordHasher = new PasswordHasher<RegisterModel>();
             var passwordHash = passwordHasher.HashPassword(model, model.Password);
 
             Users newUsers = new Users()
@@ -73,7 +70,7 @@ namespace TTFrontEnd.Controllers
                 Email = model.Email,
                 Id = Guid.NewGuid().ToString(),
                 PasswordHash = passwordHash,
-                FullName = model.FullName
+                FullName = model.FullName,
             };
 
             _serviceUsers.Insert(newUsers);
@@ -100,32 +97,27 @@ namespace TTFrontEnd.Controllers
         [Route("Login")]
         public IActionResult Login([FromBody] LoginModel login)
         {
-            var passwordHasher = new Microsoft.AspNetCore.Identity.PasswordHasher<LoginModel>();
-            ////var passwordHash = passwordHasher.HashPassword(login, login.Password);
+            var passwordHasher = new PasswordHasher<LoginModel>();
+            //var passwordHash = passwordHasher.HashPassword(login, login.Password);
 
-            // var user = _serviceUsers.Queryable().Where(x => x.Email == login.Email).FirstOrDefault();
+            var user = _serviceUsers.Queryable().Where(x => x.Email == login.Email).FirstOrDefault();
+            if (user == null) return Ok(new LoginResult { Successful = false, Error = "Username and password are invalid." });
+            user.LastLogin = DateTime.Now;
+            _serviceUsers.Update(user);
+            _unitOfWork.SaveChangesAsync();
 
-            //if (user == null ||
-            //    passwordHasher.VerifyHashedPassword(login, user.PasswordHash, login.Password) == PasswordVerificationResult.Failed
-            //    ) return Ok(new LoginResult { Successful = false, Error = "Username and password are invalid." });
+            var verifyResult = passwordHasher.VerifyHashedPassword(login, user.PasswordHash, login.Password);
+            if (verifyResult == PasswordVerificationResult.Failed) return Ok(new LoginResult { Successful = false, Error = "Username and password are invalid." });
 
-            //var verifyResult = passwordHasher.VerifyHashedPassword(login, user.PasswordHash, login.Password);
-            //if (verifyResult == PasswordVerificationResult.Failed) return Ok(new LoginResult { Successful = false, Error = "Username and password are invalid." });
-            
-            ////Cheat to test
-            if(login.Email != "thunm@sendo.vn" ) return Ok(new LoginResult { Successful = false, Error = "Username and password are invalid." });
-            var user = new Users() { Email = "thunm@sendo.vn", CreatedDate = DateTime.Now, FullName = "Nguyen Minh Thu", Id = "10445" };
-            ////Cheat to test
-            
             var claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.Name, user.FullName));
             claims.Add(new Claim(ClaimTypes.Email, login.Email));
 
-            //var roleIdList = _serviceUserRole.Queryable().Where(x => x.UserId == user.Id).ToList();
-            //foreach (var item in roleIdList)
-            //{
-            //    claims.Add(new Claim(ClaimTypes.Role, _serviceRoles.Queryable().Where(x => x.Id == item.RoleId).FirstOrDefault().Name));
-            //}
+            var roleIdList = _serviceUserRole.Queryable().Where(x => x.UserId == user.Id).ToList();
+            foreach (var item in roleIdList)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, _serviceRoles.Queryable().Where(x => x.Id == item.RoleId).FirstOrDefault().Name));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -140,7 +132,70 @@ namespace TTFrontEnd.Controllers
             );
 
             return Ok(new LoginResult { Successful = true, Token = new JwtSecurityTokenHandler().WriteToken(token) });
-
         }
+
+        // GET: api/ManageUser
+        [HttpGet]
+        [Route("GetAccounts")]
+        public async Task<PaggingModel<Users>> Get(
+            //string userName
+            //, string email
+            //, string phone, int? status
+            //, DateTime? fdate
+            //, DateTime? tdate
+            //, 
+
+            int pageSize, int? pageIndex
+            )
+        {
+            ExpressionStarter<Users> searCondition = PredicateBuilder.New<Users>(true);
+
+            //if (userName != null && userName.Length > 0)
+            //{
+            //    searCondition = searCondition.And(x => x.FullName.ToLower().Contains(userName.ToLower()));
+            //}
+            //if (email != null && email.Length > 0)
+            //{
+            //    searCondition = searCondition.And(x => x.Email.ToLower().Contains(email.ToLower()));
+            //}
+
+            //if (phone != null && phone.Length > 0)
+            //{
+            //    searCondition = searCondition.And(x => x.Phone.Contains(phone));
+            //}
+            //if (status != null && status > 0)
+            //{
+            //    searCondition = searCondition.And(x => x.Status == status);
+            //}
+            //if (fdate != null && tdate != null)
+            //{
+            //    searCondition = searCondition.And(x => x.DateCreated >= fdate && x.DateCreated <= tdate);
+            //}
+
+            //var listUser = _serviceUsers.QueryableSql($"SELECT * FROM (SELECT [RANK] = ROW_NUMBER() OVER (ORDER BY Id),* FROM Users) A WHERE A.[RANK] BETWEEN {pageIndex} AND {pageSize}");
+
+            var listUser = _serviceUsers.Queryable().Where(searCondition).OrderByDescending(x => x.CreatedDate);
+
+            pageSize = pageSize == 0 ? Constants.DEFAULT_PAGE_SIZE : pageSize;
+            var pagedListUser = await PaginatedList<Users>.CreateAsync(listUser, pageIndex ?? 1, pageSize);
+            //var pagedListUser = await PaginatedList<Users>.CreateAsync(listUser,pageSize);
+            PaggingModel<Users> returnResult = new PaggingModel<Users>()
+            {
+                ListData = pagedListUser.Adapt<List<Users>>(),
+                TotalRows = pagedListUser.TotalRows,
+            };
+
+            return returnResult;
+        }
+
+
+        //[HttpGet]
+        //[Route("GetAccounts")]
+        //public IActionResult GetAccounts(
+
+        //    )
+        //{
+
+        //}
     }
 }
