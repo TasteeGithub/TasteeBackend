@@ -34,7 +34,7 @@ class Login extends React.Component<RouteComponentProps<{}, StaticContext, Locat
 
     handleLoginIn = () => {
         if (this.loginInfo.email.length > 0 && this.loginInfo.password.length > 0) {
-            if (this.loginInfo.email === "t@v" && this.loginInfo.password === "1") {
+            
                 //localStorage.setItem("email",email);
                 //localStorage.setItem("isAuthen","true");
                 //props.setAuthen(
@@ -44,17 +44,11 @@ class Login extends React.Component<RouteComponentProps<{}, StaticContext, Locat
 
                 CheckAuthentication.Authenticate(() => {
                     this.setState(() => ({
-                        redirectToReferrer: true,
-                        errors: ""
+                        redirectToReferrer: CheckAuthentication.isAuthenticated,
+                        errors: CheckAuthentication.authenError
                     }))
                 });
-            }
-            else {
-                this.setState(() => ({
-                    redirectToReferrer: false,
-                    errors: "Email or password is invalid"
-                }));
-            }
+            
         }
     }
 

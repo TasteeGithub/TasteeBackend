@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import { ApplicationState } from '../store';
 import * as WeatherForecastsStore from '../store/WeatherForecasts';
 import Main from './Main';
@@ -15,8 +16,26 @@ type WeatherForecastProps =
 
 class FetchData extends React.PureComponent<WeatherForecastProps> {
   // This method is called when the component is first added to the document
-  public componentDidMount() {
-    this.ensureDataFetched();
+    public componentDidMount() {
+        this.ensureDataFetched();
+        axios.post("/api/Accounts/Login", {
+            email: "thunm@sendo.vn",
+            password: "123123",
+            rememberme: false,
+            returnurl: "http://abc.com"
+        }).then((respon) => {
+            alert(respon.data.successful);
+            if (respon.data.successful) {
+                alert(respon.data.token)
+            }
+            else {
+                alert(respon.data.error)
+            }
+        }).catch((e) => alert(e));
+        //fetch("/api/Accounts/").then(response => response.text() as Promise<string>)
+        //    .then(data => {
+        //        alert(data)
+        //    });   
   }
 
   // This method is called when the route parameters change

@@ -16,7 +16,7 @@ const LoginStatus1 = withRouter(({ history }) => (
 
     CheckAuthentication.isAuthenticated ? (
         <div className="dropdown">
-            <a className="dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img className="avatar" src="img/user.jpg" title={this.props.name} alt="" /></a>
+            <a className="dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img className="avatar" src="img/user.jpg" alt="" /></a>
             <div className="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                 <a className="dropdown-item" href="profile.html"><i className="ik ik-user dropdown-icon"></i> Profile</a>
                 <a className="dropdown-item" href="#"><i className="ik ik-settings dropdown-icon"></i> Settings</a>

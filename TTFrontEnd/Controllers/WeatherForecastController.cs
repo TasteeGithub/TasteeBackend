@@ -35,5 +35,12 @@ namespace TTFrontEnd.Controllers
             })
             .ToArray();
         }
+
+        [HttpGet]
+        [Route("test")]
+        public string Test()
+        {
+            return "lsdkflsdfk";
+        }
     }
 }
