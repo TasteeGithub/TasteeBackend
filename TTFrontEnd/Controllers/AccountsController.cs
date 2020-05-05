@@ -101,13 +101,13 @@ namespace TTFrontEnd.Controllers
             //var passwordHash = passwordHasher.HashPassword(login, login.Password);
 
             var user = _serviceUsers.Queryable().Where(x => x.Email == login.Email).FirstOrDefault();
-            if (user == null) return Ok(new LoginResult { Successful = false, Error = "Username and password are invalid." });
+            if (user == null) return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
             user.LastLogin = DateTime.Now;
             _serviceUsers.Update(user);
             _unitOfWork.SaveChangesAsync();
 
             var verifyResult = passwordHasher.VerifyHashedPassword(login, user.PasswordHash, login.Password);
-            if (verifyResult == PasswordVerificationResult.Failed) return Ok(new LoginResult { Successful = false, Error = "Username and password are invalid." });
+            if (verifyResult == PasswordVerificationResult.Failed) return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
 
             var claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.Name, user.FullName));

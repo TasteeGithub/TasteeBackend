@@ -16,13 +16,13 @@ namespace TTFrontEnd
         const string CONNECTION_STRING_NAME = "DbConnectString";
         public static IServiceCollection InsideConfigServices(this IServiceCollection services, IConfiguration Configuration)
         {
-            services.AddDbContext<SW_InsideContext>(options =>
+            services.AddDbContext<TTContext>(options =>
             options.UseNpgsql(Configuration.GetSection(CONNECTION_STRING_NAME).Value));
 
             //services.AddDbContext<TTContext>(options =>
             //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddScoped<DbContext, SW_InsideContext>();
+            services.AddScoped<DbContext, TTContext>();
             //services.AddScoped<DbContext, TTContext>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();

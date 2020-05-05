@@ -3,26 +3,24 @@ import axios from 'axios';
 export const CheckAuthentication = {
     isAuthenticated: false,
     authenError: "",
-    Login(cb: (...args: any[]) => void,loginInfo:any) {
-        axios.post("/api/Accounts/Login", {
+    async Login(loginInfo: any) {
+
+        let response = await axios.post("/api/Accounts/Login", {
             email: loginInfo.email,
             password: loginInfo.password
-        }).then((response) => {
+        });
 
-            if (response.data.successful) {
-                const token = `Bearer ${response.data.token}`;
-                localStorage.setItem('token', `Bearer ${response.data.token}`);//setting token to local storage
-                axios.defaults.headers.common['Authorization'] = token;//setting authorize token to header in axios
-                this.isAuthenticated = true;
-                console.log(response.data.token);
-                setTimeout(cb, 100); //Fake Asynch
-            }
-            else {
-                this.authenError = response.data.error;
-                console.log(response.data.error);
-                setTimeout(cb, 100); //Fake Asynch
-            }
-        }).catch((e) => console.log(e));
+        if (response.data.successful) {
+            const token = `Bearer ${response.data.token}`;
+            localStorage.setItem('token', `Bearer ${token}`);
+            axios.defaults.headers.common['Authorization'] = token;
+            this.isAuthenticated = true;
+            console.debug(token)
+        }
+        else {
+            this.authenError = response.data.error;
+            console.log(response.data.error);
+        }
     },
 
     IsSigning(): boolean {
@@ -32,14 +30,15 @@ export const CheckAuthentication = {
 
     Authenticate(cb: (...args: any[]) => void) {
         this.isAuthenticated = true;
-        setTimeout(cb, 100); //Fake Asynch
+        //setTimeout(cb, 100); //Fake Asynch
     }
     ,
     Sigout(cb: (...args: any[]) => void) {
-        this.isAuthenticated = false;
         localStorage.removeItem('token');
-        delete axios.defaults.headers.common['Authorization']
-        setTimeout(cb, 100); //fake asynch
-            
+        delete axios.defaults.headers.common['Authorization'];
+
+        this.isAuthenticated = false;
+        //setTimeout(cb, 100); //fake asynch
+        
     }
 }
