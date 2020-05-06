@@ -10,6 +10,7 @@ import { AuthenticatedState, actionCreator } from './store/Login';
 import { ApplicationState } from './store';
 import Main from './components/Main';
 import PrivateRoute from './utils/PrivateRoute';
+import Accounts from './components/AccountManager/Accounts';
 
 type AppProps = AuthenticatedState & typeof actionCreator;
 
@@ -19,7 +20,7 @@ const App: React.FunctionComponent<AppProps> = (props: AppProps) => {
             <Route exact path="/" component={Home} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/count" component={Counter} />
-            <Route exact path="/main" component={Main} />
+            <Route component={Accounts} path='/accounts/:startDateIndex?' />
             <PrivateRoute component={Counter} path='/counter' />
             <Route component={FetchData} path='/fetch-data/:startDateIndex?' />
         </Router>
