@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Redirect, withRouter } from 'react-router-dom';
+import { Link, Redirect} from 'react-router-dom';
 import { CheckAuthentication } from '../../utils/CheckAuthentication';
 
 const LoginStatus: React.FunctionComponent = () => {

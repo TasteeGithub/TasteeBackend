@@ -30,15 +30,11 @@ export const CheckAuthentication = {
 
     Authenticate(cb: (...args: any[]) => void) {
         this.isAuthenticated = true;
-        //setTimeout(cb, 100); //Fake Asynch
     }
     ,
     Sigout(cb: (...args: any[]) => void) {
         localStorage.removeItem('token');
         delete axios.defaults.headers.common['Authorization'];
-
         this.isAuthenticated = false;
-        //setTimeout(cb, 100); //fake asynch
-        
     }
 }
