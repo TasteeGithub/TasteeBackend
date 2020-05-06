@@ -4,7 +4,7 @@ import { CheckAuthentication } from '../../utils/CheckAuthentication';
 
 const LoginStatus: React.FunctionComponent = () => {
     const handleLogout = () => {
-        CheckAuthentication.Sigout(() => <Redirect to="/" />);
+        CheckAuthentication.Sigout();
     }
     if (CheckAuthentication.IsSigning()) {
         return (

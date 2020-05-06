@@ -2,17 +2,18 @@ import React from 'react';
 import { LocationState } from 'history';
 import { RouteComponentProps } from 'react-router-dom';
 import { StaticContext, Redirect } from 'react-router';
-import { CheckAuthentication } from '../../utils/CheckAuthentication';
+import { CheckAuthentication,LoginInfo } from '../../utils/CheckAuthentication';
 interface IState {
     isLogin: boolean,
-    error: string
+    error: string,
+    loading: boolean
 }
 class Login extends React.Component<RouteComponentProps<{}, StaticContext, LocationState>, IState> {
     constructor(props: Readonly<RouteComponentProps<{}, StaticContext, any>>) {
         super(props);
-        this.state = { isLogin: false,error:"" }
+        this.state = { isLogin: false,error:"", loading:false }
     }
-    loginInfo = {
+    loginInfo: LoginInfo = {
         email: "",
         password: ""
     };
@@ -31,8 +32,9 @@ class Login extends React.Component<RouteComponentProps<{}, StaticContext, Locat
 
     handleLoginIn = async () => {
         if (this.loginInfo.email.length > 0 && this.loginInfo.password.length > 0) {
+            this.setState({...this.state, loading: true });
             await CheckAuthentication.Login(this.loginInfo);
-            this.setState({ isLogin: CheckAuthentication.IsSigning(),error:CheckAuthentication.authenError });
+            this.setState({ isLogin: CheckAuthentication.IsSigning(),error:CheckAuthentication.authenError,loading:false });
         }
     }
 
@@ -82,6 +84,16 @@ class Login extends React.Component<RouteComponentProps<{}, StaticContext, Locat
                                         {this.state.error.length > 0 && <div className="alert alert-danger" role="alert">
                                             {this.state.error}
                                         </div>}
+                                        {this.state.loading && 
+                                            <div className="widget" style={{ boxShadow: "none" }}>
+                                                <div className="widget-body">
+                                                    <div className="overlay" style={{ backgroundColor: "white" }}>
+                                                        <i className="ik ik-refresh-cw loading"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
                                         <div className="sign-btn text-center">
                                             <button onClick={this.handleLoginIn} className="btn btn-theme">Sign In</button>
                                         </div>

@@ -95,7 +95,7 @@ namespace TTFrontEnd.Controllers
         // POST api/<controller>
         [HttpPost]
         [Route("Login")]
-        public IActionResult Login([FromBody] LoginModel login)
+        public IActionResult Login(LoginModel login)
         {
             var passwordHasher = new PasswordHasher<LoginModel>();
             //var passwordHash = passwordHasher.HashPassword(login, login.Password);
@@ -121,7 +121,7 @@ namespace TTFrontEnd.Controllers
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expiry = DateTime.Now.AddMinutes(Convert.ToInt32(_configuration["Jwt:ExpiryInDays"]));
+            var expiry = DateTime.Now.AddDays(Convert.ToInt32(_configuration["Jwt:ExpiryInDays"]));
 
             var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
