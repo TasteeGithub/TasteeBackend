@@ -83,7 +83,17 @@ class Accounts extends React.PureComponent<WeatherForecastProps> {
                                             <div className="col-sm-12">
                                                 <table id="simpletable" className="table table-striped table-bordered nowrap dataTable" role="grid" aria-describedby="simpletable_info">
                                                     <thead>
-                                                        <tr role="row"><th className="sorting_asc" tabIndex={0} aria-controls="simpletable" rowSpan={1} colSpan={1} aria-label="Name: activate to sort column descending" aria-sort="ascending" style={{ width: '270px' }}>Name</th><th className="sorting" tabIndex={0} aria-controls="simpletable" rowSpan={1} colSpan={1} aria-label="Position: activate to sort column ascending" style={{ width: '394px' }}>Position</th><th className="sorting" tabIndex={0} aria-controls="simpletable" rowSpan={1} colSpan={1} aria-label="Office: activate to sort column ascending" style={{ width: '202px' }}>Office</th><th className="sorting" tabIndex={0} aria-controls="simpletable" rowSpan={1} colSpan={1} aria-label="Age: activate to sort column ascending" style={{ width: '120px' }}>Age</th><th className="sorting" tabIndex={0} aria-controls="simpletable" rowSpan={1} colSpan={1} aria-label="Start date: activate to sort column ascending" style={{ width: '207px' }}>Start date</th><th className="sorting" tabIndex={0} aria-controls="simpletable" rowSpan={1} colSpan={1} aria-label="Salary: activate to sort column ascending" style={{ width: '151px' }}>Salary</th></tr>
+                                                        <tr role="row">
+                                                            <th className="sorting_asc" tabIndex={0} aria-controls="simpletable"
+                                                            rowSpan={1} colSpan={1} aria-label="Name: activate to sort column descending"
+                                                                aria-sort="ascending" style={{ width: '270px' }}>Name
+                                                            </th>
+                                                            <th className="sorting" tabIndex={0} aria-controls="simpletable" rowSpan={1} colSpan={1} aria-label="Position: activate to sort column ascending" style={{ width: '394px' }}>Position</th>
+                                                            <th className="sorting" tabIndex={0} aria-controls="simpletable" rowSpan={1} colSpan={1} aria-label="Office: activate to sort column ascending" style={{ width: '202px' }}>Office</th>
+                                                            <th className="sorting" tabIndex={0} aria-controls="simpletable" rowSpan={1} colSpan={1} aria-label="Age: activate to sort column ascending" style={{ width: '120px' }}>Age</th>
+                                                            <th className="sorting" tabIndex={0} aria-controls="simpletable" rowSpan={1} colSpan={1} aria-label="Start date: activate to sort column ascending" style={{ width: '207px' }}>Start date</th>
+                                                            <th className="sorting" tabIndex={0} aria-controls="simpletable" rowSpan={1} colSpan={1} aria-label="Salary: activate to sort column ascending" style={{ width: '151px' }}>Salary</th>
+                                                        </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr role="row" className="odd">
