@@ -1,461 +1,82 @@
-import * as React from 'react';
-import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
-import { Link } from 'react-router-dom';
-import { ApplicationState } from '../../store';
-import * as WeatherForecastsStore from '../../store/WeatherForecasts';
-import Main from '../Main';
+﻿
+import React, { Component } from 'react';
+//import { $ } from 'jquery';
+const $ = require('jquery')
+$.DataTable = require('datatables.net')
+export default class Accounts extends Component {
+    el: any;
+    componentDidMount() {
+        console.log(this.el);
 
-// At runtime, Redux will merge together...
-type WeatherForecastProps =
-    WeatherForecastsStore.WeatherForecastsState // ... state we've requested from the Redux store
-    & typeof WeatherForecastsStore.actionCreators // ... plus action creators we've requested
-    & RouteComponentProps<{ startDateIndex: string }>; // ... plus incoming routing parameters
+        const dataSet = [
+            ["Tiger Nixon", "System Architect", "Edinburgh", "5421", "2011/04/25", "$320,800"],
+            ["Garrett Winters", "Accountant", "Tokyo", "8422", "2011/07/25", "$170,750"],
+            ["Ashton Cox", "Junior Technical Author", "San Francisco", "1562", "2009/01/12", "$86,000"],
+            ["Cedric Kelly", "Senior Javascript Developer", "Edinburgh", "6224", "2012/03/29", "$433,060"],
+            ["Airi Satou", "Accountant", "Tokyo", "5407", "2008/11/28", "$162,700"],
+            ["Brielle Williamson", "Integration Specialist", "New York", "4804", "2012/12/02", "$372,000"],
+            ["Herrod Chandler", "Sales Assistant", "San Francisco", "9608", "2012/08/06", "$137,500"],
+            ["Rhona Davidson", "Integration Specialist", "Tokyo", "6200", "2010/10/14", "$327,900"],
+            ["Colleen Hurst", "Javascript Developer", "San Francisco", "2360", "2009/09/15", "$205,500"],
+            ["Sonya Frost", "Software Engineer", "Edinburgh", "1667", "2008/12/13", "$103,600"],
+            ["Jena Gaines", "Office Manager", "London", "3814", "2008/12/19", "$90,560"],
+            ["Quinn Flynn", "Support Lead", "Edinburgh", "9497", "2013/03/03", "$342,000"],
+            ["Charde Marshall", "Regional Director", "San Francisco", "6741", "2008/10/16", "$470,600"],
+            ["Haley Kennedy", "Senior Marketing Designer", "London", "3597", "2012/12/18", "$313,500"],
+            ["Tatyana Fitzpatrick", "Regional Director", "London", "1965", "2010/03/17", "$385,750"],
+            ["Michael Silva", "Marketing Designer", "London", "1581", "2012/11/27", "$198,500"],
+            ["Paul Byrd", "Chief Financial Officer (CFO)", "New York", "3059", "2010/06/09", "$725,000"],
+            ["Gloria Little", "Systems Administrator", "New York", "1721", "2009/04/10", "$237,500"],
+            ["Bradley Greer", "Software Engineer", "London", "2558", "2012/10/13", "$132,000"],
+            ["Dai Rios", "Personnel Lead", "Edinburgh", "2290", "2012/09/26", "$217,500"],
+            ["Jenette Caldwell", "Development Lead", "New York", "1937", "2011/09/03", "$345,000"],
+            ["Yuri Berry", "Chief Marketing Officer (CMO)", "New York", "6154", "2009/06/25", "$675,000"],
+            ["Caesar Vance", "Pre-Sales Support", "New York", "8330", "2011/12/12", "$106,450"],
+            ["Doris Wilder", "Sales Assistant", "Sydney", "3023", "2010/09/20", "$85,600"],
+            ["Angelica Ramos", "Chief Executive Officer (CEO)", "London", "5797", "2009/10/09", "$1,200,000"],
+            ["Gavin Joyce", "Developer", "Edinburgh", "8822", "2010/12/22", "$92,575"],
+            ["Jennifer Chang", "Regional Director", "Singapore", "9239", "2010/11/14", "$357,650"],
+            ["Brenden Wagner", "Software Engineer", "San Francisco", "1314", "2011/06/07", "$206,850"],
+            ["Fiona Green", "Chief Operating Officer (COO)", "San Francisco", "2947", "2010/03/11", "$850,000"],
+            ["Shou Itou", "Regional Marketing", "Tokyo", "8899", "2011/08/14", "$163,000"],
+            ["Michelle House", "Integration Specialist", "Sydney", "2769", "2011/06/02", "$95,400"],
+            ["Suki Burks", "Developer", "London", "6832", "2009/10/22", "$114,500"],
+            ["Prescott Bartlett", "Technical Author", "London", "3606", "2011/05/07", "$145,000"],
+            ["Gavin Cortez", "Team Leader", "San Francisco", "2860", "2008/10/26", "$235,500"],
+            ["Martena Mccray", "Post-Sales support", "Edinburgh", "8240", "2011/03/09", "$324,050"],
+            ["Unity Butler", "Marketing Designer", "San Francisco", "5384", "2009/12/09", "$85,675"]
+        ];
 
-class Accounts extends React.PureComponent<WeatherForecastProps> {
-    // This method is called when the component is first added to the document
-    public componentDidMount() {
-        this.ensureDataFetched();
+        $(this.el).DataTable({
+            "dom": '<"top"i>rt<"bottom"flp><"clear">',
+            data: dataSet,
+            columns: [
+                { title: "Name" },
+                { title: "Position" },
+                { title: "Office" },
+                { title: "Extn." },
+                { title: "Start date" },
+                { title: "Salary" }
+            ],
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "language": {
+                "lengthMenu": "Hiển thị _MENU_ dòng trong một trang",
+                "zeroRecords": "Xin lỗi không có thông tin",
+                "info": "Hiển thị _PAGE_ of _PAGES_",
+                "infoEmpty": "Không có dữ liệu",
+                "infoFiltered": "(filtered from _MAX_ total records)"
+            }
+        });
+    }
+    componentWillUnmount() {
+        $(this.el).DataTable.destroy(true);
     }
 
-    // This method is called when the route parameters change
-    public componentDidUpdate() {
-        this.ensureDataFetched();
-    }
-
-    public render() {
-        return (
-            <Main>
-                <h1 id="tabelLabel">Weather forecast</h1>
-                <p>This component demonstrates fetching data from the server and working with URL parameters.</p>
-                {this.renderForecastsTable()}
-                {this.renderPagination()}
-            </Main>
-        );
-    }
-
-    private ensureDataFetched() {
-        const startDateIndex = parseInt(this.props.match.params.startDateIndex, 10) || 0;
-        this.props.requestWeatherForecasts(startDateIndex);
-    }
-
-    private renderForecastsTable() {
-        return (
-
-            <div className="container-fluid">
-                <div className="page-header">
-                    <div className="row align-items-end">
-                        <div className="col-lg-8">
-                            <div className="page-header-title">
-                                <i className="ik ik-inbox bg-blue" />
-                                <div className="d-inline">
-                                    <h5>Data Table</h5>
-                                    <span>lorem ipsum dolor sit amet, consectetur adipisicing elit</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-4">
-                            <nav className="breadcrumb-container" aria-label="breadcrumb">
-                                <ol className="breadcrumb">
-                                    <li className="breadcrumb-item">
-                                        <a href="../index.html"><i className="ik ik-home" /></a>
-                                    </li>
-                                    <li className="breadcrumb-item">
-                                        <a href="#">Tables</a>
-                                    </li>
-                                    <li className="breadcrumb-item active" aria-current="page">Data Table</li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="row">
-                    <div className="col-sm-12">
-                        <div className="card">
-                            <div className="card-header d-block">
-                                <h3>Zero Configuration</h3>
-                            </div>
-                            <div className="card-body">
-                                <div className="dt-responsive">
-                                    <div id="simpletable_wrapper" className="dataTables_wrapper dt-bootstrap4">
-                                        <div className="row">
-                                            <div className="col-sm-12">
-                                                <table id="simpletable" className="table table-striped table-bordered nowrap dataTable" role="grid" aria-describedby="simpletable_info">
-                                                    <thead>
-                                                        <tr role="row">
-                                                            <th className="sorting_asc" tabIndex={0} aria-controls="simpletable"
-                                                            rowSpan={1} colSpan={1} aria-label="Name: activate to sort column descending"
-                                                                aria-sort="ascending" style={{ width: '270px' }}>Name
-                                                            </th>
-                                                            <th className="sorting" tabIndex={0} aria-controls="simpletable" rowSpan={1} colSpan={1} aria-label="Position: activate to sort column ascending" style={{ width: '394px' }}>Position</th>
-                                                            <th className="sorting" tabIndex={0} aria-controls="simpletable" rowSpan={1} colSpan={1} aria-label="Office: activate to sort column ascending" style={{ width: '202px' }}>Office</th>
-                                                            <th className="sorting" tabIndex={0} aria-controls="simpletable" rowSpan={1} colSpan={1} aria-label="Age: activate to sort column ascending" style={{ width: '120px' }}>Age</th>
-                                                            <th className="sorting" tabIndex={0} aria-controls="simpletable" rowSpan={1} colSpan={1} aria-label="Start date: activate to sort column ascending" style={{ width: '207px' }}>Start date</th>
-                                                            <th className="sorting" tabIndex={0} aria-controls="simpletable" rowSpan={1} colSpan={1} aria-label="Salary: activate to sort column ascending" style={{ width: '151px' }}>Salary</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        <tr role="row" className="odd">
-                                                            <td className="sorting_1">Airi Satou</td>
-                                                            <td>Accountant</td>
-                                                            <td>Tokyo</td>
-                                                            <td>33</td>
-                                                            <td>2008/11/28</td>
-                                                            <td>$162,700</td>
-                                                        </tr>
-                                                        <tr role="row" className="even">
-                                                            <td className="sorting_1">Ashton Cox</td>
-                                                            <td>Junior Technical Author</td>
-                                                            <td>San Francisco</td>
-                                                            <td>66</td>
-                                                            <td>2009/01/12</td>
-                                                            <td>$86,000</td>
-                                                        </tr>
-                                                        
-                                                    </tbody>
-                                                    <tfoot>
-                                                        <tr>
-                                                            <th rowSpan={1} colSpan={1}>Name</th>
-                                                            <th rowSpan={1} colSpan={1}>Position</th>
-                                                            <th rowSpan={1} colSpan={1}>Office</th>
-                                                            <th rowSpan={1} colSpan={1}>Age</th>
-                                                            <th rowSpan={1} colSpan={1}>Start date</th>
-                                                            <th rowSpan={1} colSpan={1}>Salary</th>
-                                                        </tr>
-                                                    </tfoot>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    render() {
+        
+        return <div>
+            <table className="table table-striped table-bordered" style={{ width: "100%" }} ref={el => this.el = el}>
+                </table>
             </div>
-        );
-    }
-
-    private renderPagination() {
-        const prevStartDateIndex = (this.props.startDateIndex || 0) - 5;
-        const nextStartDateIndex = (this.props.startDateIndex || 0) + 5;
-
-        return (
-            <div className="d-flex justify-content-between">
-                <Link className='btn btn-outline-secondary btn-sm' to={`/accounts/${prevStartDateIndex}`}>Previous</Link>
-                {this.props.isLoading && <span>Loading...</span>}
-                <Link className='btn btn-outline-secondary btn-sm' to={`/accounts/${nextStartDateIndex}`}>Next</Link>
-            </div>
-        );
     }
 }
-
-export default connect(
-    (state: ApplicationState) => state.weatherForecasts, // Selects which state properties are merged into the component's props
-    WeatherForecastsStore.actionCreators // Selects which action creators are merged into the component's props
-)(Accounts as any);
