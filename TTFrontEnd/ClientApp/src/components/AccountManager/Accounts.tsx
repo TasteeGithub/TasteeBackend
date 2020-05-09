@@ -1,7 +1,8 @@
-﻿
+﻿import Main from '../Main';
 import React, { Component } from 'react';
 //import { $ } from 'jquery';
 const $ = require('jquery')
+require ('datatables.net-bs4');
 $.DataTable = require('datatables.net')
 export default class Accounts extends Component {
     el: any;
@@ -48,7 +49,7 @@ export default class Accounts extends Component {
         ];
 
         $(this.el).DataTable({
-            "dom": '<"top"i>rt<"bottom"flp><"clear">',
+            "dom": '<"top"if>rt<"bottom"lp><"clear">',
             data: dataSet,
             columns: [
                 { title: "Name" },
@@ -58,14 +59,7 @@ export default class Accounts extends Component {
                 { title: "Start date" },
                 { title: "Salary" }
             ],
-            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-            "language": {
-                "lengthMenu": "Hiển thị _MENU_ dòng trong một trang",
-                "zeroRecords": "Xin lỗi không có thông tin",
-                "info": "Hiển thị _PAGE_ of _PAGES_",
-                "infoEmpty": "Không có dữ liệu",
-                "infoFiltered": "(filtered from _MAX_ total records)"
-            }
+            "lengthMenu": [[10, 25, 50, -1], [ 10, 25, 50, "All"]]
         });
     }
     componentWillUnmount() {
@@ -74,9 +68,9 @@ export default class Accounts extends Component {
 
     render() {
         
-        return <div>
+        return <Main>
             <table className="table table-striped table-bordered" style={{ width: "100%" }} ref={el => this.el = el}>
                 </table>
-            </div>
+            </Main>
     }
 }
