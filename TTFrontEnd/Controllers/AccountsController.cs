@@ -14,10 +14,12 @@ using System.Text;
 using System.Threading.Tasks;
 using TTBackEnd.Shared;
 using TTFrontEnd.Models.DataContext;
+
 //using TTBackEndApi.Models.DataContext;
 //using TTFrontEnd.Models.SqlDataContext;
 using TTFrontEnd.Services;
 using URF.Core.Abstractions;
+using Constants = TTBackEnd.Shared.Constants;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -97,53 +99,65 @@ namespace TTFrontEnd.Controllers
         [Route("Login")]
         public IActionResult Login(LoginModel login)
         {
+            bool IsActionSuccess = false;
             var passwordHasher = new PasswordHasher<LoginModel>();
             //var passwordHash = passwordHasher.HashPassword(login, login.Password);
-
-            var user = _serviceUsers.Queryable().Where(x => x.Email == login.Email).FirstOrDefault();
-            if (user == null) return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
-            user.LastLogin = DateTime.Now;
-            _serviceUsers.Update(user);
-            _unitOfWork.SaveChangesAsync();
-
-            var verifyResult = passwordHasher.VerifyHashedPassword(login, user.PasswordHash, login.Password);
-            if (verifyResult == PasswordVerificationResult.Failed) return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
-
-            var claims = new List<Claim>();
-            claims.Add(new Claim(ClaimTypes.Name, user.FullName));
-            claims.Add(new Claim(ClaimTypes.Email, login.Email));
-
-            var roleIdList = _serviceUserRole.Queryable().Where(x => x.UserId == user.Id).ToList();
-            foreach (var item in roleIdList)
+            try
             {
-                claims.Add(new Claim(ClaimTypes.Role, _serviceRoles.Queryable().Where(x => x.Id == item.RoleId).FirstOrDefault().Name));
+                var user = _serviceUsers.Queryable().Where(x => x.Email == login.Email).FirstOrDefault();
+                if (user == null) return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
+                user.LastLogin = DateTime.Now;
+                _serviceUsers.Update(user);
+                _unitOfWork.SaveChangesAsync();
+
+                var verifyResult = passwordHasher.VerifyHashedPassword(login, user.PasswordHash, login.Password);
+                if (verifyResult == PasswordVerificationResult.Failed) return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
+
+                var claims = new List<Claim>();
+                claims.Add(new Claim(ClaimTypes.Name, user.FullName));
+                claims.Add(new Claim(ClaimTypes.Email, login.Email));
+
+                var roleIdList = _serviceUserRole.Queryable().Where(x => x.UserId == user.Id).ToList();
+                foreach (var item in roleIdList)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, _serviceRoles.Queryable().Where(x => x.Id == item.RoleId).FirstOrDefault().Name));
+                }
+
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var expiry = DateTime.Now.AddDays(Convert.ToInt32(_configuration["Jwt:ExpiryInDays"]));
+
+                var token = new JwtSecurityToken(
+                    _configuration["Jwt:Issuer"],
+                    _configuration["Jwt:Audience"],
+                    claims,
+                    expires: expiry,
+                    signingCredentials: creds
+                );
+                IsActionSuccess = true;
+                return Ok(new LoginResult { Successful = true, Token = new JwtSecurityTokenHandler().WriteToken(token) });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "User Login : {0}", login.Email);
+            }
+            finally
+            {
+                _logger.LogInformation("User Login : {0} , Result status: {1}", login.Email, IsActionSuccess ? "Successfull" : "Failed");
             }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expiry = DateTime.Now.AddDays(Convert.ToInt32(_configuration["Jwt:ExpiryInDays"]));
-
-            var token = new JwtSecurityToken(
-                _configuration["Jwt:Issuer"],
-                _configuration["Jwt:Audience"],
-                claims,
-                expires: expiry,
-                signingCredentials: creds
-            );
-
-            return Ok(new LoginResult { Successful = true, Token = new JwtSecurityTokenHandler().WriteToken(token) });
+            return Ok(new LoginResult { Successful = false, Error = "Login failed" });
         }
 
         // GET: api/ManageUser
         [HttpGet]
-        [Route("GetAccounts")]
         public async Task<PaggingModel<Users>> Get(
             //string userName
             //, string email
             //, string phone, int? status
             //, DateTime? fdate
             //, DateTime? tdate
-            //, 
+            //,
 
             int pageSize, int? pageIndex
             )
@@ -188,14 +202,64 @@ namespace TTFrontEnd.Controllers
             return returnResult;
         }
 
+        [HttpGet]
+        [Route("/{id}")]
+        public async Task<Users> GetAccountDetail(
+            string id
+            )
+        {
+            try
+            {
+                return await _serviceUsers.FindAsync(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Get account detail, accountid: {0}", id);
+            }
+            finally
+            {
+                _logger.LogInformation("Get account detail, accountId {0}", id);
+            }
+            return null;
+        }
 
-        //[HttpGet]
-        //[Route("GetAccounts")]
-        //public IActionResult GetAccounts(
+        [HttpPut]
+        public async Task<IActionResult> Put(Users model)
+        {
+            bool isActionSuccess = false;
+            try
+            {
+                if (model.Id != null && model.Id.Length > 0)
+                {
+                    var user = await _serviceUsers.FindAsync(model.Id);
+                    if (user != null)
+                    {
+                        _serviceUsers.Update(model);
+                        await _unitOfWork.SaveChangesAsync();
 
-        //    )
-        //{
+                        isActionSuccess = true;
+                        return Ok(new { Successful = true });
+                    }
+                    else
+                    {
+                        isActionSuccess = true;
+                        return Ok(new { Successful = false, Error = "User not found" });
+                    }
 
-        //}
+                }
+                isActionSuccess = true;
+                return Ok(new { Successful = false, Error = "Please input id" });
+                
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Update user, account: {0}", model);
+            }
+            finally
+            {
+                _logger.LogInformation("Update user, account: {0}, Result status: ", model, isActionSuccess);
+            }
+            return Ok(new { Successful = false, Error = "Has error when update" });
+        }
     }
 }

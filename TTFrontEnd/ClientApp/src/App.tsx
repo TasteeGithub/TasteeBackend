@@ -3,26 +3,32 @@ import Home from './components/Home';
 import Counter from './components/Counter';
 import FetchData from './components/FetchData';
 import { connect } from 'react-redux'
-import { BrowserRouter as Router, Route} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './custom.css'
 import Login from './components/Authentication/Login';
 import { AuthenticatedState, actionCreator } from './store/Login';
 import { ApplicationState } from './store';
-import Main from './components/Main';
+import MainLayout from './components/MainLayout';
 import PrivateRoute from './utils/PrivateRoute';
 import Accounts from './components/AccountManager/Accounts';
+import CreateAccount from './components/AccountManager/CreateAccount';
 
 type AppProps = AuthenticatedState & typeof actionCreator;
 
 const App: React.FunctionComponent<AppProps> = (props: AppProps) => {
     return (
         <Router>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/count" component={Counter} />
-            <Route component={Accounts} path='/accounts/:startDateIndex?' />
-            <PrivateRoute component={Counter} path='/counter' />
-            <Route component={FetchData} path='/fetch-data/:startDateIndex?' />
+            <Switch>
+                <Route path="/login" component={Login} />
+                <MainLayout>
+                    <Route exact path="/" component={Home} />
+                    <Route component={Accounts} path='/accounts/:startDateIndex?' />
+                    <Route path="/create-account" component={CreateAccount} />
+                    <Route component={FetchData} path='/fetch-data/:startDateIndex?' />
+                    <PrivateRoute path="/counter" component={Counter} />
+
+                </MainLayout>
+            </Switch>
         </Router>
     );
 };

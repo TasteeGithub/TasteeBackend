@@ -29,6 +29,9 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
                                 <NavItem>
                                     <NavLink tag={Link} className="text-dark" to="/accounts">Accounts</NavLink>
                                 </NavItem>
+                                <NavItem>
+                                    <NavLink tag={Link} className="text-dark" to="/create-account">New Accounts</NavLink>
+                                </NavItem>
                             </ul>
                         </Collapse>
                     </Container>
@@ -43,3 +46,4 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
         });
     }
 }
+
