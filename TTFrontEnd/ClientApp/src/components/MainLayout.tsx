@@ -5,7 +5,7 @@ import NavMenu from './NavMenu';
 const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) => {
     return (
         <>
-            
+
             <header className="header-top" header-theme="light">
                 <div className="container-fluid">
                     <div className="d-flex justify-content-between">
@@ -76,7 +76,7 @@ const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) =>
                                 </div>
                             </div>
                             <button type="button" className="nav-link ml-10" id="apps_modal_btn" data-toggle="modal" data-target="#appsModal"><i className="ik ik-grid"></i></button>
-                            <LoginStatus/>
+                            <LoginStatus />
 
                         </div>
                     </div>

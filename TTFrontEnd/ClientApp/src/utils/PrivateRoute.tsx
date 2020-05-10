@@ -1,12 +1,14 @@
 import React from 'react'
-import { Route,Redirect} from 'react-router-dom'
+import { Route, Redirect } from 'react-router-dom'
 import { CheckAuthentication } from './CheckAuthentication';
-
-const PrivateRoute: React.SFC<any> = ({ component: Component,...rest }: any) => (
-    
+import MainLayout from '../components/MainLayout';
+const PrivateRoute: React.SFC<any> = ({ component: Component, ...rest }: any) => (
     <Route
         {...rest}
-        render={(props) => CheckAuthentication.IsSigning() ? <Component {...props} />
+        render={(props) => CheckAuthentication.IsSigning() ?
+            <MainLayout>
+                <Component {...props}/>
+            </MainLayout>
             : <Redirect to={{ pathname: '/login', state: { from: props.location } }} />}
     />
 );

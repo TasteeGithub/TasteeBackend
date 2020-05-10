@@ -44,6 +44,7 @@ class Login extends React.Component<RouteComponentProps<{}, StaticContext, Locat
         if (this.state.isLogin) {
             return <Redirect to={from} />
         }
+
         return (
             <>
                 <div className="auth-wrapper">

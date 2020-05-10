@@ -8,10 +8,11 @@ import './custom.css'
 import Login from './components/Authentication/Login';
 import { AuthenticatedState, actionCreator } from './store/Login';
 import { ApplicationState } from './store';
-import MainLayout from './components/MainLayout';
 import PrivateRoute from './utils/PrivateRoute';
 import Accounts from './components/AccountManager/Accounts';
 import CreateAccount from './components/AccountManager/CreateAccount';
+import GuestRoute from './utils/GuestRoute';
+import LoginRoute from './utils/LoginRoute';
 
 type AppProps = AuthenticatedState & typeof actionCreator;
 
@@ -19,15 +20,12 @@ const App: React.FunctionComponent<AppProps> = (props: AppProps) => {
     return (
         <Router>
             <Switch>
-                <Route path="/login" component={Login} />
-                <MainLayout>
-                    <Route exact path="/" component={Home} />
-                    <Route component={Accounts} path='/accounts/:startDateIndex?' />
-                    <Route path="/create-account" component={CreateAccount} />
-                    <Route component={FetchData} path='/fetch-data/:startDateIndex?' />
-                    <PrivateRoute path="/counter" component={Counter} />
-
-                </MainLayout>
+                <GuestRoute exact path="/" component={Home} />
+                <LoginRoute path="/login" component={Login} />
+                <GuestRoute component={Accounts} path='/accounts/:startDateIndex?' />
+                <GuestRoute path="/create-account" component={CreateAccount} />
+                <GuestRoute component={FetchData} path='/fetch-data/:startDateIndex?' />
+                <PrivateRoute path="/counter" component={Counter} />
             </Switch>
         </Router>
     );

@@ -1,25 +1,17 @@
 import React from 'react'
-import { Route, Redirect,RouteProps } from 'react-router-dom'
-
+import { Route } from 'react-router-dom'
+import MainLayout from '../components/MainLayout';
 //redux stuff
-import {connect } from 'react-redux';
 
-interface MyRouteProps extends RouteProps{
-    component : any;
-    authenticated:boolean;
-    rest?:any
-}
-
-const GuestRoute: React.SFC<MyRouteProps> = ({component:Component, authenticated,...rest}) => (
+const GuestRoute: React.SFC<any> = ({ component: Component, ...rest }) => (
     <Route
         {...rest}
-        render = {(props) => authenticated ? <Redirect to = '/' />: <Component {...props}/>}
-        />
+        render={(props) =>
+            <MainLayout>
+                <Component {...props} />
+            </MainLayout>
+        }
+    />
 );
 
-const mapStateToProps = (state:any) =>({
-    authenticated: state.user.authenticated
-});
-
-
-export default connect ( mapStateToProps )(GuestRoute)
+export default GuestRoute
