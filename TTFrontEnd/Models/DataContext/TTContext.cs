@@ -34,9 +34,7 @@ namespace TTFrontEnd.Models.DataContext
             {
                 entity.Property(e => e.Id).HasMaxLength(200);
 
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(256);
+                entity.Property(e => e.Name).HasMaxLength(255);
             });
 
             modelBuilder.Entity<UserRoles>(entity =>
@@ -51,33 +49,35 @@ namespace TTFrontEnd.Models.DataContext
 
             modelBuilder.Entity<Users>(entity =>
             {
-                entity.ToTable("users");
-
                 entity.Property(e => e.Id).HasMaxLength(200);
 
                 entity.Property(e => e.Address).HasMaxLength(500);
 
                 entity.Property(e => e.Avatar).HasMaxLength(50);
 
-                entity.Property(e => e.Birthday).HasColumnType("timestamp(3) without time zone");
-
-                entity.Property(e => e.CreatedDate).HasColumnType("timestamp(3) without time zone");
-
                 entity.Property(e => e.Email)
                     .IsRequired()
-                    .HasMaxLength(256);
+                    .HasMaxLength(200);
 
-                entity.Property(e => e.FullName).IsRequired();
+                entity.Property(e => e.FullName)
+                    .IsRequired()
+                    .HasColumnType("character varying");
 
                 entity.Property(e => e.Gender).HasMaxLength(10);
 
-                entity.Property(e => e.LastLogin).HasColumnType("timestamp(3) without time zone");
+                entity.Property(e => e.MerchantLevel).HasMaxLength(50);
 
-                entity.Property(e => e.PasswordHash).IsRequired();
+                entity.Property(e => e.PasswordHash)
+                    .IsRequired()
+                    .HasColumnType("character varying");
+
+                entity.Property(e => e.PhoneNumber).HasMaxLength(20);
 
                 entity.Property(e => e.Role).HasMaxLength(50);
 
                 entity.Property(e => e.Status).HasMaxLength(50);
+
+                entity.Property(e => e.UserLevel).HasMaxLength(50);
             });
 
             OnModelCreatingPartial(modelBuilder);

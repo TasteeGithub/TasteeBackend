@@ -53,10 +53,14 @@ namespace TTFrontEnd.Controllers
             _serviceRoles = serviceRoles;
             _serviceUserRole = serviceUserRole;
         }
-
+        //[HttpPost]
+        //public async Task<IActionResult> Post(RegisterModel model)
+        //{
+        //    return Ok(new RegisterResult { Successful = true });
+        //}
         // POST api/<controller>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]RegisterModel model)
+        public async Task<IActionResult> Post(RegisterModel model)
         {
             if (UsersIsExists(model.Email))
             {
@@ -73,6 +77,15 @@ namespace TTFrontEnd.Controllers
                 Id = Guid.NewGuid().ToString(),
                 PasswordHash = passwordHash,
                 FullName = model.FullName,
+                Address = model.Address,
+                Avatar = model.Avatar,
+                Birthday = model.Birthday,
+                Gender = model.Gender,
+                IsLocked = model.IsLocked,
+                PhoneNumber = model.PhoneNumber,
+                Status = model.Status,
+                UserLevel = model.UserLevel.ToString(),
+                MerchantLevel = model.MerchantLevel.ToString()
             };
 
             _serviceUsers.Insert(newUsers);

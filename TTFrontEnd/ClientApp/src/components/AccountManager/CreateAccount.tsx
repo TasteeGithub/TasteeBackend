@@ -1,6 +1,8 @@
 ﻿import * as React from 'react';
 import { useState } from 'react';
 import { stringify } from 'querystring';
+import axios from 'axios';
+import { Redirect } from 'react-router';
 
 interface AccountInfo {
     email: string,
@@ -8,24 +10,58 @@ interface AccountInfo {
     password: string,
     rePassword: string,
     phoneNumber: string,
-    birthday: string
+    birthday: string,
+    gender: string,
+    address: string
+};
+
+interface IState {
+    selectedOption:string
 }
 
-class CreateAccount extends React.Component {
+class CreateAccount extends React.PureComponent<{}, IState> {
+    constructor(props: any) {
+        super(props);
+        this.state = { selectedOption: "Female" };
+    }
 
     accountInfo: AccountInfo = {
         birthday: "",
-        email : "",
+        email: "",
         fullName: "",
         password: "",
         phoneNumber: "",
-        rePassword: ""
-    };  
+        address:"",
+        rePassword: "",
+        gender: "",
+    };
     handleSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
     }
-    CreateAccount = () => {
-        alert(this.accountInfo.fullName);;
+    CreateAccount = async () => {
+        let accountModel = {
+            email: this.accountInfo.email,
+            password: this.accountInfo.password,
+            confirmPassword: this.accountInfo.rePassword,
+            fullName: this.accountInfo.fullName,
+            phoneNumber: this.accountInfo.phoneNumber,
+            isLocked: false,
+            birthday: this.accountInfo.birthday,
+            gender: this.accountInfo.gender,
+            address: this.accountInfo.address,
+            role: "User",
+            userLevel: 1,
+            merchantLevel: 10,
+            avatar: "xyz",
+            status: "Pending"
+        }
+
+        let resp = await axios.post("https://localhost:44354/api/accounts", accountModel);
+        alert(resp.data.successful);
+        if (resp.data.successful)
+            return <Redirect to={{ pathname: '/accounts' }} />;
+        else
+            alert(resp.data.error);
     }
 
     handleChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -35,21 +71,31 @@ class CreateAccount extends React.Component {
                 break;
             case "fullName":
                 this.accountInfo.fullName = e.currentTarget.value;
-                break;
+                 break;
             case "password":
                 this.accountInfo.password = e.currentTarget.value;
-                break;
+                 break;
             case "rePassword":
                 this.accountInfo.rePassword = e.currentTarget.value;
-                break;
+                 break;
             case "phone":
                 this.accountInfo.phoneNumber = e.currentTarget.value;
+                break;
+            case "address":
+                this.accountInfo.address = e.currentTarget.value;
                 break;
             case "birthday":
                 this.accountInfo.birthday = e.currentTarget.value;
                 break;
+            case "radioGender":
+                this.accountInfo.gender = e.currentTarget.value;
+                this.setState({
+                    selectedOption: e.currentTarget.value
+                });
+                break;
         }
     }
+
     render() {
         return (
             <div className="card">
@@ -100,6 +146,7 @@ class CreateAccount extends React.Component {
                                     className="form-control"
                                     id="exampleInputPassword2"
                                     placeholder="Password"
+                                    onChange={this.handleChange}
                                 />
                             </div>
                         </div>
@@ -107,7 +154,7 @@ class CreateAccount extends React.Component {
                             <label
                                 htmlFor="exampleInputConfirmPassword2"
                                 className="col-sm-3 col-form-label">
-                                Re Password {this.accountInfo.fullName}
+                                Re Password
                             </label>
                             <div className="col-sm-9">
                                 <input
@@ -116,6 +163,7 @@ class CreateAccount extends React.Component {
                                     className="form-control"
                                     id="exampleInputConfirmPassword2"
                                     placeholder="Password"
+                                    onChange={this.handleChange}
                                 />
                             </div>
                         </div>
@@ -130,6 +178,23 @@ class CreateAccount extends React.Component {
                                     className="form-control"
                                     id="exampleInputMobile"
                                     placeholder="Mobile number"
+                                    onChange={this.handleChange}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-group row">
+                            <label htmlFor="inputAddress" className="col-sm-3 col-form-label">
+                                Phone
+                            </label>
+                            <div className="col-sm-9">
+                                <input
+                                    name="address"
+                                    type="text"
+                                    className="form-control"
+                                    id="inputAddress"
+                                    placeholder="Address"
+                                    onChange={this.handleChange}
                                 />
                             </div>
                         </div>
@@ -145,10 +210,35 @@ class CreateAccount extends React.Component {
                                     className="form-control"
                                     id="inputBithday"
                                     placeholder="Birthday"
+                                    onChange={this.handleChange}
                                 />
                             </div>
                         </div>
-
+                        <div className="form-radio row">
+                            <label className="col-sm-3 col-form-label">Gender</label>
+                            <div className="col-sm-9">
+                                <div className="radio radio-inline">
+                                    <label>
+                                        <input type="radio" value="Female" name="radioGender" checked={this.state.selectedOption === "Female"}
+                                            onChange={this.handleChange} />
+                                        <i className="helper"></i>Female
+                                    </label>
+                                </div>
+                                <div className="radio radio-inline">
+                                    <label>
+                                        <input type="radio" value="Male" name="radioGender" checked={this.state.selectedOption === "Male"}
+                                            onChange={this.handleChange}/>
+                                        <i className="helper"></i>Male
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label className="col-sm-3 col-form-label" htmlFor="inputavatar"></label>
+                            <div className="col-sm-9">
+                                <input type="file" id="inputavatar" name="avatar"/>
+                            </div>
+                        </div>
                         <div className="form-group row">
                             <label className="col-sm-3 col-form-label"></label>
                             <div className="col-sm-9">
