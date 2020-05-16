@@ -84,8 +84,8 @@ namespace TTFrontEnd.Controllers
                 IsLocked = model.IsLocked,
                 PhoneNumber = model.PhoneNumber,
                 Status = model.Status,
-                UserLevel = model.UserLevel.ToString(),
-                MerchantLevel = model.MerchantLevel.ToString()
+                UserLevel = model.UserLevel,
+                MerchantLevel = model.MerchantLevel
             };
 
             _serviceUsers.Insert(newUsers);
