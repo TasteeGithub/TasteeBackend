@@ -51,8 +51,6 @@ namespace TTFrontEnd.Models.DataContext
 
             modelBuilder.Entity<Users>(entity =>
             {
-                entity.ToTable("users");
-
                 entity.Property(e => e.Id).HasMaxLength(200);
 
                 entity.Property(e => e.Address).HasMaxLength(500);
