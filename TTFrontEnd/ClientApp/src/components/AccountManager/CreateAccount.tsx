@@ -155,6 +155,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                         </label>
                             <div className="col-sm-9">
                                 <input
+                                    required
                                     name="email"
                                     type="email"
                                     className="form-control"
@@ -172,6 +173,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                             </label>
                             <div className="col-sm-9">
                                 <input
+                                    required
                                     name="fullName"
                                     type="text"
                                     className="form-control"
@@ -189,6 +191,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                             </label>
                             <div className="col-sm-9">
                                 <input
+                                    required
                                     name="password"
                                     type="password"
                                     className="form-control"
@@ -206,6 +209,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                             </label>
                             <div className="col-sm-9">
                                 <input
+                                    required
                                     name="rePassword"
                                     type="password"
                                     className="form-control"
@@ -221,6 +225,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                             </label>
                             <div className="col-sm-9">
                                 <input
+                                    required
                                     name="phone"
                                     type="text"
                                     className="form-control"
@@ -237,6 +242,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                             </label>
                             <div className="col-sm-9">
                                 <input
+                                    required
                                     name="address"
                                     type="text"
                                     className="form-control"
@@ -253,6 +259,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                             </label>
                             <div className="col-sm-9">
                                 <input
+                                    required
                                     name="birthday"
                                     type="date"
                                     className="form-control"
