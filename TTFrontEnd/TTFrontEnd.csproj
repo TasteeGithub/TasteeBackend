@@ -66,6 +66,11 @@
     <TypeScriptCompile Include="ClientApp\src\components\AccountManager\CreateAccount.tsx" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ClientApp\public\dist\css\" />
+    <Folder Include="Images\Avatar\" />
+  </ItemGroup>
+
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">

@@ -5,9 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -102,6 +104,36 @@ namespace TTFrontEnd.Controllers
             return Ok(new RegisterResult { Successful = true });
         }
 
+        [HttpPost,DisableRequestSizeLimit]
+        [Route("uploadfile")]
+        public IActionResult UploadFile()
+        {
+            try
+            {
+            var file = Request.Form.Files[0];
+            var folderName = Path.Combine("Images", "Avatar");
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            if(file.Length >  0 )
+            {
+                var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim().ToString();
+                var fullPath = Path.Combine(pathToSave, fileName);
+                var dbPath = Path.Combine(folderName, fileName);
+                using (var stream = new FileStream(fullPath,FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+                return Ok(new { dbPath });
+            }
+            else
+            {
+                return BadRequest();
+            }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
+        }
         private bool UsersIsExists(string email)
         {
             return _serviceUsers.Queryable().Any(e => e.Email == email);

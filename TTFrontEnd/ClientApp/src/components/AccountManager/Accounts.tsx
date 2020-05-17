@@ -8,7 +8,6 @@ export default class Accounts extends Component {
     el: any;
     $element: any;
     async componentDidMount() {
-        //console.log(this.el);
 
         let rs = await axios.get("/api/Accounts");
         const dataSet = rs.data.listData;
@@ -19,26 +18,37 @@ export default class Accounts extends Component {
             data: dataSet,
             columns: [
                 {
-                    title: "My Id",
-                    data: "id",
-                    render: function (data: any, type: any, row: any) {
-                        return "<a href='http://xyz.b/?page=" + data + "'>" + row.id + " </a>"
+                    title: "Created Date",
+                    data: "createdDate"
+                },
+                {
+                    title: "Full name",
+                    data: "fullName",
+                    render: function (data: any, row: any) {
+                        return "<a href='http://xyz.b/?id=" + row.id + "'>" + data + " </a>"
                     }
                 },
-                {
-                    title: "Full name", data: "fullName"
-                },
                 { title: "Email", data: "email" },
-                { title: "Created Date", data: "createdDate" },
-                { title: "Is Locked", data: "isLocked" },
+                
+                {
+                    title: "Is Locked",
+                    data:"isLocked",
+                    render: (data: any) => {
+                        return "<div class='text-center'><i class='ik ik-" + (data? "lock text-red" : "unlock text-green") + "'></i></div>"
+                    } 
+                },
                 {
                     title: "Status", data: "status",
-                    render: (data: any, type: any, row: any, meta: any) => {
+                    render: (data: any) => {
                         return '<label class="badge badge-success">' + data + '</label>';
                     }
                 },
+                {
+                    title: "Gender",
+                    data: "gender"
+                }
             ],
-            "lengthMenu": [[2, 10, 25, 50, -1], [2, 10, 25, 50, "All"]],
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
             scrollY: 200
         });
     }

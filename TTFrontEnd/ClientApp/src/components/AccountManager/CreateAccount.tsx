@@ -1,6 +1,4 @@
 ﻿import * as React from 'react';
-import { useState } from 'react';
-import { stringify } from 'querystring';
 import axios from 'axios';
 import { Redirect } from 'react-router';
 
@@ -12,17 +10,21 @@ interface AccountInfo {
     phoneNumber: string,
     birthday: string,
     gender: string,
-    address: string
+    address: string,
+    avatar: string
 };
 
 interface IState {
-    selectedOption:string
+    selectedGender: string,
+    imgagePreviewUrl: string | undefined,
+    avatarFile: any,
+    isFinished: boolean
 }
 
 class CreateAccount extends React.PureComponent<{}, IState> {
     constructor(props: any) {
         super(props);
-        this.state = { selectedOption: "Female" };
+        this.state = { selectedGender: "Female", imgagePreviewUrl: "", avatarFile: null, isFinished:false };
     }
 
     accountInfo: AccountInfo = {
@@ -31,14 +33,24 @@ class CreateAccount extends React.PureComponent<{}, IState> {
         fullName: "",
         password: "",
         phoneNumber: "",
-        address:"",
+        address: "",
         rePassword: "",
-        gender: "",
+        gender: "Femail",
+        avatar: ""
     };
     handleSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
     }
+    
     CreateAccount = async () => {
+
+        let formData = new FormData();
+        formData.append("myFile", this.state.avatarFile, this.state.avatarFile.name);
+        let rs = await axios.post("https://localhost:44354/api/accounts/uploadfile", formData);
+        if (rs.status == 200) {
+            this.accountInfo.avatar = rs.data.dbPath;
+        }
+
         let accountModel = {
             email: this.accountInfo.email,
             password: this.accountInfo.password,
@@ -52,14 +64,17 @@ class CreateAccount extends React.PureComponent<{}, IState> {
             role: "User",
             userLevel: 1,
             merchantLevel: 10,
-            avatar: "xyz",
+            avatar: this.accountInfo.avatar,
             status: "Pending"
         }
 
         let resp = await axios.post("https://localhost:44354/api/accounts", accountModel);
-        alert(resp.data.successful);
+
         if (resp.data.successful)
-            return <Redirect to={{ pathname: '/accounts' }} />;
+        this.setState({
+            ...this.state,
+            isFinished:true
+        });
         else
             alert(resp.data.error);
     }
@@ -71,13 +86,13 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                 break;
             case "fullName":
                 this.accountInfo.fullName = e.currentTarget.value;
-                 break;
+                break;
             case "password":
                 this.accountInfo.password = e.currentTarget.value;
-                 break;
+                break;
             case "rePassword":
                 this.accountInfo.rePassword = e.currentTarget.value;
-                 break;
+                break;
             case "phone":
                 this.accountInfo.phoneNumber = e.currentTarget.value;
                 break;
@@ -90,13 +105,46 @@ class CreateAccount extends React.PureComponent<{}, IState> {
             case "radioGender":
                 this.accountInfo.gender = e.currentTarget.value;
                 this.setState({
-                    selectedOption: e.currentTarget.value
+                    selectedGender: e.currentTarget.value,
+                    imgagePreviewUrl: this.state.imgagePreviewUrl,
+                    avatarFile: this.state.avatarFile,
+                    isFinished: this.state.isFinished
                 });
                 break;
         }
     }
 
+    handleImageChange = (e: React.FormEvent<HTMLInputElement>) => {
+        e.preventDefault();
+
+        let reader = new FileReader();
+
+        let file = e.currentTarget.files == null ? null : e.currentTarget.files[0];
+        
+        if (file != null) {
+            reader.onloadend = () => {
+                
+                this.setState({
+                    selectedGender: this.state.selectedGender,
+                    imgagePreviewUrl: reader.result?.toString(),
+                    avatarFile: file, // e.currentTarget.files === null ? null : e.currentTarget.files[0]
+                    isFinished:this.state.isFinished
+                });
+            }
+            reader.readAsDataURL(file);
+        }
+
+        
+    }
+
     render() {
+        if (this.state.isFinished) return <Redirect to="/accounts" />;
+        let imagePreviewUrl = this.state.imgagePreviewUrl;
+        let $imagePrivew = null;
+        if (imagePreviewUrl) {
+            $imagePrivew = (<div style={{paddingTop:"20px"}}><img style={{maxWidth:"400px"}} src={imagePreviewUrl} /></div>);
+        }
+
         return (
             <div className="card">
                 <div className="card-body">
@@ -219,15 +267,15 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                             <div className="col-sm-9">
                                 <div className="radio radio-inline">
                                     <label>
-                                        <input type="radio" value="Female" name="radioGender" checked={this.state.selectedOption === "Female"}
+                                        <input type="radio" value="Female" name="radioGender" checked={this.state.selectedGender === "Female"}
                                             onChange={this.handleChange} />
                                         <i className="helper"></i>Female
                                     </label>
                                 </div>
                                 <div className="radio radio-inline">
                                     <label>
-                                        <input type="radio" value="Male" name="radioGender" checked={this.state.selectedOption === "Male"}
-                                            onChange={this.handleChange}/>
+                                        <input type="radio" value="Male" name="radioGender" checked={this.state.selectedGender === "Male"}
+                                            onChange={this.handleChange} />
                                         <i className="helper"></i>Male
                                     </label>
                                 </div>
@@ -236,7 +284,8 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                         <div className="form-group row">
                             <label className="col-sm-3 col-form-label" htmlFor="inputavatar"></label>
                             <div className="col-sm-9">
-                                <input type="file" id="inputavatar" name="avatar"/>
+                                <input type="file" id="inputavatar" name="avatar" onChange={this.handleImageChange} />
+                                {$imagePrivew}
                             </div>
                         </div>
                         <div className="form-group row">
