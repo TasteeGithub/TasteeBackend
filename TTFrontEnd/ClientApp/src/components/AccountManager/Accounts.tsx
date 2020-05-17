@@ -1,4 +1,5 @@
 ﻿import React, { Component } from 'react';
+import moment from 'moment';
 import axios from 'axios';
 const $ = require('jquery');
 require('datatables.net-bs4');
@@ -19,7 +20,10 @@ export default class Accounts extends Component {
             columns: [
                 {
                     title: "Created Date",
-                    data: "createdDate"
+                    data: "createdDate",
+                    render: (data: any) => {
+                        return moment(data).format('DD/MM/YYYY hh:mm:ss');
+                    }
                 },
                 {
                     title: "Full name",
@@ -48,7 +52,7 @@ export default class Accounts extends Component {
                     data: "gender"
                 }
             ],
-            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
             scrollY: 200
         });
     }
