@@ -248,7 +248,7 @@ namespace TTFrontEnd.Controllers
         }
 
         [HttpGet]
-        [Route("/{id}")]
+        [Route("Detail/{id}")]
         public async Task<Users> GetAccountDetail(
             string id
             )
