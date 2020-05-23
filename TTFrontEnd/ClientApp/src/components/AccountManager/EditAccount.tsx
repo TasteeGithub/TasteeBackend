@@ -165,6 +165,15 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                             </div>
                         </div>
                     </div>
+                    <form className="form-group row">
+                        <label className="col-sm-3 col-md-2 col-form-label">Status</label>
+                        <div className="col-sm-9 col-md-4">
+                            <select className="form-control">
+                                <option value="Pending">Pending</option>
+                                <option value="Locked">Locked</option>
+                            </select>
+                        </div>
+                    </form>
                     <div className="form-group row">
                         <label className="col-sm-3 col-md-2 col-form-label"></label>
                         <div className="col-sm-9 col-md-4">
