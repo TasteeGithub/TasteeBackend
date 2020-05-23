@@ -99,7 +99,7 @@ namespace TTFrontEnd.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Error:{0}", ex.ToString());
-                return Ok(new RegisterResult { Successful = false, Errors = new string[] { ex.Message } });
+                return Ok(new RegisterResult { Successful = false, Error = new string[] { ex.Message } });
             }
             return Ok(new RegisterResult { Successful = true });
         }

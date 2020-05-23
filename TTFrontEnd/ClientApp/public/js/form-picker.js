@@ -1,6 +1,6 @@
 (function($) {
     'use strict';
-    $(document).ready(function() {
+    $(document).ready(function () {
         $("#dropper-default").dateDropper({
             dropWidth: 200,
             dropPrimaryColor: "#1abc9c",

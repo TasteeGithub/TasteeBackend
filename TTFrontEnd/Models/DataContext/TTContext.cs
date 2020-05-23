@@ -55,7 +55,7 @@ namespace TTFrontEnd.Models.DataContext
 
                 entity.Property(e => e.Address).HasMaxLength(500);
 
-                entity.Property(e => e.Avatar).HasMaxLength(50);
+                entity.Property(e => e.Avatar).HasMaxLength(300);
 
                 entity.Property(e => e.Birthday).HasColumnType("timestamp(3) without time zone");
 
@@ -63,7 +63,7 @@ namespace TTFrontEnd.Models.DataContext
 
                 entity.Property(e => e.Email)
                     .IsRequired()
-                    .HasMaxLength(256);
+                    .HasColumnType("character varying");
 
                 entity.Property(e => e.FullName).IsRequired();
 

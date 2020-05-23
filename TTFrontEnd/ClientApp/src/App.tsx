@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Home from './components/Home';
+import Home from './components/Dashboard';
 import Counter from './components/Counter';
 import FetchData from './components/FetchData';
 import { connect } from 'react-redux'
@@ -13,6 +13,7 @@ import Accounts from './components/AccountManager/Accounts';
 import CreateAccount from './components/AccountManager/CreateAccount';
 import GuestRoute from './utils/GuestRoute';
 import LoginRoute from './utils/LoginRoute';
+import Dashboard from './components/Dashboard';
 
 type AppProps = AuthenticatedState & typeof actionCreator;
 
@@ -20,7 +21,7 @@ const App: React.FunctionComponent<AppProps> = (props: AppProps) => {
     return (
         <Router>
             <Switch>
-                <GuestRoute exact path="/" component={Home} />
+                <GuestRoute exact path="/" component={Dashboard} />
                 <LoginRoute path="/login" component={Login} />
                 <GuestRoute component={Accounts} path='/accounts/:startDateIndex?' />
                 <GuestRoute path="/create-account" component={CreateAccount} />
