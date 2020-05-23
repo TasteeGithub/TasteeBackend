@@ -10,7 +10,7 @@ export interface IValues {
     fullName: string,
     createdDate: number ,
     isLocked: string,
-    birthday: number,
+    birthday: string ,
     gender: string ,
     address: string,
     userLevel: string,
@@ -24,6 +24,20 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
     useEffect(() => {
         getData();
     }, []);
+
+    function formatDate(date: string) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
 
     const getData = async () => {
         const customer = await axios.get(`https://localhost:44354/api/accounts/detail/${id}`);
@@ -42,10 +56,10 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
             <div className="card-body">
                 <form className="forms-sample" onSubmit={handleSubmit}>
                     <div className="form-group row">
-                        <label htmlFor="exampleInputEmail2" className="col-sm-3 col-form-label">
+                        <label htmlFor="exampleInputEmail2" className="col-sm-3 col-md-2 col-form-label">
                             Email
                         </label>
-                        <div className="col-sm-9">
+                        <div className="col-sm-9 col-md-4">
                             <input
                                 required
                                 name="email"
@@ -53,18 +67,19 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                                 className="form-control"
                                 id="exampleInputEmail2"
                                 placeholder="Email"
+                                readOnly
                                 value={values.email}
-                                readOnly={true}
+                                onChange={handleChange}
                             />
                         </div>
                     </div>
                     <div className="form-group row">
                         <label
                             htmlFor="exampleInputUsername2"
-                            className="col-sm-3 col-form-label">
+                            className="col-sm-3 col-md-2 col-form-label">
                             Full name
                             </label>
-                        <div className="col-sm-9">
+                        <div className="col-sm-9 col-md-4">
                             <input
                                 required
                                 name="fullName"
@@ -77,11 +92,12 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                             />
                         </div>
                     </div>
+                    
                     <div className="form-group row">
-                        <label htmlFor="exampleInputMobile" className="col-sm-3 col-form-label">
+                        <label htmlFor="exampleInputMobile" className="col-sm-3 col-md-2 col-form-label">
                             Phone
                             </label>
-                        <div className="col-sm-9">
+                        <div className="col-sm-9 col-md-4">
                             <input
                                 required
                                 name="phone"
@@ -96,10 +112,10 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                     </div>
 
                     <div className="form-group row">
-                        <label htmlFor="inputAddress" className="col-sm-3 col-form-label">
+                        <label htmlFor="inputAddress" className="col-sm-3 col-md-2 col-form-label">
                             Address
                             </label>
-                        <div className="col-sm-9">
+                        <div className="col-sm-9 col-md-4">
                             <input
                                 required
                                 name="address"
@@ -114,25 +130,25 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                     </div>
 
                     <div className="form-group row">
-                        <label htmlFor="inputBithday" className="col-sm-3 col-form-label">
+                        <label htmlFor="inputBithday" className="col-sm-3 col-md-2 col-form-label">
                             Birthday
                             </label>
-                        <div className="col-sm-9">
-                            <input
-                                required
-                                name="birthday"
-                                type="date"
-                                className="form-control"
+                        <div className="col-sm-9 col-md-4">
+                            <input type="date"
+                                className="form-control datetimepicker-input"
                                 id="inputBithday"
-                                placeholder="Birthday"
-                                value={values.birthday}
+                                name="birthday"
+                                value={formatDate(values.birthday)}
                                 onChange={handleChange}
                             />
+
                         </div>
                     </div>
-                    <div className="form-radio row">
-                        <label className="col-sm-3 col-form-label">Gender</label>
-                        <div className="col-sm-9">
+                    <div className="form-group row">
+                        <label className="col-sm-3 col-md-2 col-form-label">
+                            Gender
+                            </label>
+                        <div className="form-radio col-sm-9">
                             <div className="radio radio-inline">
                                 <label>
                                     <input type="radio" value="Female" name="radioGender"
@@ -150,16 +166,16 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-3 col-form-label" htmlFor="inputavatar"></label>
-                        <div className="col-sm-9">
-                            <input type="file" id="inputavatar" name="avatar"/>
-                            
+                        <label className="col-sm-3 col-md-2 col-form-label"></label>
+                        <div className="col-sm-9 col-md-4">
+                            <input type="file" id="inputavatar" name="avatar"  />
+
                         </div>
                     </div>
                     <div className="form-group row">
-                        <label className="col-sm-3 col-form-label"></label>
-                        <div className="col-sm-9">
-                            <button type="submit"className="btn btn-primary mr-2">OK</button>
+                        <label className="col-sm-3 col-md-2 col-form-label"></label>
+                        <div className="col-sm-9 col-md-4">
+                            <button type="submit" className="btn btn-primary mr-2">OK</button>
                         </div>
                     </div>
                 </form>

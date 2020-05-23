@@ -1,6 +1,10 @@
 ﻿import * as React from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router';
+declare var showNotify: any;
+
+const $ = require('jquery');
+//let $: JQueryStatic = (window as any)["jQuery"];
 
 interface AccountInfo {
     email: string,
@@ -24,7 +28,28 @@ interface IState {
 class CreateAccount extends React.PureComponent<{}, IState> {
     constructor(props: any) {
         super(props);
-        this.state = { selectedGender: "Female", imgagePreviewUrl: "", avatarFile: null, isFinished:false };
+        this.state = { selectedGender: "Female", imgagePreviewUrl: "", avatarFile: null, isFinished: false };
+    }
+    inputBirth: any;
+    $inputBirth: any;
+    componentDidMount = () => {
+        //this.$inputBirth = this.inputBirth;
+
+        //let dateDropper = $.fn.dateDropper; //accessing jquery function
+
+        //$("#inputBithday").dateDropper({
+        //    dropWidth: 200,
+        //    dropPrimaryColor: "#1abc9c",
+        //    dropBorder: "1px solid #1abc9c"
+        //});
+
+        //this.$inputBirth = $(this.inputBirth);
+        //alert(this.$inputBirth.id);
+        //this.$inputBirth.dateDropper({
+        //    dropWidth: 200,
+        //    dropPrimaryColor: "#1abc9c",
+        //    dropBorder: "1px solid #1abc9c"
+        //});
     }
 
     accountInfo: AccountInfo = {
@@ -41,9 +66,8 @@ class CreateAccount extends React.PureComponent<{}, IState> {
     handleSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
     }
-    
-    CreateAccount = async () => {
 
+    CreateAccount = async () => {
         let formData = new FormData();
         formData.append("myFile", this.state.avatarFile, this.state.avatarFile.name);
         let rs = await axios.post("https://localhost:44354/api/accounts/uploadfile", formData);
@@ -71,10 +95,10 @@ class CreateAccount extends React.PureComponent<{}, IState> {
         let resp = await axios.post("https://localhost:44354/api/accounts", accountModel);
 
         if (resp.data.successful)
-        this.setState({
-            ...this.state,
-            isFinished:true
-        });
+            this.setState({
+                ...this.state,
+                isFinished: true
+            });
         else
             alert(resp.data.error);
     }
@@ -120,21 +144,22 @@ class CreateAccount extends React.PureComponent<{}, IState> {
         let reader = new FileReader();
 
         let file = e.currentTarget.files == null ? null : e.currentTarget.files[0];
-        
+
         if (file != null) {
             reader.onloadend = () => {
-                
                 this.setState({
                     selectedGender: this.state.selectedGender,
                     imgagePreviewUrl: reader.result?.toString(),
-                    avatarFile: file, // e.currentTarget.files === null ? null : e.currentTarget.files[0]
-                    isFinished:this.state.isFinished
+                    avatarFile: file,
+                    isFinished: this.state.isFinished
                 });
             }
             reader.readAsDataURL(file);
         }
+    }
 
-        
+    showToast = () => {
+        showNotify('Nguy hiem', 'Thong tin nhạp sai roi', 'success', 'top-center', '#f96868');
     }
 
     render() {
@@ -142,7 +167,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
         let imagePreviewUrl = this.state.imgagePreviewUrl;
         let $imagePrivew = null;
         if (imagePreviewUrl) {
-            $imagePrivew = (<div style={{paddingTop:"20px"}}><img style={{maxWidth:"400px"}} src={imagePreviewUrl} /></div>);
+            $imagePrivew = (<div style={{ paddingTop: "20px" }}><img style={{ maxWidth: "400px" }} src={imagePreviewUrl} /></div>);
         }
 
         return (
@@ -150,10 +175,10 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                 <div className="card-body">
                     <form className="forms-sample" onSubmit={this.handleSubmit}>
                         <div className="form-group row">
-                            <label htmlFor="exampleInputEmail2" className="col-sm-3 col-form-label">
+                            <label htmlFor="exampleInputEmail2" className="col-sm-3 col-md-2 col-form-label">
                                 Email
                         </label>
-                            <div className="col-sm-9">
+                            <div className="col-sm-9 col-md-4">
                                 <input
                                     required
                                     name="email"
@@ -168,10 +193,10 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                         <div className="form-group row">
                             <label
                                 htmlFor="exampleInputUsername2"
-                                className="col-sm-3 col-form-label">
+                                className="col-sm-3 col-md-2 col-form-label">
                                 Full name
                             </label>
-                            <div className="col-sm-9">
+                            <div className="col-sm-9 col-md-4">
                                 <input
                                     required
                                     name="fullName"
@@ -186,10 +211,10 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                         <div className="form-group row">
                             <label
                                 htmlFor="exampleInputPassword2"
-                                className="col-sm-3 col-form-label">
+                                className="col-sm-3 col-md-2 col-form-label">
                                 Password
                             </label>
-                            <div className="col-sm-9">
+                            <div className="col-sm-9 col-md-4">
                                 <input
                                     required
                                     name="password"
@@ -204,10 +229,10 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                         <div className="form-group row">
                             <label
                                 htmlFor="exampleInputConfirmPassword2"
-                                className="col-sm-3 col-form-label">
+                                className="col-sm-3 col-md-2 col-form-label">
                                 Re Password
                             </label>
-                            <div className="col-sm-9">
+                            <div className="col-sm-9 col-md-4">
                                 <input
                                     required
                                     name="rePassword"
@@ -220,10 +245,10 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                             </div>
                         </div>
                         <div className="form-group row">
-                            <label htmlFor="exampleInputMobile" className="col-sm-3 col-form-label">
+                            <label htmlFor="exampleInputMobile" className="col-sm-3 col-md-2 col-form-label">
                                 Phone
                             </label>
-                            <div className="col-sm-9">
+                            <div className="col-sm-9 col-md-4">
                                 <input
                                     required
                                     name="phone"
@@ -237,10 +262,10 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                         </div>
 
                         <div className="form-group row">
-                            <label htmlFor="inputAddress" className="col-sm-3 col-form-label">
-                                Phone
+                            <label htmlFor="inputAddress" className="col-sm-3 col-md-2 col-form-label">
+                                Address
                             </label>
-                            <div className="col-sm-9">
+                            <div className="col-sm-9 col-md-4">
                                 <input
                                     required
                                     name="address"
@@ -254,24 +279,24 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                         </div>
 
                         <div className="form-group row">
-                            <label htmlFor="inputBithday" className="col-sm-3 col-form-label">
+                            <label htmlFor="inputBithday" className="col-sm-3 col-md-2 col-form-label">
                                 Birthday
                             </label>
-                            <div className="col-sm-9">
-                                <input
-                                    required
-                                    name="birthday"
-                                    type="date"
-                                    className="form-control"
+                            <div className="col-sm-9 col-md-4">
+                                <input type="date"
+                                    className="form-control datetimepicker-input"
                                     id="inputBithday"
-                                    placeholder="Birthday"
+                                    name="birthday"
                                     onChange={this.handleChange}
                                 />
+
                             </div>
                         </div>
-                        <div className="form-radio row">
-                            <label className="col-sm-3 col-form-label">Gender</label>
-                            <div className="col-sm-9">
+                        <div className="form-group row">
+                            <label className="col-sm-3 col-md-2 col-form-label">
+                                Gender
+                            </label>
+                            <div className="form-radio col-sm-9">
                                 <div className="radio radio-inline">
                                     <label>
                                         <input type="radio" value="Female" name="radioGender" checked={this.state.selectedGender === "Female"}
@@ -289,16 +314,17 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                             </div>
                         </div>
                         <div className="form-group row">
-                            <label className="col-sm-3 col-form-label" htmlFor="inputavatar"></label>
-                            <div className="col-sm-9">
+                            <label className="col-sm-3 col-md-2 col-form-label"></label>
+                            <div className="col-sm-9 col-md-4">
                                 <input type="file" id="inputavatar" name="avatar" onChange={this.handleImageChange} />
                                 {$imagePrivew}
                             </div>
                         </div>
                         <div className="form-group row">
-                            <label className="col-sm-3 col-form-label"></label>
-                            <div className="col-sm-9">
+                            <label className="col-sm-3 col-md-2 col-form-label"></label>
+                            <div className="col-sm-9 col-md-4">
                                 <button type="submit" onClick={this.CreateAccount} className="btn btn-primary mr-2">OK</button>
+                                <button type="submit" className="btn btn-primary btn-sm" onClick={this.showToast}>Top Center</button>
                             </div>
                         </div>
                     </form>

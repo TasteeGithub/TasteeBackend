@@ -69,6 +69,7 @@
   <ItemGroup>
     <Folder Include="ClientApp\public\dist\css\" />
     <Folder Include="Images\Avatar\" />
+    <Folder Include="Images\Avatar\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

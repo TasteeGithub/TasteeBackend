@@ -73,7 +73,21 @@
       stack: false,
       loaderBg: '#f96868'
     })
-  }
+    }
+
+    showNotify = function (heading, text, icon, position,backgroundColor) {
+        'use strict';
+        resetToastPosition();
+        $.toast({
+            heading: heading,
+            text: text,
+            icon: icon,
+            position: String(position),
+            stack: false,
+            loaderBg: backgroundColor
+        })
+    }
+
   resetToastPosition = function() {
     $('.jq-toast-wrap').removeClass('bottom-left bottom-right top-left top-right mid-center'); // to remove previous position class
     $(".jq-toast-wrap").css({

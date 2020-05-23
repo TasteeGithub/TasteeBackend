@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Home from './components/Home';
+import Home from './components/Dashboard';
 import Counter from './components/Counter';
 import FetchData from './components/FetchData';
 import { connect } from 'react-redux'
