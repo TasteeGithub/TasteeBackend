@@ -2,6 +2,7 @@
 import moment from 'moment';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { stringify } from 'querystring';
 
 const $ = require('jquery');
 require('datatables.net-bs4');
@@ -38,12 +39,36 @@ export default class Accounts extends Component<{}, DataState> {
     el: any;
     $element: any;
     async componentDidMount() {
-        let rs = await axios.get("https://localhost:44354/api/Accounts");
-        const dataSet = rs.data.listData;
-        this.setState({ userData: dataSet });
 
+        //let rs = await axios.get("https://localhost:44354/api/Accounts");
+        //const dataSet = rs.data.listData;
+        //this.setState({ userData: dataSet });
+        
         this.$element = $(this.el);
         this.$element.DataTable({
+            "serverSide": true,
+            "ajax":
+            {
+                "url": "https://localhost:44354/api/accounts/load-data/",
+                "type": "POST",
+                "dataType": "JSON",
+                "contentType": "application/x-www-form-urlencoded",
+                "crossDomain": true,
+                "beforeSend": function (xhr: any) {
+                    xhr.setRequestHeader("Authorization", localStorage.getItem('token'));
+                },
+                "error": function (a: any, b: any, c: any) {
+                    alert(stringify(a));
+                }
+            },
+            "columns": [
+                { "data": "createdDate" },
+                { "data": "fullName" },
+                { "data": "email" },
+                { "data": "isLocked" },
+                { "data": "status" },
+                { "data": "gender" },
+            ],
             "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
             scrollY: 200
         });

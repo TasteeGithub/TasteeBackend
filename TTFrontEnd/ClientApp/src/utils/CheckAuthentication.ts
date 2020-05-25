@@ -18,7 +18,7 @@ export const CheckAuthentication = {
 
         if (response.data.successful) {
             const token = `Bearer ${response.data.token}`;
-            localStorage.setItem('token', `Bearer ${token}`);
+            localStorage.setItem('token', `${token}`);
             axios.defaults.headers.common['Authorization'] = token;
             this.isAuthenticated = true;
         }
