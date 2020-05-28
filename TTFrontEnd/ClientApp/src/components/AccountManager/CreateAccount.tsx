@@ -1,6 +1,7 @@
 ﻿import * as React from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router';
+import { stringify } from 'querystring';
 declare var showNotify: any;
 
 const $ = require('jquery');
@@ -68,11 +69,17 @@ class CreateAccount extends React.PureComponent<{}, IState> {
     }
 
     CreateAccount = async () => {
+
         let formData = new FormData();
         formData.append("myFile", this.state.avatarFile, this.state.avatarFile.name);
         let rs = await axios.post("https://localhost:44354/api/accounts/uploadfile", formData);
+
         if (rs.status == 200) {
             this.accountInfo.avatar = rs.data.dbPath;
+        }
+        else {
+            alert(rs.status);
+            return;
         }
 
         let accountModel = {
@@ -156,10 +163,6 @@ class CreateAccount extends React.PureComponent<{}, IState> {
             }
             reader.readAsDataURL(file);
         }
-    }
-
-    showToast = () => {
-        showNotify('Nguy hiem', 'Thong tin nhạp sai roi', 'success', 'top-center', '#f96868');
     }
 
     render() {
@@ -324,7 +327,6 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                             <label className="col-sm-3 col-md-2 col-form-label"></label>
                             <div className="col-sm-9 col-md-4">
                                 <button type="submit" onClick={this.CreateAccount} className="btn btn-primary mr-2">OK</button>
-                                <button type="submit" className="btn btn-primary btn-sm" onClick={this.showToast}>Top Center</button>
                             </div>
                         </div>
                     </form>

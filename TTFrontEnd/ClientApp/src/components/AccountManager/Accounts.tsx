@@ -46,6 +46,7 @@ export default class Accounts extends Component<{}, DataState> {
         
         this.$element = $(this.el);
         this.$element.DataTable({
+            "processing": true,
             "serverSide": true,
             "ajax":
             {
@@ -62,14 +63,19 @@ export default class Accounts extends Component<{}, DataState> {
                 }
             },
             "columns": [
-                { "data": "createdDate" },
-                { "data": "fullName" },
-                { "data": "email" },
-                { "data": "isLocked" },
-                { "data": "status" },
-                { "data": "gender" },
+                { data: "createdDate" },
+                {
+                    data: "fullName",
+                    render: function (data: any, type:any, row: any) {
+                        return "<a href='/edit-account/" + row.id + "'>" + data + " </a>"
+                    }
+                },
+                { data: "email" },
+                { data: "isLocked" },
+                { data: "status" },
+                { data: "gender"},
             ],
-            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            "lengthMenu": [[5, 10, 25, 50], [5, 10, 25, 50]],
             scrollY: 200
         });
     }
