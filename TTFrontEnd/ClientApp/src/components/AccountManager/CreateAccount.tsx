@@ -326,7 +326,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                         <div className="form-group row">
                             <label className="col-sm-3 col-md-2 col-form-label"></label>
                             <div className="col-sm-9 col-md-4">
-                                <button type="submit" onClick={this.CreateAccount} className="btn btn-primary mr-2">OK</button>
+                                <button type="submit" onClick={this.CreateAccount} className="btn btn-primary mr-2">Save</button>
                             </div>
                         </div>
                     </form>
