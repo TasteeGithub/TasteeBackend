@@ -9,15 +9,20 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace TTFrontEnd
 {
     public class Startup
     {
+        private readonly bool _enableSwagger = false;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            var appSettings = Configuration.GetSection("Appsettings");
+            _enableSwagger = bool.Parse(appSettings.GetValue<string>("EnableSwagger") ?? "false");
         }
 
         public IConfiguration Configuration { get; }
@@ -48,15 +53,46 @@ namespace TTFrontEnd
                 };
             });
 
-            services.AddSwaggerGen(c =>
+            if (_enableSwagger)
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TT Api", 
-                    Version = "v1",
-                    Contact = new OpenApiContact { Email="minhthu2511@gmail.com",Name="Nguyễn Minh Thư"},
-                    Description="Api back end for integrate on front end and mobile",
+                services.AddSwaggerGen(c =>
+                {
+                    c.SwaggerDoc("v1", new OpenApiInfo
+                    {
+                        Title = "TT Api",
+                        Version = "v1",
+                        Contact = new OpenApiContact { Email = "minhthu2511@gmail.com", Name = "Nguyễn Minh Thư" },
+                        Description = "Api back end for integrate on front end and mobile",
+                    });
+                    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                    {
+                        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                        Name= "Authorization",
+                        In = ParameterLocation.Header,
+                        Type = SecuritySchemeType.ApiKey,
+                        BearerFormat="JWT",
+                        Scheme="Bearer"
+                    });
+                    c.AddSecurityRequirement(new OpenApiSecurityRequirement 
+                    {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type= ReferenceType.SecurityScheme,
+                                    Id = "Bearer"
+                                },
+                                Scheme = "oauth2",
+                                Name="Bearer",
+                                In = ParameterLocation.Header,
+                            },
+                            new List<string>()
+                        }
+                    });
                 });
-            });
 
+            }
             services.InsideConfigServices(Configuration);
             services.AddControllersWithViews();
 
@@ -80,20 +116,23 @@ namespace TTFrontEnd
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            #region Swagger
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
 
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
+            if (_enableSwagger)
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "TT Api backend ");
-                //To serve the Swagger UI at the app's root (http://localhost:<port>/), set the RoutePrefix property to an empty string:
-                c.RoutePrefix = string.Empty;
-            });
-            #endregion
+                #region Swagger
+                // Enable middleware to serve generated Swagger as a JSON endpoint.
+                app.UseSwagger();
 
+                // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+                // specifying the Swagger JSON endpoint.
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TT Api backend ");
+                //To serve the Swagger UI at the app's root (http://localhost:<port>/), set the RoutePrefix property to an empty string:
+                    c.RoutePrefix = "docs";
+                });
+                #endregion
+            }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();

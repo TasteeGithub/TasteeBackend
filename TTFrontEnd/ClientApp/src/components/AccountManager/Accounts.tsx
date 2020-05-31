@@ -9,14 +9,14 @@ require('datatables.net-bs4');
 $.DataTable = require('datatables.net');
 
 type DataState = {
-    userData:[]
+    userData: []
 }
 
 type RowProp = {
-    row:any
+    row: any
 }
-    
-const Row: React.FunctionComponent<RowProp> = (props:RowProp) => {
+
+const Row: React.FunctionComponent<RowProp> = (props: RowProp) => {
     return (
         <tr>
             <td>{props.row.createdDate}</td>
@@ -24,11 +24,11 @@ const Row: React.FunctionComponent<RowProp> = (props:RowProp) => {
                 <Link to={`/edit-account/${props.row.id}`}>{props.row.fullName}</Link>
             </td>
             <td>{props.row.email}</td>
-            <td>{props.row.isLocked===true?"True":"False"}</td>
+            <td>{props.row.isLocked === true ? "True" : "False"}</td>
             <td>{props.row.status}</td>
             <td>{props.row.gender}</td>
         </tr>
-        )
+    )
 }
 
 export default class Accounts extends Component<{}, DataState> {
@@ -39,11 +39,10 @@ export default class Accounts extends Component<{}, DataState> {
     el: any;
     $element: any;
     async componentDidMount() {
-
         //let rs = await axios.get("https://localhost:44354/api/Accounts");
         //const dataSet = rs.data.listData;
         //this.setState({ userData: dataSet });
-        
+
         this.$element = $(this.el);
         this.$element.DataTable({
             "processing": true,
@@ -66,14 +65,13 @@ export default class Accounts extends Component<{}, DataState> {
                 { data: "createdDate" },
                 {
                     data: "fullName",
-                    render: function (data: any, type:any, row: any) {
+                    render: function (data: any, type: any, row: any) {
                         return "<a href='/edit-account/" + row.id + "'>" + data + " </a>"
                     }
                 },
                 { data: "email" },
-                { data: "isLocked" },
                 { data: "status" },
-                { data: "gender"},
+                { data: "gender" },
             ],
             "lengthMenu": [[5, 10, 25, 50], [5, 10, 25, 50]],
             scrollY: 200
@@ -84,18 +82,16 @@ export default class Accounts extends Component<{}, DataState> {
             this.$element.Datatable.destroy();
         }
     }
-    
-     render() {
-        
+
+    render() {
         return (
             <div>
-                <table id="example" className="table table-bordered table-hover" style={{width:"100%"}} ref={el => this.el = el}>
+                <table id="example" className="table table-bordered table-hover" style={{ width: "100%" }} ref={el => this.el = el}>
                     <thead>
                         <tr>
                             <th>Created Date</th>
                             <th>Full name</th>
                             <th>Email</th>
-                            <th>Is Locked</th>
                             <th>Status</th>
                             <th>Gender</th>
                         </tr>
@@ -103,11 +99,9 @@ export default class Accounts extends Component<{}, DataState> {
                     <tbody>
                         {
                             this.state.userData.map((x: any) =>
-                                <Row row={x}/>
-                                )
+                                <Row row={x} />
+                            )
                         }
-                        
-                        
 
                     </tbody>
                 </table>

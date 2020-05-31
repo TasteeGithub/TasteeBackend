@@ -85,11 +85,8 @@ namespace TTFrontEnd.Controllers
                 Avatar = model.Avatar,
                 Birthday = model.Birthday,
                 Gender = model.Gender,
-                IsLocked = model.IsLocked,
                 PhoneNumber = model.PhoneNumber,
                 Status = model.Status,
-                UserLevel = model.UserLevel,
-                MerchantLevel = model.MerchantLevel
             };
 
             _serviceUsers.Insert(newUsers);
@@ -197,6 +194,7 @@ namespace TTFrontEnd.Controllers
         }
 
         // GET: api/ManageUser
+        [Authorize]
         [HttpGet]
         public async Task<PaggingModel<Users>> Get(
             //string userName
@@ -250,6 +248,7 @@ namespace TTFrontEnd.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("Detail/{id}")]
         public async Task<Users> GetAccountDetail(
             string id

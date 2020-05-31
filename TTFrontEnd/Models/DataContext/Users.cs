@@ -12,15 +12,13 @@ namespace TTFrontEnd.Models.DataContext
         public string PhoneNumber { get; set; }
         public string FullName { get; set; }
         public DateTime CreatedDate { get; set; }
-        public bool IsLocked { get; set; }
         public DateTime? Birthday { get; set; }
         public string Gender { get; set; }
         public string Address { get; set; }
-        public string Role { get; set; }
-        public int? UserLevel { get; set; }
-        public int? MerchantLevel { get; set; }
         public string Avatar { get; set; }
         public DateTime? LastLogin { get; set; }
         public string Status { get; set; }
+        public string Qrcode { get; set; }
+        public decimal? LoginFailedCount { get; set; }
     }
 }

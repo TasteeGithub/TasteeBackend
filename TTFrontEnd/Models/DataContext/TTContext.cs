@@ -63,7 +63,7 @@ namespace TTFrontEnd.Models.DataContext
 
                 entity.Property(e => e.Email)
                     .IsRequired()
-                    .HasColumnType("character varying");
+                    .HasMaxLength(256);
 
                 entity.Property(e => e.FullName).IsRequired();
 
@@ -71,9 +71,13 @@ namespace TTFrontEnd.Models.DataContext
 
                 entity.Property(e => e.LastLogin).HasColumnType("timestamp(3) without time zone");
 
+                entity.Property(e => e.LoginFailedCount).HasColumnType("numeric");
+
                 entity.Property(e => e.PasswordHash).IsRequired();
 
-                entity.Property(e => e.Role).HasMaxLength(50);
+                entity.Property(e => e.Qrcode)
+                    .HasColumnName("QRCode")
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.Status).HasMaxLength(50);
             });
