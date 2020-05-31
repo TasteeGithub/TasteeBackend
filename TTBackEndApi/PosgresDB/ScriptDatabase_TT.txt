@@ -1,8 +1,8 @@
-﻿-- Table: public.users
+﻿-- Table: public."Users"
 
--- DROP TABLE public.users;
+-- DROP TABLE public."Users";
 
-CREATE TABLE public.users
+CREATE TABLE public."Users"
 (
     "Id" character varying(200) COLLATE pg_catalog."default" NOT NULL,
     "Email" character varying(256) COLLATE pg_catalog."default" NOT NULL,
@@ -10,16 +10,14 @@ CREATE TABLE public.users
     "PhoneNumber" text COLLATE pg_catalog."default",
     "FullName" text COLLATE pg_catalog."default" NOT NULL,
     "CreatedDate" timestamp(3) without time zone NOT NULL,
-    "IsLocked" boolean NOT NULL,
     "Birthday" timestamp(3) without time zone,
     "Gender" character varying(10) COLLATE pg_catalog."default",
     "Address" character varying(500) COLLATE pg_catalog."default",
-    "Role" character varying(50) COLLATE pg_catalog."default",
-    "UserLevel" integer,
-    "MerchantLevel" integer,
-    "Avatar" character varying(50) COLLATE pg_catalog."default",
+    "Avatar" character varying(300) COLLATE pg_catalog."default",
     "LastLogin" timestamp(3) without time zone,
     "Status" character varying(50) COLLATE pg_catalog."default",
+    "QRCode" character varying(100) COLLATE pg_catalog."default",
+    "LoginFailedCount" numeric,
     CONSTRAINT users_pkey PRIMARY KEY ("Id")
 )
 WITH (
@@ -27,9 +25,8 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE public.users
+ALTER TABLE public."Users"
     OWNER to postgres;
-
 
 
 -- Table: public."Roles"
