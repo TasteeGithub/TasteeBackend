@@ -29,6 +29,7 @@ using Constants = TTBackEnd.Shared.Constants;
 
 namespace TTFrontEnd.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class AccountsController : ControllerBase
@@ -139,6 +140,7 @@ namespace TTFrontEnd.Controllers
         }
 
         // POST api/<controller>
+        [AllowAnonymous]
         [HttpPost]
         [Route("Login")]
         public IActionResult Login(LoginModel login)
@@ -194,7 +196,6 @@ namespace TTFrontEnd.Controllers
         }
 
         // GET: api/ManageUser
-        [Authorize]
         [HttpGet]
         public async Task<PaggingModel<Users>> Get(
             //string userName
@@ -248,7 +249,6 @@ namespace TTFrontEnd.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         [Route("Detail/{id}")]
         public async Task<Users> GetAccountDetail(
             string id
@@ -308,7 +308,6 @@ namespace TTFrontEnd.Controllers
             return Ok(new { Successful = false, Error = "Has error when update" });
         }
 
-        [Authorize]
         [HttpPost]
         [Route("load-data")]
         public async Task<IActionResult> LoadData([FromForm] string draw, [FromForm] string start, [FromForm] string length)
@@ -383,9 +382,11 @@ namespace TTFrontEnd.Controllers
             }
             catch (Exception ex)
             {
-                // TODO : Add Error Log
-                throw;
+                _logger.LogError(ex, "LoadData");
             }
+
+            return new JsonResult(
+                    new { draw, recordsFiltered = 0, recordsTotal = 0, data = new List<Users>() });
         }
 
     }

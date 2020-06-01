@@ -9,11 +9,9 @@ export interface IValues {
     phoneNumber: string,
     fullName: string,
     createdDate: number ,
-    isLocked: string,
     birthday: string ,
     gender: string ,
     address: string,
-    userLevel: string,
     avatar: string,
     status: string
 }
@@ -40,16 +38,48 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
     }
 
     const getData = async () => {
-        const customer = await axios.get(`https://localhost:44354/api/accounts/detail/${id}`);
-        await setValues(customer.data);
+
+        const authToken = localStorage.token;
+        if (authToken != null) {
+            axios.defaults.headers.common['Authorization'] = authToken;
+            const customer = await axios.get(`https://localhost:44354/api/accounts/detail/${id}`);
+            console.log(customer.data)
+            await setValues(customer.data);
+            return;
+        }
     }
     const handleSubmit = (event: any) => {
+        event.preventDefault();
         event.persist();
+        alert(values.gender);
     };
 
-    const handleChange = (event: any) => {
-        event.persist();
-    };
+    const handleChange = async (e: React.FormEvent<HTMLInputElement>) => {
+        switch (e.currentTarget.name) {
+            case "fullName":
+                await setValues({ ...values, fullName: e.currentTarget.value });
+                break;
+            case "phone":
+                await setValues({ ...values, phoneNumber: e.currentTarget.value });
+                break;
+            case "address":
+                await setValues({ ...values, address: e.currentTarget.value });
+                break;
+            case "birthday":
+                await setValues({ ...values, birthday: e.currentTarget.value });
+                break;
+            case "radioGender":
+                await setValues({ ...values, gender: e.currentTarget.value });
+                //this.setState({
+                //    selectedGender: e.currentTarget.value,
+                //    imgagePreviewUrl: this.state.imgagePreviewUrl,
+                //    avatarFile: this.state.avatarFile,
+                //    isFinished: this.state.isFinished
+                //});
+                break;
+            
+        }
+    }
 
     return (
         <div className="card">
@@ -151,14 +181,14 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                         <div className="form-radio col-sm-9">
                             <div className="radio radio-inline">
                                 <label>
-                                    <input type="radio" value="Female" name="radioGender"
+                                    <input type="radio" value="Female" name="radioGender" checked={values.gender === "Female"}
                                         onChange={handleChange} />
                                     <i className="helper"></i>Female
                                     </label>
                             </div>
                             <div className="radio radio-inline">
                                 <label>
-                                    <input type="radio" value="Male" name="radioGender"
+                                    <input type="radio" value="Male" name="radioGender" checked={values.gender === "Male"}
                                         onChange={handleChange} />
                                     <i className="helper"></i>Male
                                     </label>

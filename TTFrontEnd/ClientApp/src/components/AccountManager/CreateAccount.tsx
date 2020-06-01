@@ -317,7 +317,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                             </div>
                         </div>
                         <div className="form-group row">
-                            <label className="col-sm-3 col-md-2 col-form-label"></label>
+                            <label className="col-sm-3 col-md-2 col-form-label">Avatar</label>
                             <div className="col-sm-9 col-md-4">
                                 <input type="file" id="inputavatar" name="avatar" onChange={this.handleImageChange} />
                                 {$imagePrivew}
