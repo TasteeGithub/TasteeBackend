@@ -42,16 +42,23 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
         const authToken = localStorage.token;
         if (authToken != null) {
             axios.defaults.headers.common['Authorization'] = authToken;
-            const customer = await axios.get(`https://localhost:44354/api/accounts/detail/${id}`);
-            console.log(customer.data)
-            await setValues(customer.data);
+            const result = await axios.get(`https://localhost:44354/api/accounts/detail/${id}`);
+            console.log(result.data)
+            await setValues(result.data);
             return;
         }
     }
-    const handleSubmit = (event: any) => {
+    const handleSubmit = async (event: any) => {
         event.preventDefault();
         event.persist();
-        alert(values.gender);
+
+        const authToken = localStorage.token;
+        if (authToken != null) {
+            axios.defaults.headers.common['Authorization'] = authToken;
+            const result = await axios.put(`https://localhost:44354/api/accounts`, values);
+            console.log(result);
+        }
+
     };
 
     const handleChange = async (e: React.FormEvent<HTMLInputElement>) => {
@@ -70,17 +77,14 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                 break;
             case "radioGender":
                 await setValues({ ...values, gender: e.currentTarget.value });
-                //this.setState({
-                //    selectedGender: e.currentTarget.value,
-                //    imgagePreviewUrl: this.state.imgagePreviewUrl,
-                //    avatarFile: this.state.avatarFile,
-                //    isFinished: this.state.isFinished
-                //});
                 break;
             
         }
     }
 
+    const handleStatusChange = async (e: React.FormEvent<HTMLSelectElement>) => {
+        await setValues({ ...values, status: e.currentTarget.value });
+    }
     return (
         <div className="card">
             <div className="card-body">
@@ -198,9 +202,9 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                     <form className="form-group row">
                         <label className="col-sm-3 col-md-2 col-form-label">Status</label>
                         <div className="col-sm-9 col-md-4">
-                            <select className="form-control">
-                                <option value="Pending">Pending</option>
-                                <option value="Locked">Locked</option>
+                            <select className="form-control" name="selectStatus" onChange ={handleStatusChange}>
+                                <option selected={values.status==="Pending"} value="Pending">Pending</option>
+                                <option selected={values.status==="Locked"} value="Locked">Locked</option>
                             </select>
                         </div>
                     </form>

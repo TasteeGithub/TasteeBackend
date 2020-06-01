@@ -280,7 +280,14 @@ namespace TTFrontEnd.Controllers
                     var user = await _serviceUsers.FindAsync(model.Id);
                     if (user != null)
                     {
-                        _serviceUsers.Update(model);
+                        user.Address = model.Address;
+                        user.Avatar = model.Avatar.Length > 0 ? model.Avatar : user.Avatar;
+                        user.FullName = model.FullName;
+                        user.Gender = model.Gender;
+                        user.PhoneNumber = model.PhoneNumber;
+                        user.Status = model.Status;
+
+                        _serviceUsers.Update(user);
                         await _unitOfWork.SaveChangesAsync();
 
                         isActionSuccess = true;

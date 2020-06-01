@@ -23,7 +23,7 @@ const App: React.FunctionComponent<AppProps> = (props: AppProps) => {
             <Switch>
                 <GuestRoute exact path="/" component={Dashboard} />
                 <LoginRoute path="/login" component={Login} />
-                <GuestRoute component={Accounts} path='/accounts/:startDateIndex?' />
+                <PrivateRoute component={Accounts} path='/accounts/:startDateIndex?' />
                 <GuestRoute path="/create-account" component={CreateAccount} />
                 <GuestRoute path="/edit-account/:id?" component={EditAccount} />
                 <GuestRoute component={FetchData} path='/fetch-data/:startDateIndex?' />
