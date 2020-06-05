@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,14 +66,23 @@ namespace TTFrontEnd.Controllers
         //}
         // POST api/<controller>
         [HttpPost]
-        public async Task<IActionResult> Post(RegisterModel model)
+        public async Task<IActionResult> Post(RegisterUserModel model)
         {
-            if (UsersIsExists(model.Email))
+            if(!ModelState.IsValid)
             {
-                return Conflict();
+                var errorMessage = ModelState.Values
+                    .SelectMany(x => x.Errors)
+                    .Select(x => x.ErrorMessage);
+
+                return Ok(new RegisterResult { Successful = false, Error = errorMessage });
             }
 
-            var passwordHasher = new PasswordHasher<RegisterModel>();
+            if(_serviceUsers.Queryable().Any(e => e.Email == model.Email || e.PhoneNumber == model.PhoneNumber))
+            {
+                return Ok(new RegisterResult { Successful = false, Error = new string[] {"User is exists"}});
+            }
+
+            var passwordHasher = new PasswordHasher<RegisterUserModel>();
             var passwordHash = passwordHasher.HashPassword(model, model.Password);
 
             Users newUsers = new Users()
@@ -133,10 +143,6 @@ namespace TTFrontEnd.Controllers
             {
                 return StatusCode(500, $"Internal server error: {ex}");
             }
-        }
-        private bool UsersIsExists(string email)
-        {
-            return _serviceUsers.Queryable().Any(e => e.Email == email);
         }
 
         // POST api/<controller>

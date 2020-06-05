@@ -1,5 +1,5 @@
 ﻿import * as React from 'react';
-import { RouteComponentProps, useParams } from 'react-router-dom';
+import { RouteComponentProps, useParams, Redirect } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -8,9 +8,9 @@ export interface IValues {
     email: string,
     phoneNumber: string,
     fullName: string,
-    createdDate: number ,
-    birthday: string ,
-    gender: string ,
+    createdDate: number,
+    birthday: string,
+    gender: string,
     address: string,
     avatar: string,
     status: string
@@ -19,6 +19,8 @@ export interface IValues {
 const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
     const { id } = useParams();
     const [values, setValues] = useState({} as IValues);
+    const [isSuccess, setSuccess] = useState(false);
+    const [avartar, setAvatar] = useState("");
     useEffect(() => {
         getData();
     }, []);
@@ -38,12 +40,10 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
     }
 
     const getData = async () => {
-
         const authToken = localStorage.token;
         if (authToken != null) {
             axios.defaults.headers.common['Authorization'] = authToken;
             const result = await axios.get(`https://localhost:44354/api/accounts/detail/${id}`);
-            console.log(result.data)
             await setValues(result.data);
             return;
         }
@@ -55,10 +55,17 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
         const authToken = localStorage.token;
         if (authToken != null) {
             axios.defaults.headers.common['Authorization'] = authToken;
-            const result = await axios.put(`https://localhost:44354/api/accounts`, values);
-            console.log(result);
+            axios.put(`https://localhost:44354/api/accounts`, values)
+                .then(result => {
+                    if (result.data.successful) {
+                        setSuccess(true);
+                    }
+                    else
+                        alert(result.data.error);
+                }).catch(e => {
+                    alert(e.response);
+                });
         }
-
     };
 
     const handleChange = async (e: React.FormEvent<HTMLInputElement>) => {
@@ -78,152 +85,174 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
             case "radioGender":
                 await setValues({ ...values, gender: e.currentTarget.value });
                 break;
-            
         }
     }
 
     const handleStatusChange = async (e: React.FormEvent<HTMLSelectElement>) => {
         await setValues({ ...values, status: e.currentTarget.value });
     }
-    return (
-        <div className="card">
-            <div className="card-body">
-                <form className="forms-sample" onSubmit={handleSubmit}>
-                    <div className="form-group row">
-                        <label htmlFor="exampleInputEmail2" className="col-sm-3 col-md-2 col-form-label">
-                            Email
+
+    const handleImageChange = (e: React.FormEvent<HTMLInputElement>) => {
+        e.preventDefault();
+
+        let reader = new FileReader();
+
+        let file = e.currentTarget.files == null ? null : e.currentTarget.files[0];
+
+        if (file != null) {
+            reader.onloadend = () => {
+                //this.setState({
+                //    selectedGender: this.state.selectedGender,
+                //    imgagePreviewUrl: reader.result?.toString(),
+                //    avatarFile: file,
+                //    isFinished: this.state.isFinished,
+                //    birthday: this.state.birthday
+                //});
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    if (isSuccess)
+        return <Redirect to="/accounts" />
+    else
+        return (
+            <div className="card">
+                <div className="card-body">
+                    <form className="forms-sample" onSubmit={handleSubmit}>
+                        <div className="form-group row">
+                            <label htmlFor="exampleInputEmail2" className="col-sm-3 col-md-2 col-form-label">
+                                Email
                         </label>
-                        <div className="col-sm-9 col-md-4">
-                            <input
-                                required
-                                name="email"
-                                type="email"
-                                className="form-control"
-                                id="exampleInputEmail2"
-                                placeholder="Email"
-                                readOnly
-                                value={values.email}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    </div>
-                    <div className="form-group row">
-                        <label
-                            htmlFor="exampleInputUsername2"
-                            className="col-sm-3 col-md-2 col-form-label">
-                            Full name
-                            </label>
-                        <div className="col-sm-9 col-md-4">
-                            <input
-                                required
-                                name="fullName"
-                                type="text"
-                                className="form-control"
-                                id="exampleInputUsername2"
-                                placeholder="Full name"
-                                value={values.fullName}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    </div>
-                    
-                    <div className="form-group row">
-                        <label htmlFor="exampleInputMobile" className="col-sm-3 col-md-2 col-form-label">
-                            Phone
-                            </label>
-                        <div className="col-sm-9 col-md-4">
-                            <input
-                                required
-                                name="phone"
-                                type="text"
-                                className="form-control"
-                                id="exampleInputMobile"
-                                placeholder="Mobile number"
-                                value={values.phoneNumber}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="form-group row">
-                        <label htmlFor="inputAddress" className="col-sm-3 col-md-2 col-form-label">
-                            Address
-                            </label>
-                        <div className="col-sm-9 col-md-4">
-                            <input
-                                required
-                                name="address"
-                                type="text"
-                                className="form-control"
-                                id="inputAddress"
-                                placeholder="Address"
-                                value={values.address}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="form-group row">
-                        <label htmlFor="inputBithday" className="col-sm-3 col-md-2 col-form-label">
-                            Birthday
-                            </label>
-                        <div className="col-sm-9 col-md-4">
-                            <input type="date"
-                                className="form-control datetimepicker-input"
-                                id="inputBithday"
-                                name="birthday"
-                                value={formatDate(values.birthday)}
-                                onChange={handleChange}
-                            />
-
-                        </div>
-                    </div>
-                    <div className="form-group row">
-                        <label className="col-sm-3 col-md-2 col-form-label">
-                            Gender
-                            </label>
-                        <div className="form-radio col-sm-9">
-                            <div className="radio radio-inline">
-                                <label>
-                                    <input type="radio" value="Female" name="radioGender" checked={values.gender === "Female"}
-                                        onChange={handleChange} />
-                                    <i className="helper"></i>Female
-                                    </label>
-                            </div>
-                            <div className="radio radio-inline">
-                                <label>
-                                    <input type="radio" value="Male" name="radioGender" checked={values.gender === "Male"}
-                                        onChange={handleChange} />
-                                    <i className="helper"></i>Male
-                                    </label>
+                            <div className="col-sm-9 col-md-4">
+                                <input
+                                    required
+                                    name="email"
+                                    type="email"
+                                    className="form-control"
+                                    id="exampleInputEmail2"
+                                    placeholder="Email"
+                                    readOnly
+                                    value={values.email}
+                                />
                             </div>
                         </div>
-                    </div>
-                    <form className="form-group row">
-                        <label className="col-sm-3 col-md-2 col-form-label">Status</label>
-                        <div className="col-sm-9 col-md-4">
-                            <select className="form-control" name="selectStatus" onChange ={handleStatusChange}>
-                                <option selected={values.status==="Pending"} value="Pending">Pending</option>
-                                <option selected={values.status==="Locked"} value="Locked">Locked</option>
-                            </select>
+                        <div className="form-group row">
+                            <label
+                                htmlFor="exampleInputUsername2"
+                                className="col-sm-3 col-md-2 col-form-label">
+                                Full name
+                            </label>
+                            <div className="col-sm-9 col-md-4">
+                                <input
+                                    required
+                                    name="fullName"
+                                    type="text"
+                                    className="form-control"
+                                    id="exampleInputUsername2"
+                                    placeholder="Full name"
+                                    value={values.fullName}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-group row">
+                            <label htmlFor="exampleInputMobile" className="col-sm-3 col-md-2 col-form-label">
+                                Phone
+                            </label>
+                            <div className="col-sm-9 col-md-4">
+                                <input
+                                    required
+                                    name="phone"
+                                    type="text"
+                                    className="form-control"
+                                    id="exampleInputMobile"
+                                    placeholder="Mobile number"
+                                    value={values.phoneNumber}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-group row">
+                            <label htmlFor="inputAddress" className="col-sm-3 col-md-2 col-form-label">
+                                Address
+                            </label>
+                            <div className="col-sm-9 col-md-4">
+                                <input
+                                    required
+                                    name="address"
+                                    type="text"
+                                    className="form-control"
+                                    id="inputAddress"
+                                    placeholder="Address"
+                                    value={values.address}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-group row">
+                            <label htmlFor="inputBithday" className="col-sm-3 col-md-2 col-form-label">
+                                Birthday
+                            </label>
+                            <div className="col-sm-9 col-md-4">
+                                <input type="date"
+                                    className="form-control datetimepicker-input"
+                                    id="inputBithday"
+                                    name="birthday"
+                                    value={formatDate(values.birthday)}
+                                    onChange={handleChange}
+                                />
+
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label className="col-sm-3 col-md-2 col-form-label">
+                                Gender
+                            </label>
+                            <div className="form-radio col-sm-9">
+                                <div className="radio radio-inline">
+                                    <label>
+                                        <input type="radio" value="Female" name="radioGender" checked={values.gender === "Female"}
+                                            onChange={handleChange} />
+                                        <i className="helper"></i>Female
+                                    </label>
+                                </div>
+                                <div className="radio radio-inline">
+                                    <label>
+                                        <input type="radio" value="Male" name="radioGender" checked={values.gender === "Male"}
+                                            onChange={handleChange} />
+                                        <i className="helper"></i>Male
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <form className="form-group row">
+                            <label className="col-sm-3 col-md-2 col-form-label">Status</label>
+                            <div className="col-sm-9 col-md-4">
+                                <select className="form-control" name="selectStatus" onChange={handleStatusChange}>
+                                    <option selected={values.status === "Pending"} value="Pending">Pending</option>
+                                    <option selected={values.status === "Locked"} value="Locked">Locked</option>
+                                </select>
+                            </div>
+                        </form>
+                        <div className="form-group row">
+                            <label className="col-sm-3 col-md-2 col-form-label"></label>
+                            <div className="col-sm-9 col-md-4">
+                                <input type="file" id="inputavatar" name="avatar" />
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label className="col-sm-3 col-md-2 col-form-label"></label>
+                            <div className="col-sm-9 col-md-4">
+                                <button type="submit" className="btn btn-primary mr-2">Save</button>
+                            </div>
                         </div>
                     </form>
-                    <div className="form-group row">
-                        <label className="col-sm-3 col-md-2 col-form-label"></label>
-                        <div className="col-sm-9 col-md-4">
-                            <input type="file" id="inputavatar" name="avatar"  />
-
-                        </div>
-                    </div>
-                    <div className="form-group row">
-                        <label className="col-sm-3 col-md-2 col-form-label"></label>
-                        <div className="col-sm-9 col-md-4">
-                            <button type="submit" className="btn btn-primary mr-2">Save</button>
-                        </div>
-                    </div>
-                </form>
+                </div>
             </div>
-        </div>
-    );
+        );
 }
 export default EditAccount;

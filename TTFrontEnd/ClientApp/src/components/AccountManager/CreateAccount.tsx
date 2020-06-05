@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { Redirect } from 'react-router';
 import { stringify } from 'querystring';
+import { format } from 'url';
 declare var showNotify: any;
 
 const $ = require('jquery');
@@ -23,13 +24,15 @@ interface IState {
     selectedGender: string,
     imgagePreviewUrl: string | undefined,
     avatarFile: any,
-    isFinished: boolean
+    isFinished: boolean,
+    birthday:Date
 }
 
 class CreateAccount extends React.PureComponent<{}, IState> {
     constructor(props: any) {
         super(props);
-        this.state = { selectedGender: "Female", imgagePreviewUrl: "", avatarFile: null, isFinished: false };
+        this.state = { selectedGender: "Female", imgagePreviewUrl: "", avatarFile: null, isFinished: false, birthday: new Date() };
+        this.accountInfo.birthday = this.formatDate(this.state.birthday.toString());
     }
     inputBirth: any;
     $inputBirth: any;
@@ -54,14 +57,14 @@ class CreateAccount extends React.PureComponent<{}, IState> {
     }
 
     accountInfo: AccountInfo = {
-        birthday: "",
+        birthday:"",
         email: "",
         fullName: "",
         password: "",
         phoneNumber: "",
         address: "",
         rePassword: "",
-        gender: "Femail",
+        gender: "Female",
         avatar: ""
     };
     handleSubmit = (e: React.FormEvent<HTMLElement>) => {
@@ -69,17 +72,25 @@ class CreateAccount extends React.PureComponent<{}, IState> {
     }
 
     CreateAccount = async () => {
-
-        let formData = new FormData();
-        formData.append("myFile", this.state.avatarFile, this.state.avatarFile.name);
-        let rs = await axios.post("https://localhost:44354/api/accounts/uploadfile", formData);
-
-        if (rs.status == 200) {
-            this.accountInfo.avatar = rs.data.dbPath;
+        const authToken = localStorage.token;
+        if (authToken != null) {
+            axios.defaults.headers.common['Authorization'] = authToken;
         }
-        else {
-            alert(rs.status);
+        else
             return;
+
+        if (this.state.avatarFile?.name != null) {
+            let formData = new FormData();
+            formData.append("myFile", this.state.avatarFile, this.state.avatarFile.name);
+            let rs = await axios.post("https://localhost:44354/api/accounts/uploadfile", formData);
+
+            if (rs.status == 200) {
+                this.accountInfo.avatar = rs.data.dbPath;
+            }
+            else {
+                alert(rs.status);
+                return;
+            }
         }
 
         let accountModel = {
@@ -88,7 +99,6 @@ class CreateAccount extends React.PureComponent<{}, IState> {
             confirmPassword: this.accountInfo.rePassword,
             fullName: this.accountInfo.fullName,
             phoneNumber: this.accountInfo.phoneNumber,
-            isLocked: false,
             birthday: this.accountInfo.birthday,
             gender: this.accountInfo.gender,
             address: this.accountInfo.address,
@@ -99,15 +109,71 @@ class CreateAccount extends React.PureComponent<{}, IState> {
             status: "Pending"
         }
 
-        let resp = await axios.post("https://localhost:44354/api/accounts", accountModel);
+        axios.post("https://localhost:44354/api/accounts", accountModel)
+            .then((rs) => {
+                if (rs.data.successful)
+                    this.setState({
+                        ...this.state,
+                        isFinished: true
+                    });
+                else
+                    alert(rs.data.error[0]);
+            })
+            .catch((e) => {
+                if (e.response) {
+                    var error = JSON.parse(e.response.request.response).errors;
+                    let errorMessage: string = "";
+                    let i = 0;
+                    if (error.Email != null) {
+                        for (i = 0; i < error.Email.length; i++) {
+                            errorMessage += `${error.Email[i]}
+`                            }
+                    }
 
-        if (resp.data.successful)
-            this.setState({
-                ...this.state,
-                isFinished: true
+                    if (error.FullName != null) {
+                        for (i = 0; i < error.FullName.length; i++) {
+                            errorMessage += `${error.FullName[i]}
+`                            }
+                    }
+
+                    if (error.Password != null) {
+                        for (i = 0; i < error.Password.length; i++) {
+                            errorMessage += `${error.Password[i]}
+`                            }
+                    }
+
+                    if (error.ConfirmPassword != null) {
+                        for (i = 0; i < error.ConfirmPassword.length; i++) {
+                            errorMessage += `${error.ConfirmPassword[i]}
+`                            }
+                    }
+                    
+                    if (error.PhoneNumber != null) {
+                        for (i = 0; i < error.PhoneNumber.length; i++) {
+                            errorMessage += `${error.PhoneNumber[i]}
+`                            }
+                    }
+
+                    alert(errorMessage);
+                }
+                else if (e.request) {
+                    alert(e + ",rs");
+                }
             });
-        else
-            alert(resp.data.error);
+
+        //try {
+        //    let resp = await axios.post("https://localhost:44354/api/accounts", accountModel);
+
+        //    if (resp.data.successful)
+        //        this.setState({
+        //            ...this.state,
+        //            isFinished: true
+        //        });
+        //    else
+        //            alert(resp.data.error);
+        //} catch (e) {
+        //    console.log(stringify(e));
+        //}
     }
 
     handleChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -132,6 +198,13 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                 break;
             case "birthday":
                 this.accountInfo.birthday = e.currentTarget.value;
+                this.setState({
+                    selectedGender:this.state.selectedGender,
+                    imgagePreviewUrl: this.state.imgagePreviewUrl,
+                    avatarFile: this.state.avatarFile,
+                    isFinished: this.state.isFinished,
+                    birthday:new Date(e.currentTarget.value)
+                });
                 break;
             case "radioGender":
                 this.accountInfo.gender = e.currentTarget.value;
@@ -139,11 +212,26 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                     selectedGender: e.currentTarget.value,
                     imgagePreviewUrl: this.state.imgagePreviewUrl,
                     avatarFile: this.state.avatarFile,
-                    isFinished: this.state.isFinished
+                    isFinished: this.state.isFinished,
+                    birthday: this.state.birthday
                 });
                 break;
         }
     }
+
+    formatDate = (date: string) => {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
 
     handleImageChange = (e: React.FormEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -158,7 +246,8 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                     selectedGender: this.state.selectedGender,
                     imgagePreviewUrl: reader.result?.toString(),
                     avatarFile: file,
-                    isFinished: this.state.isFinished
+                    isFinished: this.state.isFinished,
+                    birthday: this.state.birthday
                 });
             }
             reader.readAsDataURL(file);
@@ -290,6 +379,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                                     className="form-control datetimepicker-input"
                                     id="inputBithday"
                                     name="birthday"
+                                    value={this.formatDate(this.state.birthday.toString())}
                                     onChange={this.handleChange}
                                 />
 
