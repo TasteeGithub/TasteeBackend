@@ -233,8 +233,10 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                             <label className="col-sm-3 col-md-2 col-form-label">Status</label>
                             <div className="col-sm-9 col-md-4">
                                 <select className="form-control" name="selectStatus" onChange={handleStatusChange}>
-                                    <option selected={values.status === "Pending"} value="Pending">Pending</option>
+                                    <option selected={values.status === "Active"} value="Active">Active</option>
+                                    <option selected={values.status === "Inactive"} value="Inactive">Inactive</option>
                                     <option selected={values.status === "Locked"} value="Locked">Locked</option>
+                                    <option selected={values.status === "Closed"} value="Closed">Closed</option>
                                 </select>
                             </div>
                         </form>

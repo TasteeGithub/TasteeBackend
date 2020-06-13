@@ -1,12 +1,8 @@
 ﻿import * as React from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router';
-import { stringify } from 'querystring';
-import { format } from 'url';
-declare var showNotify: any;
 
 const $ = require('jquery');
-//let $: JQueryStatic = (window as any)["jQuery"];
 
 interface AccountInfo {
     email: string,
@@ -106,7 +102,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
             userLevel: 1,
             merchantLevel: 10,
             avatar: this.accountInfo.avatar,
-            status: "Pending"
+            status: "Active"
         }
 
         axios.post("https://localhost:44354/api/accounts", accountModel)

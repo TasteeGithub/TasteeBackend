@@ -287,7 +287,7 @@ namespace TTFrontEnd.Controllers
                     if (user != null)
                     {
                         user.Address = model.Address;
-                        user.Avatar = model.Avatar.Length > 0 ? model.Avatar : user.Avatar;
+                        user.Avatar = (model.Avatar?.Length?? 0) > 0 ? model.Avatar : user.Avatar;
                         user.FullName = model.FullName;
                         user.Gender = model.Gender;
                         user.PhoneNumber = model.PhoneNumber;

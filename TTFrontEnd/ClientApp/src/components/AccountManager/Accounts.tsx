@@ -62,7 +62,12 @@ export default class Accounts extends Component<{}, DataState> {
                 }
             },
             "columns": [
-                { data: "createdDate" },
+                {
+                    data: "createdDate",
+                    render: function (data: any, type: any, row: any) {
+                        return moment(data).format("DD/MM/yyyy");
+                    }
+                },
                 {
                     data: "fullName",
                     render: function (data: any, type: any, row: any) {
@@ -73,8 +78,8 @@ export default class Accounts extends Component<{}, DataState> {
                 { data: "status" },
                 { data: "gender" },
             ],
-            "lengthMenu": [[5, 10, 25, 50], [5, 10, 25, 50]],
-            scrollY: 200
+            "lengthMenu": [[10, 25, 50], [10, 25, 50]],
+            scrollY: 300
         });
     }
     componentWillUnmount() {
