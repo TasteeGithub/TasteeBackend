@@ -1,12 +1,8 @@
 ﻿import * as React from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router';
-import { stringify } from 'querystring';
-import { format } from 'url';
-declare var showNotify: any;
-
+import Role from '../AccountManager/Role';
 const $ = require('jquery');
-//let $: JQueryStatic = (window as any)["jQuery"];
 
 interface AccountInfo {
     email: string,
@@ -411,6 +407,12 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                             <div className="col-sm-9 col-md-4">
                                 <input type="file" id="inputavatar" name="avatar" onChange={this.handleImageChange} />
                                 {$imagePrivew}
+                            </div>
+                        </div>
+                        <div className="form-group row">
+                            <label className="col-sm-3 col-md-2 col-form-label">Role</label>
+                            <div className="col-sm-9 col-md-4">
+                                <Role />
                             </div>
                         </div>
                         <div className="form-group row">

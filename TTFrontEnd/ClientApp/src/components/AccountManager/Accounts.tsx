@@ -73,8 +73,8 @@ export default class Accounts extends Component<{}, DataState> {
                 { data: "status" },
                 { data: "gender" },
             ],
-            "lengthMenu": [[5, 10, 25, 50], [5, 10, 25, 50]],
-            scrollY: 200
+            "lengthMenu": [[10, 25, 50], [10, 25, 50]],
+            //scrollY: 200
         });
     }
     componentWillUnmount() {

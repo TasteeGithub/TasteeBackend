@@ -45,6 +45,7 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\components\AccountManager\Accounts.tsx" />
+    <None Remove="ClientApp\src\components\AccountManager\Role.tsx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -66,6 +67,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\components\AccountManager\Accounts.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\AccountManager\CreateAccount.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\AccountManager\Role.tsx" />
   </ItemGroup>
 
   <ItemGroup>
