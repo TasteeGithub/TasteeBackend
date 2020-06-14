@@ -13,7 +13,8 @@ interface AccountInfo {
     birthday: string,
     gender: string,
     address: string,
-    avatar: string
+    avatar: string,
+    roleId:string
 };
 
 interface IState {
@@ -61,7 +62,8 @@ class CreateAccount extends React.PureComponent<{}, IState> {
         address: "",
         rePassword: "",
         gender: "Female",
-        avatar: ""
+        avatar: "",
+        roleId:""
     };
     handleSubmit = (e: React.FormEvent<HTMLElement>) => {
         e.preventDefault();
@@ -81,7 +83,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
             let rs = await axios.post("https://localhost:44354/api/accounts/uploadfile", formData);
 
             if (rs.status == 200) {
-                this.accountInfo.avatar = rs.data.dbPath;
+                this.accountInfo.avatar = rs.data.newFileName;
             }
             else {
                 alert(rs.status);
@@ -98,11 +100,12 @@ class CreateAccount extends React.PureComponent<{}, IState> {
             birthday: this.accountInfo.birthday,
             gender: this.accountInfo.gender,
             address: this.accountInfo.address,
-            role: "User",
+            role:"",
             userLevel: 1,
             merchantLevel: 10,
             avatar: this.accountInfo.avatar,
-            status: "Active"
+            status: "Active",
+            roleId: this.accountInfo.roleId
         }
 
         axios.post("https://localhost:44354/api/accounts", accountModel)
@@ -213,6 +216,10 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                 });
                 break;
         }
+    }
+
+    handleGetRole = (roleId:string) => {
+        this.accountInfo.roleId = roleId;
     }
 
     formatDate = (date: string) => {
@@ -412,7 +419,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                         <div className="form-group row">
                             <label className="col-sm-3 col-md-2 col-form-label">Role</label>
                             <div className="col-sm-9 col-md-4">
-                                <Role />
+                                <Role GetRole={this.handleGetRole} SelectedRoleId="" />
                             </div>
                         </div>
                         <div className="form-group row">

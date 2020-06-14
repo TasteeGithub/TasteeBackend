@@ -2,6 +2,7 @@
 import { RouteComponentProps, useParams, Redirect } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import Role from './Role';
 
 export interface IValues {
     id: string,
@@ -14,13 +15,13 @@ export interface IValues {
     address: string,
     avatar: string,
     status: string
+    roleId:string
 }
 
 const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
     const { id } = useParams();
     const [values, setValues] = useState({} as IValues);
     const [isSuccess, setSuccess] = useState(false);
-    const [avartar, setAvatar] = useState("");
     useEffect(() => {
         getData();
     }, []);
@@ -112,7 +113,9 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
             reader.readAsDataURL(file);
         }
     }
-
+    const handleGetRole = async (roleId: string) => {
+                await setValues({ ...values, roleId: roleId });
+    }
     if (isSuccess)
         return <Redirect to="/accounts" />
     else
@@ -240,10 +243,18 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                                 </select>
                             </div>
                         </form>
+                        {(values.avatar?.length?? 0) > 0 &&
+                            <div className="form-group row">
+                                <label className="col-sm-3 col-md-2 col-form-label"></label>
+                                <div className="col-sm-9 col-md-4">
+                                    <div style={{ paddingTop: "20px" }}><img style={{ maxWidth: "200px" }} src={"/Images/Avatar/" + values.avatar} /></div>
+                                </div>
+                            </div>
+                        }
                         <div className="form-group row">
-                            <label className="col-sm-3 col-md-2 col-form-label"></label>
+                            <label className="col-sm-3 col-md-2 col-form-label">Role</label>
                             <div className="col-sm-9 col-md-4">
-                                <input type="file" id="inputavatar" name="avatar" />
+                                <Role GetRole={handleGetRole} SelectedRoleId={values.roleId} />
                             </div>
                         </div>
                         <div className="form-group row">

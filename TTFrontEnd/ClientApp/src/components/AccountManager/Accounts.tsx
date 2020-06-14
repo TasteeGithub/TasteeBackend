@@ -65,7 +65,7 @@ export default class Accounts extends Component<{}, DataState> {
                 {
                     data: "createdDate",
                     render: function (data: any, type: any, row: any) {
-                        return moment(data).format("DD/MM/yyyy");
+                        return moment(data).format("DD/MM/YYYY HH:mm:ss");
                     }
                 },
                 {

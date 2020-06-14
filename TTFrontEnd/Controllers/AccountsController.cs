@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +25,6 @@ using URF.Core.Abstractions;
 using Constants = TTBackEnd.Shared.Constants;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 
 namespace TTFrontEnd.Controllers
 {
@@ -59,6 +57,7 @@ namespace TTFrontEnd.Controllers
             _serviceRoles = serviceRoles;
             _serviceUserRole = serviceUserRole;
         }
+
         //[HttpPost]
         //public async Task<IActionResult> Post(RegisterModel model)
         //{
@@ -68,7 +67,7 @@ namespace TTFrontEnd.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(RegisterUserModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 var errorMessage = ModelState.Values
                     .SelectMany(x => x.Errors)
@@ -77,9 +76,9 @@ namespace TTFrontEnd.Controllers
                 return Ok(new RegisterResult { Successful = false, Error = errorMessage });
             }
 
-            if(_serviceUsers.Queryable().Any(e => e.Email == model.Email || e.PhoneNumber == model.PhoneNumber))
+            if (_serviceUsers.Queryable().Any(e => e.Email == model.Email || e.PhoneNumber == model.PhoneNumber))
             {
-                return Ok(new RegisterResult { Successful = false, Error = new string[] {"User is exists"}});
+                return Ok(new RegisterResult { Successful = false, Error = new string[] { "User is exists" } });
             }
 
             var passwordHasher = new PasswordHasher<RegisterUserModel>();
@@ -104,6 +103,16 @@ namespace TTFrontEnd.Controllers
 
             try
             {
+                if ((model.RoleId?.Length ?? 0) > 0)
+                {
+                    UserRoles userRoles = new UserRoles()
+                    {
+                        RoleId = model.RoleId,
+                        UserId = newUsers.Id
+                    };
+                    _serviceUserRole.Insert(userRoles);
+                }
+
                 await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -114,30 +123,35 @@ namespace TTFrontEnd.Controllers
             return Ok(new RegisterResult { Successful = true });
         }
 
-        [HttpPost,DisableRequestSizeLimit]
+        [HttpPost, DisableRequestSizeLimit]
         [Route("uploadfile")]
         public IActionResult UploadFile()
         {
             try
             {
-            var file = Request.Form.Files[0];
-            var folderName = Path.Combine("Images", "Avatar");
-            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-            if(file.Length >  0 )
-            {
-                var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim().ToString();
-                var fullPath = Path.Combine(pathToSave, fileName);
-                var dbPath = Path.Combine(folderName, fileName);
-                using (var stream = new FileStream(fullPath,FileMode.Create))
+                var file = Request.Form.Files[0];
+                var folderName = Path.Combine("ClientApp","public","Images", "Avatar");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                if (file.Length > 0)
                 {
-                    file.CopyTo(stream);
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim().ToString();
+                    
+                    FileInfo fileInfo = new FileInfo(fileName);
+                    string newFileName = System.IO.Path.GetRandomFileName() + fileInfo.Extension;
+
+                    var fullPath = Path.Combine(pathToSave,newFileName);
+                    //var dbPath = Path.Combine(folderName, fileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create ))
+                    {
+                        file.CopyTo(stream);
+                    }
+
+                    return Ok(new { newFileName });
                 }
-                return Ok(new { dbPath });
-            }
-            else
-            {
-                return BadRequest();
-            }
+                else
+                {
+                    return BadRequest();
+                }
             }
             catch (Exception ex)
             {
@@ -256,13 +270,18 @@ namespace TTFrontEnd.Controllers
 
         [HttpGet]
         [Route("Detail/{id}")]
-        public async Task<Users> GetAccountDetail(
+        public async Task<UserDetail> GetAccountDetail(
             string id
             )
         {
             try
             {
-                return await _serviceUsers.FindAsync(id);
+                var user = await _serviceUsers.FindAsync(id);
+                var role = _serviceUserRole.Queryable().Where(x => x.UserId == user.Id).FirstOrDefault();
+
+                var userDetail = user.Adapt<UserDetail>();
+                if (role != null) userDetail.RoleId = role.RoleId;
+                return userDetail;
             }
             catch (Exception ex)
             {
@@ -276,7 +295,7 @@ namespace TTFrontEnd.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Put(Users model)
+        public async Task<IActionResult> Put(UserDetail model)
         {
             bool isActionSuccess = false;
             try
@@ -287,14 +306,32 @@ namespace TTFrontEnd.Controllers
                     if (user != null)
                     {
                         user.Address = model.Address;
-                        user.Avatar = (model.Avatar?.Length?? 0) > 0 ? model.Avatar : user.Avatar;
+                        user.Avatar = (model.Avatar?.Length ?? 0) > 0 ? model.Avatar : user.Avatar;
                         user.FullName = model.FullName;
                         user.Gender = model.Gender;
                         user.PhoneNumber = model.PhoneNumber;
                         user.Status = model.Status;
 
                         _serviceUsers.Update(user);
-                        await _unitOfWork.SaveChangesAsync();
+
+                        if ((model.RoleId?.Length ?? 0) > 0)
+                        {
+                            var roleUser = _serviceUserRole.Queryable().Where(x => x.UserId == model.Id).FirstOrDefault();
+
+                            if (roleUser != null)
+                            {
+                                _serviceUserRole.Delete(roleUser);
+                            }
+
+                            roleUser = new UserRoles()
+                            {
+                                UserId = model.Id,
+                                RoleId = model.RoleId
+                            };
+                            _serviceUserRole.Insert(roleUser);
+
+                            await _unitOfWork.SaveChangesAsync();
+                        }
 
                         isActionSuccess = true;
                         return Ok(new { Successful = true });
@@ -304,11 +341,9 @@ namespace TTFrontEnd.Controllers
                         isActionSuccess = true;
                         return Ok(new { Successful = false, Error = "User not found" });
                     }
-
                 }
                 isActionSuccess = true;
                 return Ok(new { Successful = false, Error = "Please input id" });
-                
             }
             catch (Exception ex)
             {
@@ -401,6 +436,5 @@ namespace TTFrontEnd.Controllers
             return new JsonResult(
                     new { draw, recordsFiltered = 0, recordsTotal = 0, data = new List<Users>() });
         }
-
     }
 }

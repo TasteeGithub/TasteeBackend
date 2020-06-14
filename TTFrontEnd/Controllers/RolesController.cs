@@ -25,9 +25,9 @@ namespace TTFrontEnd.Controllers
 
         // GET: api/<RolesController>
         [HttpGet]
-        public IEnumerable<Roles> Get()
+        public IActionResult Get()
         {
-            return _serviceRoles.Queryable().ToArray();
+            return Ok(_serviceRoles.Queryable().ToArray());
         }
     }
 }

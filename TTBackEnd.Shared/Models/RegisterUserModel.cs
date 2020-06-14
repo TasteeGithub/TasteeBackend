@@ -33,6 +33,7 @@ namespace TTBackEnd.Shared
         public string Address { get; set; }
         public string Avatar { get; set; }
         public string Status { get; set; }
+        public string RoleId { get; set; }
 
     }
 }

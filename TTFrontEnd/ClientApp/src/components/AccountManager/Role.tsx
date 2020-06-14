@@ -1,16 +1,46 @@
 ﻿import * as React from 'react'
-import { RouteComponentProps } from 'react-router';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { IpcNetConnectOpts } from 'net';
 
-const Role: React.FunctionComponent = () => {
+export interface IRole {
+    id: string,
+    name: string
+}
 
+export interface IProps {
+    SelectedRoleId:string,
+    GetRole: (roleId:string)=> void
+}
+
+const Role: React.FunctionComponent<IProps> = (props:IProps) => {
+    useEffect(() => {
+        getRoleData();
+    },[]);
+
+    const [roles, setRoles] = useState([] as IRole[]);
+
+    const getRoleData = async () => {
+        const authToken = localStorage.token;
+        if (authToken != null) {
+            axios.defaults.headers.common['Authorization'] = authToken;
+            const result = await axios.get(`https://localhost:44354/api/Roles/`);
+            setRoles(result.data);
+        }
+    }
+    
+    
     const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        alert(e.currentTarget.value);
+        props.GetRole(e.currentTarget.value);
+        //alert(e.currentTarget.value);
     }
     return (
         <select className="form-control" name="selectRole" onChange={handleRoleChange}>
-            <option value="Moderator">Moderator</option>
-            <option value="Admin">Admin</option>
-            <option value="SupperAdmin">Supper Admin</option>
+            {
+                roles.map(role =>
+                    (<option key={role.id} selected={role.id == props.SelectedRoleId} value={role.id}>{role.name}</option>)
+                    )
+            }
         </select>
         );
 }
