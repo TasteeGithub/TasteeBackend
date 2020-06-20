@@ -1,4 +1,4 @@
-﻿import React, { Component } from 'react';
+﻿import React, { Component, ReactEventHandler } from 'react';
 import moment from 'moment';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -10,6 +10,9 @@ $.DataTable = require('datatables.net');
 
 type DataState = {
     userData: []
+}
+type Filter = {
+    name:string
 }
 
 type RowProp = {
@@ -38,15 +41,20 @@ export default class Accounts extends Component<{}, DataState> {
     }
     el: any;
     $element: any;
+    dataTable: any;
+    filter: Filter = { name: "ff" };
+
     async componentDidMount() {
         //let rs = await axios.get("https://localhost:44354/api/Accounts");
         //const dataSet = rs.data.listData;
         //this.setState({ userData: dataSet });
 
         this.$element = $(this.el);
-        this.$element.DataTable({
+        this.dataTable = this.$element.DataTable({
             "processing": true,
             "serverSide": true,
+            "filter": false, // this is for disable filter (search box)
+            "bSort": false,
             "ajax":
             {
                 "url": "https://localhost:44354/api/accounts/load-data/",
@@ -59,7 +67,10 @@ export default class Accounts extends Component<{}, DataState> {
                 },
                 "error": function (a: any, b: any, c: any) {
                     alert(stringify(a));
-                }
+                },
+                "data": {name:this.filter.name}
+                    
+                
             },
             "columns": [
                 {
@@ -88,9 +99,83 @@ export default class Accounts extends Component<{}, DataState> {
         }
     }
 
+    handleSearch = ()=> {
+        alert(this.filter.name);
+        this.dataTable.ajax.reload();
+    }
+
+    handleChange = (e: React.FormEvent<HTMLInputElement>) => {
+        this.filter.name = e.currentTarget.value;
+    }
     render() {
         return (
             <div>
+                <div className="card">
+                    <div className="card-body">
+                        <form>
+                            <div className="form-group row">
+                                <label htmlFor="name" className="col-sm-3 col-md-1 col-form-label">
+                                    Name
+                                </label>
+                                <div className="col-sm-9 col-md-3">
+                                    <input id="name" className="form-control" name="name" onChange={this.handleChange}/>
+                                </div>
+
+                                <label htmlFor="from" className="col-sm-3 col-md-1 col-form-label">
+                                    From
+                                </label>
+                                <div className="col-sm-9 col-md-3">
+                                    <input id="from" className="form-control" name="from" type="date" />
+                                </div>
+
+                                <label htmlFor="to" className="col-sm-3 col-md-1 col-form-label">
+                                    To
+                                </label>
+                                <div className="col-sm-9 col-md-3">
+                                    <input id="to" className="form-control" name="to" type="date" />
+                                </div>
+
+                            </div>
+                            <div className="form-group row">
+                                <label htmlFor="email" className="col-sm-3 col-md-1 col-form-label">
+                                    Email
+                                </label>
+                                <div className="col-sm-9 col-md-3">
+                                    <input id="email" className="form-control" name="email" />
+                                </div>
+
+                                <label htmlFor="phone" className="col-sm-3 col-md-1 col-form-label">
+                                    Phone
+                                </label>
+                                <div className="col-sm-9 col-md-3">
+                                    <input id="phone" className="form-control" name="phone" />
+                                </div>
+
+                                <label htmlFor="status" className="col-sm-3 col-md-1 col-form-label">
+                                    Status
+                                </label>
+                                <div className="col-sm-9 col-md-3">
+                                    <select className="form-control" name="selectStatus">
+                                        <option value="All">All</option>
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                        <option value="Locked">Locked</option>
+                                        <option value="Closed">Closed</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="form-group row">
+                                <div className="col-sm-9 col-md-8">
+                                </div>
+                                <div className="col-sm-9 col-md-4 text-right">
+                                    <button type="submit" className="btn btn-primary mr-2" onClick={this.handleSearch}><i className="ik ik-search" />Search</button>
+                                    <button type="submit" className="btn btn-success mr-2"><i className="ik ik-refresh-cw" /> Refresh</button>
+                                    <button type="submit" className="btn btn-info mr-2"><i className="ik ik-plus" />Add new</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
                 <table id="example" className="table table-bordered table-hover" style={{ width: "100%" }} ref={el => this.el = el}>
                     <thead>
                         <tr>

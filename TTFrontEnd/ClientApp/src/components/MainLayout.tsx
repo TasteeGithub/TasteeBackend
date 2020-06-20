@@ -30,8 +30,8 @@ const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) =>
     loadScript("/plugins/jquery-toast-plugin/dist/jquery.toast.min.js");
     loadScript("/js/alerts.js");
     loadScript("/dist/js/theme.min.js");
-    //loadScript("/js/form-picker.js");
-
+    loadScript("/js/form-picker.js");
+    
     return (
 
         <>

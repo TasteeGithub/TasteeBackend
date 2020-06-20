@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -358,10 +359,11 @@ namespace TTFrontEnd.Controllers
 
         [HttpPost]
         [Route("load-data")]
-        public async Task<IActionResult> LoadData([FromForm] string draw, [FromForm] string start, [FromForm] string length)
+        public async Task<IActionResult> LoadData([FromForm] string name, [FromForm] string draw, [FromForm] string start, [FromForm] string length)
         {
             try
             {
+                var tt = name;
                 //var draw1 = draw ;// HttpContext.Request.Form["draw"].FirstOrDefault();
 
                 // Skip number of Rows count
