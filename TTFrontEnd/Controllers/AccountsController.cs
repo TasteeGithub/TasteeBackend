@@ -219,39 +219,38 @@ namespace TTFrontEnd.Controllers
         // GET: api/ManageUser
         [HttpGet]
         public async Task<PaggingModel<Users>> Get(
-            //string userName
-            //, string email
-            //, string phone, int? status
-            //, DateTime? fdate
-            //, DateTime? tdate
-            //,
-
             int pageSize, int? pageIndex
+            , string? fullName
+            , string? email
+            , string? phone, string? status
+            , DateTime? fdate
+            , DateTime? tdate
+            
             )
         {
             ExpressionStarter<Users> searCondition = PredicateBuilder.New<Users>(true);
 
-            //if (userName != null && userName.Length > 0)
-            //{
-            //    searCondition = searCondition.And(x => x.FullName.ToLower().Contains(userName.ToLower()));
-            //}
-            //if (email != null && email.Length > 0)
-            //{
-            //    searCondition = searCondition.And(x => x.Email.ToLower().Contains(email.ToLower()));
-            //}
+            if (fullName != null && fullName.Length > 0)
+            {
+                searCondition = searCondition.And(x => x.FullName.ToLower().Contains(fullName.ToLower()));
+            }
+            if (email != null && email.Length > 0)
+            {
+                searCondition = searCondition.And(x => x.Email.ToLower().Contains(email.ToLower()));
+            }
 
-            //if (phone != null && phone.Length > 0)
-            //{
-            //    searCondition = searCondition.And(x => x.Phone.Contains(phone));
-            //}
-            //if (status != null && status > 0)
-            //{
-            //    searCondition = searCondition.And(x => x.Status == status);
-            //}
-            //if (fdate != null && tdate != null)
-            //{
-            //    searCondition = searCondition.And(x => x.DateCreated >= fdate && x.DateCreated <= tdate);
-            //}
+            if (phone != null && phone.Length > 0)
+            {
+                searCondition = searCondition.And(x => x.PhoneNumber.Contains(phone));
+            }
+            if (status != null && status.Length > 0)
+            {
+                searCondition = searCondition.And(x => x.Status == status);
+            }
+            if (fdate != null && tdate != null)
+            {
+                searCondition = searCondition.And(x => x.CreatedDate >= fdate && x.CreatedDate <= tdate);
+            }
 
             //var listUser = _serviceUsers.QueryableSql($"SELECT * FROM (SELECT [RANK] = ROW_NUMBER() OVER (ORDER BY Id),* FROM Users) A WHERE A.[RANK] BETWEEN {pageIndex} AND {pageSize}");
 
@@ -359,73 +358,33 @@ namespace TTFrontEnd.Controllers
 
         [HttpPost]
         [Route("load-data")]
-        public async Task<IActionResult> LoadData([FromForm] string name, [FromForm] string draw, [FromForm] string start, [FromForm] string length)
+        public async Task<IActionResult> LoadData(
+            [FromForm] string draw, 
+            [FromForm] string start, 
+            [FromForm] string length,
+            [FromForm] string name,
+            [FromForm] string email,
+            [FromForm] string phone,
+            [FromForm] DateTime? fromDate,
+            [FromForm] DateTime? toDate,
+            [FromForm] string status
+            )
         {
             try
             {
-                var tt = name;
-                //var draw1 = draw ;// HttpContext.Request.Form["draw"].FirstOrDefault();
-
-                // Skip number of Rows count
-                //var start = Request.Form["start"].FirstOrDefault();
-
-                // Paging Length 10,20
-                //var length = Request.Form["length"].FirstOrDefault();
-
-                //// Sort Column Name
-                //var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
-
-                //// Sort Column Direction (asc, desc)
-                //var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
-
-                // Search Value from (Search box)
-                //var searchValue = Request.Form["search[value]"].FirstOrDefault();
-
-                //Paging Size (10, 20, 50,100)
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
-
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageIndex = skip / pageSize + 1;
                 int recordsTotal = 0;
 
-                var rs = await Get(pageSize, pageIndex);
-
-                // getting all Customer data
-                //string SearchUserName = HttpContext.Request.Form["SearchUserName"].FirstOrDefault();
-                //string SearchEmail = HttpContext.Request.Form["SearchEmail"].FirstOrDefault();
-                //string SearchPhone = HttpContext.Request.Form["SearchPhone"].FirstOrDefault();
-                //string SearchAccountStatus = HttpContext.Request.Form["SearchAccountStatus"].FirstOrDefault();
-                //string SearchDate = HttpContext.Request.Form["SearchDate"].FirstOrDefault();
-
-                //DateTime fromDate = DateTime.ParseExact(SearchDate.Split('~')[0].Trim(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                //DateTime toDate = DateTime.ParseExact(SearchDate.Split('~')[1].Trim() + " 23:59:59", "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-
-                //string filter = $"/api/v{API_VERSION}/ManageUser/?pagesize={pageSize}&pageindex={pageIndex}" +
-                //    $"&username={SearchUserName}" +
-                //    $"&phone={SearchPhone}" +
-                //    $"&email={SearchEmail}" +
-                //    $"&fdate={fromDate}" +
-                //    $"&tdate={toDate}" +
-                //    $"&status={SearchAccountStatus}";
-
-                //string apiResult = await Helper.CallRestApiAsync(_shopWalletInsideApiLink + filter);
-                //var rs = JsonConvert.DeserializeObject<PaggingModel<Users>>(apiResult);
-
-                //var listUser = _serviceUsers.Queryable().Where(searCondition).OrderByDescending(x => x.CreatedDate);
-
-                //pageSize = pageSize == 0 ? Constants.DEFAULT_PAGE_SIZE : pageSize;
-                //var pagedListUser = await PaginatedList<Users>.CreateAsync(listUser, pageIndex ?? 1, pageSize);
-                ////var pagedListUser = await PaginatedList<Users>.CreateAsync(listUser,pageSize);
-                //PaggingModel<Users> returnResult = new PaggingModel<Users>()
-                //{
-                //    ListData = pagedListUser.Adapt<List<Users>>(),
-                //    TotalRows = pagedListUser.TotalRows,
-                //};
+                var rs = await Get(pageSize, pageIndex,name,email,phone,status,fromDate,toDate);
 
                 //total number of rows counts
                 recordsTotal = rs.TotalRows;
+
                 //Paging
                 var data = rs.ListData; //customerData.Skip(skip).Take(pageSize).ToList();
+
                 //Returning Json Data
                 return new JsonResult(
                     new { draw, recordsFiltered = recordsTotal, recordsTotal, data });

@@ -7,9 +7,9 @@ const PrivateRoute: React.SFC<any> = ({ component: Component, ...rest }: any) =>
     <Route
         {...rest}
         render={(props) => CheckAuthentication.IsSigning() ?
-            <Layout>
+            <MainLayout>
                 <Component {...props}/>
-            </Layout>
+            </MainLayout>
             : <Redirect to={{ pathname: '/login', state: { from: props.location } }} />}
     />
 );

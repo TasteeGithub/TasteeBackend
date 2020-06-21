@@ -1,15 +1,18 @@
 ﻿import React, { Component, ReactEventHandler } from 'react';
 import moment from 'moment';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, Redirect, useHistory } from 'react-router-dom';
 import { stringify } from 'querystring';
+import { CheckAuthentication } from '../../utils/CheckAuthentication';
+import { checkServerIdentity } from 'tls';
 
 const $ = require('jquery');
 require('datatables.net-bs4');
 $.DataTable = require('datatables.net');
 
 type DataState = {
-    userData: []
+    userData: [],
+    isRedirectToCreate: boolean;
 }
 type Filter = {
     name:string
@@ -37,20 +40,13 @@ const Row: React.FunctionComponent<RowProp> = (props: RowProp) => {
 export default class Accounts extends Component<{}, DataState> {
     constructor(props: any) {
         super(props);
-        this.state = { userData: [] }
+        this.state = { userData: [], isRedirectToCreate:false }
     }
     el: any;
     $element: any;
     dataTable: any;
-    filter: Filter = { name: "ff" };
-
-    async componentDidMount() {
-        //let rs = await axios.get("https://localhost:44354/api/Accounts");
-        //const dataSet = rs.data.listData;
-        //this.setState({ userData: dataSet });
-
-        this.$element = $(this.el);
-        this.dataTable = this.$element.DataTable({
+    LoadData(table : any){
+        this.dataTable = table.DataTable({
             "processing": true,
             "serverSide": true,
             "filter": false, // this is for disable filter (search box)
@@ -68,9 +64,14 @@ export default class Accounts extends Component<{}, DataState> {
                 "error": function (a: any, b: any, c: any) {
                     alert(stringify(a));
                 },
-                "data": {name:this.filter.name}
-                    
-                
+                "data": function (d:any) {
+                    d.name = $("#name").val();
+                    d.email = $("#email").val();
+                    d.phone = $("#phone").val();
+                    d.fromDate = $("#from").val();
+                    d.toDate = $("#to").val();
+                    d.status = $("#status").val();
+                }
             },
             "columns": [
                 {
@@ -93,32 +94,57 @@ export default class Accounts extends Component<{}, DataState> {
             //scrollY: 200
         });
     }
+
+    async componentDidMount() {
+        if (!CheckAuthentication.IsSigning())
+            return;
+        this.$element = $(this.el);
+        this.LoadData(this.$element);
+    }
     componentWillUnmount() {
         if (this.$element.Datatable) {
             this.$element.Datatable.destroy();
         }
     }
 
-    handleSearch = ()=> {
-        alert(this.filter.name);
-        this.dataTable.ajax.reload();
+    handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (CheckAuthentication.IsSigning())
+            this.dataTable.ajax.reload();
+
     }
 
-    handleChange = (e: React.FormEvent<HTMLInputElement>) => {
-        this.filter.name = e.currentTarget.value;
+    handleSearch = (e: React.FormEvent<HTMLSelectElement>) => {
+        e.preventDefault();
+        if (CheckAuthentication.IsSigning())
+            this.dataTable.ajax.reload();
     }
+
+    createAccount = ()=>{
+
+        this.setState({ ...this.state, isRedirectToCreate: true });
+        //this.isRedirectToCreate = true;
+        //let path = `/create-account`;
+        //let history = useHistory();
+        //history.push(path);
+    }
+
     render() {
+        if (!CheckAuthentication.IsSigning())
+            return <Redirect to="/Login" />
+        if (this.state.isRedirectToCreate)
+            return <Redirect to="/create-account" />
         return (
             <div>
                 <div className="card">
                     <div className="card-body">
-                        <form>
+                        <form onSubmit={this.handleSubmit} >
                             <div className="form-group row">
                                 <label htmlFor="name" className="col-sm-3 col-md-1 col-form-label">
                                     Name
                                 </label>
                                 <div className="col-sm-9 col-md-3">
-                                    <input id="name" className="form-control" name="name" onChange={this.handleChange}/>
+                                    <input id="name" className="form-control" name="name"/>
                                 </div>
 
                                 <label htmlFor="from" className="col-sm-3 col-md-1 col-form-label">
@@ -155,8 +181,8 @@ export default class Accounts extends Component<{}, DataState> {
                                     Status
                                 </label>
                                 <div className="col-sm-9 col-md-3">
-                                    <select className="form-control" name="selectStatus">
-                                        <option value="All">All</option>
+                                    <select className="form-control" name="status" id="status" onChange={this.handleSearch} >
+                                        <option value="">All</option>
                                         <option value="Active">Active</option>
                                         <option value="Inactive">Inactive</option>
                                         <option value="Locked">Locked</option>
@@ -165,12 +191,12 @@ export default class Accounts extends Component<{}, DataState> {
                                 </div>
                             </div>
                             <div className="form-group row">
-                                <div className="col-sm-9 col-md-8">
-                                </div>
-                                <div className="col-sm-9 col-md-4 text-right">
-                                    <button type="submit" className="btn btn-primary mr-2" onClick={this.handleSearch}><i className="ik ik-search" />Search</button>
-                                    <button type="submit" className="btn btn-success mr-2"><i className="ik ik-refresh-cw" /> Refresh</button>
-                                    <button type="submit" className="btn btn-info mr-2"><i className="ik ik-plus" />Add new</button>
+                                <div className="col-sm-12 text-right">
+                                    <button type="submit" className="btn btn-primary mr-2"><i className="ik ik-search" />Search</button>
+                                    <button type="reset" className="btn btn-success mr-2"><i className="ik ik-refresh-cw"/> Refresh</button>
+                                    <button type="button" className="btn btn-info mr-2" onClick={this.createAccount}><i className="ik ik-plus" />
+                                        Add New
+                                    </button>
                                 </div>
                             </div>
                         </form>
