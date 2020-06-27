@@ -1,8 +1,11 @@
 ﻿import * as React from 'react';
+import { formatDate } from "../../utils/Utilities";
+
 import axios from 'axios';
 import { Redirect } from 'react-router';
 import Role from '../AccountManager/Role';
 const $ = require('jquery');
+
 
 interface AccountInfo {
     email: string,
@@ -29,7 +32,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
     constructor(props: any) {
         super(props);
         this.state = { selectedGender: "Female", imgagePreviewUrl: "", avatarFile: null, isFinished: false, birthday: new Date() };
-        this.accountInfo.birthday = this.formatDate(this.state.birthday.toString());
+        this.accountInfo.birthday = formatDate(this.state.birthday.toString());
     }
     inputBirth: any;
     $inputBirth: any;
@@ -125,32 +128,32 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                     let i = 0;
                     if (error.Email != null) {
                         for (i = 0; i < error.Email.length; i++) {
-                            errorMessage += `${error.Email[i]}
-`                            }
+                            errorMessage += `${error.Email[i]}`
+                        }
                     }
 
                     if (error.FullName != null) {
                         for (i = 0; i < error.FullName.length; i++) {
-                            errorMessage += `${error.FullName[i]}
-`                            }
+                            errorMessage += `${error.FullName[i]}`
+                        }
                     }
 
                     if (error.Password != null) {
                         for (i = 0; i < error.Password.length; i++) {
-                            errorMessage += `${error.Password[i]}
-`                            }
+                            errorMessage += `${error.Password[i]}`
+                        }
                     }
 
                     if (error.ConfirmPassword != null) {
                         for (i = 0; i < error.ConfirmPassword.length; i++) {
-                            errorMessage += `${error.ConfirmPassword[i]}
-`                            }
+                            errorMessage += `${error.ConfirmPassword[i]}`
+                        }
                     }
                     
                     if (error.PhoneNumber != null) {
                         for (i = 0; i < error.PhoneNumber.length; i++) {
-                            errorMessage += `${error.PhoneNumber[i]}
-`                            }
+                            errorMessage += `${error.PhoneNumber[i]}`
+                        }
                     }
 
                     alert(errorMessage);
@@ -222,20 +225,6 @@ class CreateAccount extends React.PureComponent<{}, IState> {
         this.accountInfo.roleId = roleId;
     }
 
-    formatDate = (date: string) => {
-    var d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2)
-        month = '0' + month;
-    if (day.length < 2)
-        day = '0' + day;
-
-    return [year, month, day].join('-');
-}
-
     handleImageChange = (e: React.FormEvent<HTMLInputElement>) => {
         e.preventDefault();
 
@@ -282,6 +271,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                                     id="exampleInputEmail2"
                                     placeholder="Email"
                                     onChange={this.handleChange}
+                                    maxLength={50}
                                 />
                             </div>
                         </div>
@@ -300,6 +290,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                                     id="exampleInputUsername2"
                                     placeholder="Full name"
                                     onChange={this.handleChange}
+                                    maxLength={200}
                                 />
                             </div>
                         </div>
@@ -318,6 +309,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                                     id="exampleInputPassword2"
                                     placeholder="Password"
                                     onChange={this.handleChange}
+                                    maxLength={100}
                                 />
                             </div>
                         </div>
@@ -336,6 +328,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                                     id="exampleInputConfirmPassword2"
                                     placeholder="Password"
                                     onChange={this.handleChange}
+                                    maxLength={100}
                                 />
                             </div>
                         </div>
@@ -352,6 +345,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                                     id="exampleInputMobile"
                                     placeholder="Mobile number"
                                     onChange={this.handleChange}
+                                    maxLength={15}
                                 />
                             </div>
                         </div>
@@ -369,6 +363,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                                     id="inputAddress"
                                     placeholder="Address"
                                     onChange={this.handleChange}
+                                    maxLength={500}
                                 />
                             </div>
                         </div>
@@ -382,7 +377,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                                     className="form-control datetimepicker-input"
                                     id="inputBithday"
                                     name="birthday"
-                                    value={this.formatDate(this.state.birthday.toString())}
+                                    value={formatDate(this.state.birthday.toString())}
                                     onChange={this.handleChange}
                                 />
 

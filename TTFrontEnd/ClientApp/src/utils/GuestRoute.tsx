@@ -8,9 +8,9 @@ const GuestRoute: React.SFC<any> = ({ component: Component, ...rest }) => (
     <Route
         {...rest}
         render={(props) =>
-            <MainLayout>
+            <Layout>
                 <Component {...props} />
-            </MainLayout>
+            </Layout>
         }
     />
 );

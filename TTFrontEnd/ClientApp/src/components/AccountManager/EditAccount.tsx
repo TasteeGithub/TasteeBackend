@@ -137,6 +137,7 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                                     placeholder="Email"
                                     readOnly
                                     value={values.email}
+                                    maxLength={50}
                                 />
                             </div>
                         </div>
@@ -156,6 +157,7 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                                     placeholder="Full name"
                                     value={values.fullName}
                                     onChange={handleChange}
+                                    maxLength={200}
                                 />
                             </div>
                         </div>
@@ -174,6 +176,7 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                                     placeholder="Mobile number"
                                     value={values.phoneNumber}
                                     onChange={handleChange}
+                                    maxLength={15}
                                 />
                             </div>
                         </div>
@@ -192,6 +195,7 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                                     placeholder="Address"
                                     value={values.address}
                                     onChange={handleChange}
+                                    maxLength={500}
                                 />
                             </div>
                         </div>
