@@ -5,6 +5,7 @@ import { Link, Redirect, useHistory } from 'react-router-dom';
 import { stringify } from 'querystring';
 import { CheckAuthentication } from '../../utils/CheckAuthentication';
 import { formatDate } from "../../utils/Utilities"
+import { format } from 'path';
 
 const $ = require('jquery');
 require('datatables.net-bs4');
@@ -12,7 +13,9 @@ $.DataTable = require('datatables.net');
 
 type DataState = {
     userData: [],
-    isRedirectToCreate: boolean;
+    isRedirectToCreate: boolean,
+    fromDate: string,
+    toDate : string
 }
 type Filter = {
     name:string
@@ -40,7 +43,13 @@ const Row: React.FunctionComponent<RowProp> = (props: RowProp) => {
 export default class Accounts extends Component<{}, DataState> {
     constructor(props: any) {
         super(props);
-        this.state = { userData: [], isRedirectToCreate: false }
+        let currentDate = new Date();
+        let fromDate = new Date();
+        fromDate.setDate(1);
+        this.state = {
+            userData: [], isRedirectToCreate: false, fromDate:  formatDate(fromDate.toISOString()),
+            toDate: formatDate(currentDate.toISOString())
+        }
     }
     el: any;
     $element: any;
@@ -141,6 +150,21 @@ export default class Accounts extends Component<{}, DataState> {
         //history.push(path);
     }
 
+    handleDateChage = (e: React.FormEvent<HTMLInputElement>) => {
+
+        if (e.currentTarget.name == "from")
+            this.setState({
+                ...this.state, fromDate : formatDate(e.currentTarget.value)
+              })
+
+        if (e.currentTarget.name == "to")
+            this.setState({
+                ...this.state, toDate: formatDate(e.currentTarget.value)
+            })
+            
+    }
+
+
     render() {
         if (!CheckAuthentication.IsSigning())
             return <Redirect to="/Login" />
@@ -163,14 +187,14 @@ export default class Accounts extends Component<{}, DataState> {
                                     From
                                 </label>
                                 <div className="col-sm-9 col-md-3">
-                                    <input id="from" className="form-control" name="from" type="date"/>
+                                    <input id="from" className="form-control" value={this.state.fromDate} name="from" type="date" onChange={this.handleDateChage} />
                                 </div>
 
                                 <label htmlFor="to" className="col-sm-3 col-md-1 col-form-label">
                                     To
                                 </label>
                                 <div className="col-sm-9 col-md-3">
-                                    <input id="to" className="form-control" name="to" type="date"/>
+                                    <input id="to" className="form-control" value={this.state.toDate} name="to" onChange={this.handleDateChage} type="date"/>
                                 </div>
 
                             </div>
