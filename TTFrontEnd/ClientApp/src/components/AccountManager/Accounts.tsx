@@ -51,6 +51,17 @@ export default class Accounts extends Component<{}, DataState> {
             "serverSide": true,
             "filter": false, // this is for disable filter (search box)
             "bSort": false,
+            "dom": "t<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>",
+            "language": {
+                "zeroRecords": "No records to display",
+                "paginate": {
+                    "first": "First",
+                    "last": "Last",
+                    "next": "<i class='fas fa-angle-right'></i>",
+                    "previous": "<i class='fas fa-angle-left'></i>"
+                },
+            },
+            
             "ajax":
             {
                 "url": "https://localhost:44354/api/accounts/load-data/",
@@ -87,8 +98,9 @@ export default class Accounts extends Component<{}, DataState> {
                     }
                 },
                 { data: "email" },
-                { data: "status" },
+                { data: "phoneNumber" },
                 { data: "gender" },
+                { data: "status" },
             ],
             "lengthMenu": [[10, 25, 50], [10, 25, 50]],
             //scrollY: 200
@@ -202,14 +214,15 @@ export default class Accounts extends Component<{}, DataState> {
                         </form>
                     </div>
                 </div>
-                <table id="example" className="table table-bordered table-hover" style={{ width: "100%" }} ref={el => this.el = el}>
+                <table id="example" className="table table-bordered table-striped table-hover" style={{ width: "100%" }} ref={el => this.el = el}>
                     <thead>
                         <tr>
                             <th>Created Date</th>
                             <th>Full name</th>
                             <th>Email</th>
-                            <th>Status</th>
+                            <th>Phone</th>
                             <th>Gender</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
