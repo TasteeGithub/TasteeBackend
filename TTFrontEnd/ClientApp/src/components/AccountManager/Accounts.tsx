@@ -1,6 +1,6 @@
-﻿import React, { Component, ReactEventHandler } from 'react';
+﻿import React, { Component } from 'react';
 import moment from 'moment';
-import { Link, Redirect} from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { stringify } from 'querystring';
 import { CheckAuthentication } from '../../utils/CheckAuthentication';
 import { formatDate } from "../../utils/Utilities"
@@ -13,30 +13,27 @@ type DataState = {
     userData: [],
     isRedirectToCreate: boolean,
     fromDate: string,
-    toDate : string
-}
-type Filter = {
-    name:string
+    toDate: string
 }
 
-type RowProp = {
-    row: any
-}
+//type RowProp = {
+//    row: any
+//}
 
-const Row: React.FunctionComponent<RowProp> = (props: RowProp) => {
-    return (
-        <tr>
-            <td>{props.row.createdDate}</td>
-            <td>
-                <Link to={`/edit-account/${props.row.id}`}>{props.row.fullName}</Link>
-            </td>
-            <td>{props.row.email}</td>
-            <td>{props.row.isLocked === true ? "True" : "False"}</td>
-            <td>{props.row.status}</td>
-            <td>{props.row.gender}</td>
-        </tr>
-    )
-}
+//const Row: React.FunctionComponent<RowProp> = (props: RowProp) => {
+//    return (
+//        <tr>
+//            <td>{props.row.createdDate}</td>
+//            <td>
+//                <Link to={`/edit-account/${props.row.id}`}>{props.row.fullName}</Link>
+//            </td>
+//            <td>{props.row.email}</td>
+//            <td>{props.row.isLocked === true ? "True" : "False"}</td>
+//            <td>{props.row.status}</td>
+//            <td>{props.row.gender}</td>
+//        </tr>
+//    )
+//}
 
 export default class Accounts extends Component<{}, DataState> {
     constructor(props: any) {
@@ -45,14 +42,14 @@ export default class Accounts extends Component<{}, DataState> {
         let fromDate = new Date();
         fromDate.setDate(1);
         this.state = {
-            userData: [], isRedirectToCreate: false, fromDate:  formatDate(fromDate.toISOString()),
+            userData: [], isRedirectToCreate: false, fromDate: formatDate(fromDate.toISOString()),
             toDate: formatDate(currentDate.toISOString())
         }
     }
     el: any;
     $element: any;
     dataTable: any;
-    LoadData(table : any){
+    LoadData(table: any) {
         this.dataTable = table.DataTable({
             "processing": true,
             "serverSide": true,
@@ -68,7 +65,7 @@ export default class Accounts extends Component<{}, DataState> {
                     "previous": "<i class='fas fa-angle-left'></i>"
                 },
             },
-            
+
             "ajax":
             {
                 "url": "https://localhost:44354/api/accounts/load-data/",
@@ -82,8 +79,8 @@ export default class Accounts extends Component<{}, DataState> {
                 "error": function (a: any, b: any, c: any) {
                     alert(stringify(a));
                 },
-                "data": function (d:any) {
-                     d.name = $("#name").val();
+                "data": function (d: any) {
+                    d.name = $("#name").val();
                     d.email = $("#email").val();
                     d.phone = $("#phone").val();
                     d.fromDate = $("#from").val();
@@ -145,7 +142,6 @@ export default class Accounts extends Component<{}, DataState> {
         e.preventDefault();
         if (CheckAuthentication.IsSigning())
             this.dataTable.ajax.reload();
-
     }
 
     handleSearch = (e: React.FormEvent<HTMLSelectElement>) => {
@@ -154,8 +150,7 @@ export default class Accounts extends Component<{}, DataState> {
             this.dataTable.ajax.reload();
     }
 
-    createAccount = ()=>{
-
+    createAccount = () => {
         this.setState({ ...this.state, isRedirectToCreate: true });
         //this.isRedirectToCreate = true;
         //let path = `/create-account`;
@@ -164,19 +159,16 @@ export default class Accounts extends Component<{}, DataState> {
     }
 
     handleDateChage = (e: React.FormEvent<HTMLInputElement>) => {
-
         if (e.currentTarget.name == "from")
             this.setState({
-                ...this.state, fromDate : formatDate(e.currentTarget.value)
-              })
+                ...this.state, fromDate: formatDate(e.currentTarget.value)
+            })
 
         if (e.currentTarget.name == "to")
             this.setState({
                 ...this.state, toDate: formatDate(e.currentTarget.value)
             })
-            
     }
-
 
     render() {
         if (!CheckAuthentication.IsSigning())
@@ -193,7 +185,7 @@ export default class Accounts extends Component<{}, DataState> {
                                     Name
                                 </label>
                                 <div className="col-sm-9 col-md-3">
-                                    <input id="name" className="form-control" name="name"/>
+                                    <input id="name" className="form-control" name="name" />
                                 </div>
 
                                 <label htmlFor="from" className="col-sm-3 col-md-1 col-form-label">
@@ -207,7 +199,7 @@ export default class Accounts extends Component<{}, DataState> {
                                     To
                                 </label>
                                 <div className="col-sm-9 col-md-3">
-                                    <input id="to" className="form-control" value={this.state.toDate} name="to" onChange={this.handleDateChage} type="date"/>
+                                    <input id="to" className="form-control" value={this.state.toDate} name="to" onChange={this.handleDateChage} type="date" />
                                 </div>
 
                             </div>
@@ -242,7 +234,7 @@ export default class Accounts extends Component<{}, DataState> {
                             <div className="form-group row">
                                 <div className="col-sm-12 text-right">
                                     <button type="submit" className="btn btn-primary mr-2"><i className="ik ik-search" />Search</button>
-                                    <button type="reset" className="btn btn-success mr-2"><i className="ik ik-refresh-cw"/> Refresh</button>
+                                    <button type="reset" className="btn btn-success mr-2"><i className="ik ik-refresh-cw" /> Refresh</button>
                                     <button type="button" className="btn btn-info mr-2" onClick={this.createAccount}><i className="ik ik-plus" />
                                         Add New
                                     </button>
@@ -265,14 +257,6 @@ export default class Accounts extends Component<{}, DataState> {
                                     <th>Status</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {
-                                    this.state.userData.map((x: any) =>
-                                        <Row row={x} />
-                                    )
-                                }
-
-                            </tbody>
                         </table>
                     </div>
                 </div>

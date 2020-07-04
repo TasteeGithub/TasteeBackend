@@ -14,6 +14,7 @@ import EditAccount from './components/AccountManager/EditAccount';
 import GuestRoute from './utils/GuestRoute';
 import LoginRoute from './utils/LoginRoute';
 import Dashboard from './components/Dashboard';
+import ChangePassword from './components/AccountManager/ChangePassword';
 
 type AppProps = AuthenticatedState & typeof actionCreator;
 
@@ -28,6 +29,7 @@ const App: React.FunctionComponent<AppProps> = (props: AppProps) => {
                 <GuestRoute path="/edit-account/:id?" component={EditAccount} />
                 <GuestRoute component={FetchData} path='/fetch-data/:startDateIndex?' />
                 <PrivateRoute path="/counter" component={Counter} />
+                <PrivateRoute path="/change-password/:id?" component={ChangePassword} />
             </Switch>
         </Router>
     );
