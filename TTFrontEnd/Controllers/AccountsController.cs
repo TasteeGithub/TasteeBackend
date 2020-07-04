@@ -18,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TTBackEnd.Shared;
 using TTFrontEnd.Models.DataContext;
+using TTFrontEnd.Models.DTO;
 
 //using TTBackEndApi.Models.DataContext;
 //using TTFrontEnd.Models.SqlDataContext;
@@ -167,17 +168,19 @@ namespace TTFrontEnd.Controllers
         public IActionResult Login(LoginModel login)
         {
             bool IsActionSuccess = false;
-            var passwordHasher = new PasswordHasher<LoginModel>();
+            //var passwordHasher = new PasswordHasher<LoginModel>();
             //var passwordHash = passwordHasher.HashPassword(login, login.Password);
             try
             {
                 var user = _serviceUsers.Queryable().Where(x => x.Email == login.Email).FirstOrDefault();
+                
                 if (user == null) return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
                 user.LastLogin = DateTime.Now;
                 _serviceUsers.Update(user);
                 _unitOfWork.SaveChangesAsync();
+                var dtoUser = user.Adapt<TTFrontEnd.Models.DTO.User>();
+                var verifyResult = dtoUser.VerifyPassword(login);
 
-                var verifyResult = passwordHasher.VerifyHashedPassword(login, user.PasswordHash, login.Password);
                 if (verifyResult == PasswordVerificationResult.Failed) return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
 
                 var claims = new List<Claim>();
@@ -397,5 +400,71 @@ namespace TTFrontEnd.Controllers
             return new JsonResult(
                     new { draw, recordsFiltered = 0, recordsTotal = 0, data = new List<Users>() });
         }
+
+        [HttpPut]
+        [Route("set-password")]
+        public async Task<IActionResult> SetPassword(SetPasswordRequest passwordRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errorMessage = ModelState.Values
+                    .SelectMany(x => x.Errors)
+                    .Select(x => x.ErrorMessage);
+
+                return Ok(new RegisterResult { Successful = false, Error = errorMessage });
+            }
+            var user = await _serviceUsers.FindAsync(passwordRequest.Id);
+            if(user != null)
+            {
+                var userDto = user.Adapt<User>();
+                string hasPassword = userDto.SetPassword(passwordRequest.Password);
+                user.PasswordHash = hasPassword;
+                _serviceUsers.Update(user);
+                await _unitOfWork.SaveChangesAsync();
+
+                return Ok(new { Successful = true, Error = "Set password successfull" });
+            }
+            return Ok(new { Successful = false, Error = "Set password failed" });
+        }
+
+        [HttpPut]
+        [Route("set-password")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordRequest passwordRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errorMessage = ModelState.Values
+                    .SelectMany(x => x.Errors)
+                    .Select(x => x.ErrorMessage);
+
+                return Ok(new RegisterResult { Successful = false, Error = errorMessage });
+            }
+
+            var user = await _serviceUsers.FindAsync(passwordRequest.Id);
+            if (user != null)
+            {
+                var userDto = user.Adapt<User>();
+                var verifyResult = userDto.VerifyPassword(new LoginModel()
+                {
+                    Email = user.Email,
+                    Password = passwordRequest.Password
+                });
+
+                if(verifyResult == PasswordVerificationResult.Success)
+                {
+                    string hasPassword = userDto.SetPassword(passwordRequest.Password);
+                    user.PasswordHash = hasPassword;
+                    _serviceUsers.Update(user);
+                    await _unitOfWork.SaveChangesAsync();
+
+                    return Ok(new { Successful = true, Error = "Set password successfull" });
+                }
+
+                return Ok(new { Successful = false, Error = "wrong current password" });
+
+            }
+            return Ok(new { Successful = false, Error = "" });
+        }
+
     }
 }

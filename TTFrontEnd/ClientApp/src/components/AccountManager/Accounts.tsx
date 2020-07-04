@@ -85,7 +85,7 @@ export default class Accounts extends Component<{}, DataState> {
                     alert(stringify(a));
                 },
                 "data": function (d:any) {
-                    d.name = $("#name").val();
+                     d.name = $("#name").val();
                     d.email = $("#email").val();
                     d.phone = $("#phone").val();
                     d.fromDate = $("#from").val();
@@ -109,9 +109,24 @@ export default class Accounts extends Component<{}, DataState> {
                 { data: "email" },
                 { data: "phoneNumber" },
                 { data: "gender" },
-                { data: "status" },
+                {
+                    data: "status",
+                    render: function (data: any, type: any, row: any) {
+                        if (data == "Active")
+                            return '<span class="badge badge-pill badge-success mb-1">' + data + '</span>'
+                        else if (data == "Inactive")
+                            return '<span class="badge badge-pill badge-secondary mb-1">' + data + '</span>'
+                        else if (data == "Locked")
+                            return '<span class="badge badge-pill badge-danger mb-1">' + data + '</span>'
+                        else if (data == "Closed")
+                            return '<span class="badge badge-pill badge-dark mb-1">' + data + '</span>'
+                        else
+                            return '<span>' + data + '</span>'
+                    },
+                    className: 'text-center'
+                },
             ],
-            "lengthMenu": [[10, 25, 50], [10, 25, 50]],
+            "lengthMenu": [[5, 10, 25, 50], [5, 10, 25, 50]],
             //scrollY: 200
         });
     }
