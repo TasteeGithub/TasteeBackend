@@ -46,6 +46,7 @@
   <ItemGroup>
     <None Remove="ClientApp\src\components\AccountManager\Accounts.tsx" />
     <None Remove="ClientApp\src\components\AccountManager\Role.tsx" />
+    <None Remove="ClientApp\src\components\AccountManager\SetPassword.tsx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -65,6 +66,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\components\AccountManager\SetPassword.tsx">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="ClientApp\src\components\AccountManager\Accounts.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\AccountManager\CreateAccount.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\AccountManager\Role.tsx" />

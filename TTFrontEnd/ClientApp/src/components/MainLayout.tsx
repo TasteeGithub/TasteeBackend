@@ -119,7 +119,7 @@ const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) =>
                             <div className="logo-img">
                                 <img src="src/img/brand-white.svg" className="header-brand-img" alt="lavalite" />
                             </div>
-                            <span className="text">ThemeKit</span>
+                            <span className="text">TTPro</span>
                         </a>
                         <button type="button" className="nav-toggle"><i data-toggle="expanded" className="ik ik-toggle-right toggle-icon"></i></button>
                         <button id="sidebarClose" className="nav-close"><i className="ik ik-x"></i></button>

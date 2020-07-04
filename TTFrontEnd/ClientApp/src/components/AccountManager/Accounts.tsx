@@ -1,11 +1,9 @@
 ﻿import React, { Component, ReactEventHandler } from 'react';
 import moment from 'moment';
-import axios from 'axios';
-import { Link, Redirect, useHistory } from 'react-router-dom';
+import { Link, Redirect} from 'react-router-dom';
 import { stringify } from 'querystring';
 import { CheckAuthentication } from '../../utils/CheckAuthentication';
 import { formatDate } from "../../utils/Utilities"
-import { format } from 'path';
 
 const $ = require('jquery');
 require('datatables.net-bs4');
@@ -62,7 +60,7 @@ export default class Accounts extends Component<{}, DataState> {
             "bSort": false,
             "dom": "t<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'p>>",
             "language": {
-                "zeroRecords": "No records to display",
+                "zeroRecords": "No data to display",
                 "paginate": {
                     "first": "First",
                     "last": "Last",
@@ -253,27 +251,31 @@ export default class Accounts extends Component<{}, DataState> {
                         </form>
                     </div>
                 </div>
-                <table id="example" className="table table-bordered table-striped table-hover" style={{ width: "100%" }} ref={el => this.el = el}>
-                    <thead>
-                        <tr>
-                            <th>Created Date</th>
-                            <th>Full name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Gender</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            this.state.userData.map((x: any) =>
-                                <Row row={x} />
-                            )
-                        }
 
-                    </tbody>
-                </table>
+                <div className="card-block">
+                    <div className="table-responsive">
+                        <table id="example" className="table table-bordered table-hover" style={{ width: "100%" }} ref={el => this.el = el}>
+                            <thead>
+                                <tr>
+                                    <th>Created Date</th>
+                                    <th>Full name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Gender</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    this.state.userData.map((x: any) =>
+                                        <Row row={x} />
+                                    )
+                                }
 
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         );
     }

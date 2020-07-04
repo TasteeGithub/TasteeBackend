@@ -2,5 +2,9 @@
   {
     "outputFile": "ClientApp/public/dist/css/theme.css",
     "inputFile": "ClientApp/public/src/scss/theme.scss"
+  },
+  {
+    "outputFile": "ClientApp/src/components/AccountManager/SetPassword.es5.js",
+    "inputFile": "ClientApp/src/components/AccountManager/SetPassword.js"
   }
 ]

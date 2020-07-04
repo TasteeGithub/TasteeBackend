@@ -3,7 +3,7 @@ import { RouteComponentProps, useParams, Redirect } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Role from './Role';
-
+import SetPassword from './SetPassword'
 export interface IValues {
     id: string,
     email: string,
@@ -120,7 +120,8 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
         return <Redirect to="/accounts" />
     else
         return (
-            <div className="card">
+            <>
+                <div className="card">
                 <div className="card-body">
                     <form className="forms-sample" onSubmit={handleSubmit}>
                         <div className="form-group row">
@@ -264,12 +265,15 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                         <div className="form-group row">
                             <label className="col-sm-3 col-md-2 col-form-label"></label>
                             <div className="col-sm-9 col-md-4">
-                                <button type="submit" className="btn btn-primary mr-2">Save</button>
+                                    <button type="submit" className="btn btn-primary mr-2"><i className="ik ik-save"/>Save</button>
+                                    <button type="button" className="btn btn-link" data-toggle="modal" data-target="#setPassword">Set password</button>
                             </div>
                         </div>
                     </form>
                 </div>
-            </div>
+                </div>
+                <SetPassword accountId={id} modalId="setPassword" email={values.email} fullName={values.fullName} />
+            </>
         );
 }
 export default EditAccount;

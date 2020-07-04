@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
-using System.Net.WebSockets;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,8 +19,6 @@ using TTBackEnd.Shared;
 using TTFrontEnd.Models.DataContext;
 using TTFrontEnd.Models.DTO;
 
-//using TTBackEndApi.Models.DataContext;
-//using TTFrontEnd.Models.SqlDataContext;
 using TTFrontEnd.Services;
 using URF.Core.Abstractions;
 using Constants = TTBackEnd.Shared.Constants;
@@ -132,18 +129,18 @@ namespace TTFrontEnd.Controllers
             try
             {
                 var file = Request.Form.Files[0];
-                var folderName = Path.Combine("ClientApp","public","Images", "Avatar");
+                var folderName = Path.Combine("ClientApp", "public", "Images", "Avatar");
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
                 if (file.Length > 0)
                 {
                     var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim().ToString();
-                    
+
                     FileInfo fileInfo = new FileInfo(fileName);
                     string newFileName = System.IO.Path.GetRandomFileName() + fileInfo.Extension;
 
-                    var fullPath = Path.Combine(pathToSave,newFileName);
+                    var fullPath = Path.Combine(pathToSave, newFileName);
                     //var dbPath = Path.Combine(folderName, fileName);
-                    using (var stream = new FileStream(fullPath, FileMode.Create ))
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
                     {
                         file.CopyTo(stream);
                     }
@@ -168,12 +165,10 @@ namespace TTFrontEnd.Controllers
         public IActionResult Login(LoginModel login)
         {
             bool IsActionSuccess = false;
-            //var passwordHasher = new PasswordHasher<LoginModel>();
-            //var passwordHash = passwordHasher.HashPassword(login, login.Password);
             try
             {
                 var user = _serviceUsers.Queryable().Where(x => x.Email == login.Email).FirstOrDefault();
-                
+
                 if (user == null) return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
                 user.LastLogin = DateTime.Now;
                 _serviceUsers.Update(user);
@@ -228,7 +223,7 @@ namespace TTFrontEnd.Controllers
             , string? phone, string? status
             , DateTime? fdate
             , DateTime? tdate
-            
+
             )
         {
             ExpressionStarter<Users> searCondition = PredicateBuilder.New<Users>(true);
@@ -254,8 +249,6 @@ namespace TTFrontEnd.Controllers
             {
                 searCondition = searCondition.And(x => x.CreatedDate >= fdate && x.CreatedDate <= tdate);
             }
-
-            //var listUser = _serviceUsers.QueryableSql($"SELECT * FROM (SELECT [RANK] = ROW_NUMBER() OVER (ORDER BY Id),* FROM Users) A WHERE A.[RANK] BETWEEN {pageIndex} AND {pageSize}");
 
             var listUser = _serviceUsers.Queryable().Where(searCondition).OrderByDescending(x => x.CreatedDate);
 
@@ -362,8 +355,8 @@ namespace TTFrontEnd.Controllers
         [HttpPost]
         [Route("load-data")]
         public async Task<IActionResult> LoadData(
-            [FromForm] string draw, 
-            [FromForm] string start, 
+            [FromForm] string draw,
+            [FromForm] string start,
             [FromForm] string length,
             [FromForm] string name,
             [FromForm] string email,
@@ -380,7 +373,7 @@ namespace TTFrontEnd.Controllers
                 int pageIndex = skip / pageSize + 1;
                 int recordsTotal = 0;
 
-                var rs = await Get(pageSize, pageIndex,name,email,phone,status,fromDate,toDate);
+                var rs = await Get(pageSize, pageIndex, name, email, phone, status, fromDate, toDate);
 
                 //total number of rows counts
                 recordsTotal = rs.TotalRows;
@@ -414,7 +407,7 @@ namespace TTFrontEnd.Controllers
                 return Ok(new RegisterResult { Successful = false, Error = errorMessage });
             }
             var user = await _serviceUsers.FindAsync(passwordRequest.Id);
-            if(user != null)
+            if (user != null)
             {
                 var userDto = user.Adapt<User>();
                 string hasPassword = userDto.SetPassword(passwordRequest.Password);
@@ -428,7 +421,7 @@ namespace TTFrontEnd.Controllers
         }
 
         [HttpPut]
-        [Route("set-password")]
+        [Route("change-password")]
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest passwordRequest)
         {
             if (!ModelState.IsValid)
@@ -450,7 +443,7 @@ namespace TTFrontEnd.Controllers
                     Password = passwordRequest.Password
                 });
 
-                if(verifyResult == PasswordVerificationResult.Success)
+                if (verifyResult == PasswordVerificationResult.Success)
                 {
                     string hasPassword = userDto.SetPassword(passwordRequest.Password);
                     user.PasswordHash = hasPassword;
@@ -461,10 +454,8 @@ namespace TTFrontEnd.Controllers
                 }
 
                 return Ok(new { Successful = false, Error = "wrong current password" });
-
             }
             return Ok(new { Successful = false, Error = "" });
         }
-
     }
 }
