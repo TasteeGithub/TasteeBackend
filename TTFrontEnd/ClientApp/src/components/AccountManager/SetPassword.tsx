@@ -1,13 +1,7 @@
 ﻿import * as React from 'react'
-
-import * as $ from 'jquery';
-
 import axios from 'axios';
-import { Link, Redirect, useHistory } from 'react-router-dom';
-import { stringify } from 'querystring';
-import { CheckAuthentication } from '../../utils/CheckAuthentication';
-import { formatDate } from "../../utils/Utilities"
-import { replace } from 'connected-react-router';
+import {useHistory } from 'react-router-dom';
+import jwtDecode from 'jwt-decode';
 
 export
     interface IProps {
@@ -18,6 +12,19 @@ export
 }
 
 const SetPassword: React.FunctionComponent<IProps> = (props: IProps) => {
+    const authToken = localStorage.token;
+    let history = useHistory();
+
+    if (authToken == null) {
+        history.push("/");
+    }
+    else{
+        const decodeToken: any = jwtDecode(authToken);
+        if (decodeToken.role !== "Administrator" && decodeToken.role !=="SupperAdmin") {
+            history.push("/");
+        }
+    }
+
     const [password, setPass] = React.useState('');
     const [rePassword, setRePass] = React.useState('');
     const [message, setMessage] = React.useState('');
@@ -28,7 +35,7 @@ const SetPassword: React.FunctionComponent<IProps> = (props: IProps) => {
         e.preventDefault();
         setMessage("");
         setSuccessMessage("");
-        if (password == rePassword) {
+        if (password === rePassword) {
             setLoading(true);
             SetPassword()
             setLoading(false);

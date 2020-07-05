@@ -179,13 +179,14 @@ namespace TTFrontEnd.Controllers
                 if (verifyResult == PasswordVerificationResult.Failed) return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
 
                 var claims = new List<Claim>();
-                claims.Add(new Claim(ClaimTypes.Name, user.FullName));
-                claims.Add(new Claim(ClaimTypes.Email, login.Email));
+                claims.Add(new Claim("userId", user.Id));
+                claims.Add(new Claim("fullName", user.FullName));
+                claims.Add(new Claim("email", login.Email));
 
                 var roleIdList = _serviceUserRole.Queryable().Where(x => x.UserId == user.Id).ToList();
                 foreach (var item in roleIdList)
                 {
-                    claims.Add(new Claim(ClaimTypes.Role, _serviceRoles.Queryable().Where(x => x.Id == item.RoleId).FirstOrDefault().Name));
+                    claims.Add(new Claim("role", _serviceRoles.Queryable().Where(x => x.Id == item.RoleId).FirstOrDefault().Name));
                 }
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -325,10 +326,8 @@ namespace TTFrontEnd.Controllers
                                 RoleId = model.RoleId
                             };
                             _serviceUserRole.Insert(roleUser);
-
-                            await _unitOfWork.SaveChangesAsync();
                         }
-
+                        await _unitOfWork.SaveChangesAsync();
                         isActionSuccess = true;
                         return Ok(new { Successful = true });
                     }
@@ -445,15 +444,15 @@ namespace TTFrontEnd.Controllers
 
                 if (verifyResult == PasswordVerificationResult.Success)
                 {
-                    string hasPassword = userDto.SetPassword(passwordRequest.Password);
+                    string hasPassword = userDto.SetPassword(passwordRequest.NewPassword);
                     user.PasswordHash = hasPassword;
                     _serviceUsers.Update(user);
                     await _unitOfWork.SaveChangesAsync();
 
-                    return Ok(new { Successful = true, Error = "Set password successfull" });
+                    return Ok(new { Successful = true, Error = "Change password successfull" });
                 }
 
-                return Ok(new { Successful = false, Error = "wrong current password" });
+                return Ok(new { Successful = false, Error = "Password is incorrect !" });
             }
             return Ok(new { Successful = false, Error = "" });
         }

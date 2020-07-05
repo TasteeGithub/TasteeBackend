@@ -32,6 +32,7 @@ export const CheckAuthentication = {
         const authToken = localStorage.token;
         if (authToken != null) {
             const decodeToken: any = jwtDecode(authToken);
+            //console.log(JSON.stringify(decodeToken));
             if (decodeToken.exp * 1000 > Date.now()) {
                 this.isAuthenticated = true;
             }

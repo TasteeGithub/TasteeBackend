@@ -1,21 +1,23 @@
 ﻿import * as React from 'react'
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-
+import { CheckAuthentication } from '../../utils/CheckAuthentication';
+import jwtDecode from 'jwt-decode';
+import {useHistory} from "react-router-dom"
 const ChangPassword: React.FunctionComponent = () => {
-    const { id } = useParams();
+    const authToken = localStorage.token;
+    var history = useHistory();
     const [password, setPass] = React.useState('');
     const [newPassword, setNewPass] = React.useState('');
     const [rePassword, setRePass] = React.useState('');
     const [message, setMessage] = React.useState('');
-    const [successMessage, setSuccessMessage] = React.useState('');
     const [isLoading, setLoading] = React.useState(false);
-
+    
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setMessage("");
-        setSuccessMessage("");
-        if (newPassword == rePassword) {
+
+        if (newPassword === rePassword) {
             setLoading(true);
             ChangePassword()
             setLoading(false);
@@ -26,26 +28,25 @@ const ChangPassword: React.FunctionComponent = () => {
     }
 
     const ChangePassword = async () => {
-        //const authToken = localStorage.token;
-        //if (authToken != null) {
-        //    axios.defaults.headers.common['Authorization'] = authToken;
-        //}
-        //else
-        //    return false;
-
-        //var ChangePasswordRequest = {
-        //    id: id,
-        //    password: password,
-        //    newPassword: newPassword
-        //}
-        //var response = await axios.put("https://localhost:44354/api/Accounts//api/Accounts/change-password/", ChangePasswordRequest);
-        //if (response.data.successful) {
-        //    setSuccessMessage("Set password success !");
-        //}
-        //else {
-        //    setMessage(response.data.error);
-        //    setSuccessMessage("");
-        //}
+        if (authToken != null) {
+            axios.defaults.headers.common['Authorization'] = authToken;
+        }
+        else
+            return false;
+        const decodeToken: any = jwtDecode(authToken);
+        var ChangePasswordRequest = {
+            id: decodeToken.userId,
+            password: password,
+            newPassword: newPassword
+        }
+        var response = await axios.put("https://localhost:44354/api/Accounts/change-password/", ChangePasswordRequest);
+        if (response.data.successful) {
+            CheckAuthentication.Sigout();
+            history.push("/login");
+        }
+        else {
+            setMessage(response.data.error);
+        }
     }
 
     const handlePassword = (e: React.FormEvent<HTMLInputElement>) => {
@@ -132,7 +133,6 @@ const ChangPassword: React.FunctionComponent = () => {
                             </div>
                         </div>
                         </div>
-                        
                     }
                     {message.length > 0 &&
                         <div className="form-group row">
@@ -145,17 +145,7 @@ const ChangPassword: React.FunctionComponent = () => {
                             </div>
                         </div>
                     }
-                    {successMessage.length > 0 &&
-                        <div className="form-group row">
-                            <div className="col-sm-3 col-md-2">
-                            </div>
-                            <div className="col-sm-9 col-md-4">
-                                <label className="text-success">
-                                    {successMessage}
-                                </label>
-                            </div>
-                        </div>
-                    }
+
                     <div className="form-group row">
                         <label className="col-sm-3 col-md-2 col-form-label"></label>
                         <div className="col-sm-9 col-md-4">
@@ -166,5 +156,6 @@ const ChangPassword: React.FunctionComponent = () => {
             </div>
         </div>
     );
+
 }
 export default ChangPassword;

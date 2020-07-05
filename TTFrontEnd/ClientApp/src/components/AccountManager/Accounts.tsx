@@ -16,25 +16,6 @@ type DataState = {
     toDate: string
 }
 
-//type RowProp = {
-//    row: any
-//}
-
-//const Row: React.FunctionComponent<RowProp> = (props: RowProp) => {
-//    return (
-//        <tr>
-//            <td>{props.row.createdDate}</td>
-//            <td>
-//                <Link to={`/edit-account/${props.row.id}`}>{props.row.fullName}</Link>
-//            </td>
-//            <td>{props.row.email}</td>
-//            <td>{props.row.isLocked === true ? "True" : "False"}</td>
-//            <td>{props.row.status}</td>
-//            <td>{props.row.gender}</td>
-//        </tr>
-//    )
-//}
-
 export default class Accounts extends Component<{}, DataState> {
     constructor(props: any) {
         super(props);

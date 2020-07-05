@@ -29,7 +29,7 @@ const App: React.FunctionComponent<AppProps> = (props: AppProps) => {
                 <GuestRoute path="/edit-account/:id?" component={EditAccount} />
                 <GuestRoute component={FetchData} path='/fetch-data/:startDateIndex?' />
                 <PrivateRoute path="/counter" component={Counter} />
-                <PrivateRoute path="/change-password/:id?" component={ChangePassword} />
+                <PrivateRoute path="/change-password" component={ChangePassword} />
             </Switch>
         </Router>
     );

@@ -99,10 +99,6 @@ class Login extends React.Component<RouteComponentProps<{}, StaticContext, Locat
                                             <button onClick={this.handleLoginIn} className="btn btn-theme">Sign In</button>
                                         </div>
                                     </form>
-                                    <div className="register">
-                                        <p>Don't have an account? <a href="#">Create an account</a></p>
-                                    </div>
-
                                 </div>
                             </div>
                         </div>

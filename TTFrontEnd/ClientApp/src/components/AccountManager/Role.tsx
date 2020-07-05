@@ -1,7 +1,6 @@
 ﻿import * as React from 'react'
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { IpcNetConnectOpts } from 'net';
 
 export interface IRole {
     id: string,
@@ -38,7 +37,7 @@ const Role: React.FunctionComponent<IProps> = (props:IProps) => {
         <select className="form-control" name="selectRole" onChange={handleRoleChange}>
             {
                 roles.map(role =>
-                    (<option key={role.id} selected={role.id == props.SelectedRoleId} value={role.id}>{role.name}</option>)
+                    (<option key={role.id} selected={role.id === props.SelectedRoleId} value={role.id}>{role.name}</option>)
                     )
             }
         </select>

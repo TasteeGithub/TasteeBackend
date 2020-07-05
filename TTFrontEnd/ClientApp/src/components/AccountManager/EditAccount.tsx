@@ -1,9 +1,10 @@
 ﻿import * as React from 'react';
-import { RouteComponentProps, useParams, Redirect } from 'react-router-dom';
+import { RouteComponentProps, useParams, Redirect, useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Role from './Role';
 import SetPassword from './SetPassword'
+
 export interface IValues {
     id: string,
     email: string,
@@ -19,9 +20,11 @@ export interface IValues {
 }
 
 const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
+    var history = useHistory();
     const { id } = useParams();
     const [values, setValues] = useState({} as IValues);
     const [isSuccess, setSuccess] = useState(false);
+
     useEffect(() => {
         getData();
     }, []);
@@ -46,6 +49,8 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
             axios.defaults.headers.common['Authorization'] = authToken;
             const result = await axios.get(`https://localhost:44354/api/accounts/detail/${id}`);
             await setValues(result.data);
+
+            if (!result.data.id) history.push("/");
             return;
         }
     }
@@ -93,26 +98,6 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
         await setValues({ ...values, status: e.currentTarget.value });
     }
 
-    const handleImageChange = (e: React.FormEvent<HTMLInputElement>) => {
-        e.preventDefault();
-
-        let reader = new FileReader();
-
-        let file = e.currentTarget.files == null ? null : e.currentTarget.files[0];
-
-        if (file != null) {
-            reader.onloadend = () => {
-                //this.setState({
-                //    selectedGender: this.state.selectedGender,
-                //    imgagePreviewUrl: reader.result?.toString(),
-                //    avatarFile: file,
-                //    isFinished: this.state.isFinished,
-                //    birthday: this.state.birthday
-                //});
-            }
-            reader.readAsDataURL(file);
-        }
-    }
     const handleGetRole = async (roleId: string) => {
                 await setValues({ ...values, roleId: roleId });
     }
