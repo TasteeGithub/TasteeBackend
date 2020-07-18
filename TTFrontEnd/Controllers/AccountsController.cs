@@ -168,15 +168,34 @@ namespace TTFrontEnd.Controllers
             try
             {
                 var user = _serviceUsers.Queryable().Where(x => x.Email == login.Email).FirstOrDefault();
-
+                if(user.Status == AccountStatus.Locked.ToString() || user.Status == AccountStatus.Closed.ToString())
+                {
+                    return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
+                }    
                 if (user == null) return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
-                user.LastLogin = DateTime.Now;
-                _serviceUsers.Update(user);
-                _unitOfWork.SaveChangesAsync();
+
                 var dtoUser = user.Adapt<TTFrontEnd.Models.DTO.User>();
                 var verifyResult = dtoUser.VerifyPassword(login);
 
-                if (verifyResult == PasswordVerificationResult.Failed) return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
+                if (verifyResult == PasswordVerificationResult.Failed)
+                {
+                    user.LastLogin = DateTime.Now;
+                    user.LoginFailedCount = user.LoginFailedCount == null ? 1 : user.LoginFailedCount + 1;
+                    if(user.LoginFailedCount == 5)
+                    {
+                        user.Status = AccountStatus.Locked.ToString();
+                    }    
+                    _serviceUsers.Update(user);
+                    _unitOfWork.SaveChangesAsync();
+
+                    return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
+                }
+
+                user.LastLogin = DateTime.Now;
+                user.LoginFailedCount = 0;
+                user.Status = AccountStatus.Actived.ToString();
+                _serviceUsers.Update(user);
+                _unitOfWork.SaveChangesAsync();
 
                 var claims = new List<Claim>();
                 claims.Add(new Claim("userId", user.Id));
@@ -308,7 +327,10 @@ namespace TTFrontEnd.Controllers
                         user.Gender = model.Gender;
                         user.PhoneNumber = model.PhoneNumber;
                         user.Status = model.Status;
-
+                        if(user.Status == AccountStatus.Actived.ToString())
+                        {
+                            user.LoginFailedCount = 0;
+                        }    
                         _serviceUsers.Update(user);
 
                         if ((model.RoleId?.Length ?? 0) > 0)
