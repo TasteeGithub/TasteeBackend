@@ -32,29 +32,29 @@ namespace TTFrontEnd.Controllers
     [Route("api/[controller]")]
     public class AccountsController : ControllerBase
     {
-        private readonly ITTService<Users> _serviceUsers;
+        private readonly ITTService<Operators> _serviceOperators;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AccountsController> _logger;
 
         private readonly IConfiguration _configuration;
-        private readonly ITTService<UserRoles> _serviceUserRole;
+        private readonly ITTService<OperatorRoles> _serviceOperatorRoles;
         private readonly ITTService<Roles> _serviceRoles;
 
         public AccountsController(
             IConfiguration configuration,
             ILogger<AccountsController> logger,
             IUnitOfWork unitOfWork,
-            ITTService<Users> serviceUsers,
-            ITTService<UserRoles> serviceUserRole,
+            ITTService<Operators> serviceOperators,
+            ITTService<OperatorRoles> serviceUserRole,
             ITTService<Roles> serviceRoles
             )
         {
             _configuration = configuration;
             _unitOfWork = unitOfWork;
             _logger = logger;
-            _serviceUsers = serviceUsers;
+            _serviceOperators = serviceOperators;
             _serviceRoles = serviceRoles;
-            _serviceUserRole = serviceUserRole;
+            _serviceOperatorRoles = serviceUserRole;
         }
 
         //[HttpPost]
@@ -75,7 +75,7 @@ namespace TTFrontEnd.Controllers
                 return Ok(new RegisterResult { Successful = false, Error = errorMessage });
             }
 
-            if (_serviceUsers.Queryable().Any(e => e.Email == model.Email || e.PhoneNumber == model.PhoneNumber))
+            if (_serviceOperators.Queryable().Any(e => e.Email == model.Email || e.PhoneNumber == model.PhoneNumber))
             {
                 return Ok(new RegisterResult { Successful = false, Error = new string[] { "User is exists" } });
             }
@@ -83,33 +83,29 @@ namespace TTFrontEnd.Controllers
             var passwordHasher = new PasswordHasher<RegisterUserModel>();
             var passwordHash = passwordHasher.HashPassword(model, model.Password);
 
-            Users newUsers = new Users()
+            Operators newOperators = new Operators()
             {
                 CreatedDate = DateTime.Now,
                 Email = model.Email,
                 Id = Guid.NewGuid().ToString(),
                 PasswordHash = passwordHash,
                 FullName = model.FullName,
-                Address = model.Address,
-                Avatar = model.Avatar,
-                Birthday = model.Birthday,
-                Gender = model.Gender,
                 PhoneNumber = model.PhoneNumber,
                 Status = model.Status,
             };
 
-            _serviceUsers.Insert(newUsers);
+            _serviceOperators.Insert(newOperators);
 
             try
             {
                 if ((model.RoleId?.Length ?? 0) > 0)
                 {
-                    UserRoles userRoles = new UserRoles()
+                    OperatorRoles operatorRoles = new OperatorRoles()
                     {
                         RoleId = model.RoleId,
-                        UserId = newUsers.Id
+                        UserId = newOperators.Id
                     };
-                    _serviceUserRole.Insert(userRoles);
+                    _serviceOperatorRoles.Insert(operatorRoles);
                 }
 
                 await _unitOfWork.SaveChangesAsync();
@@ -167,12 +163,14 @@ namespace TTFrontEnd.Controllers
             bool IsActionSuccess = false;
             try
             {
-                var user = _serviceUsers.Queryable().Where(x => x.Email == login.Email).FirstOrDefault();
-                if(user.Status == AccountStatus.Locked.ToString() || user.Status == AccountStatus.Closed.ToString())
+                var user = _serviceOperators.Queryable().Where(x => x.Email == login.Email).FirstOrDefault();
+                
+                if (user == null) return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
+
+                if (user.Status == AccountStatus.Locked.ToString() || user.Status == AccountStatus.Closed.ToString())
                 {
                     return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
                 }    
-                if (user == null) return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
 
                 var dtoUser = user.Adapt<TTFrontEnd.Models.DTO.User>();
                 var verifyResult = dtoUser.VerifyPassword(login);
@@ -185,7 +183,7 @@ namespace TTFrontEnd.Controllers
                     {
                         user.Status = AccountStatus.Locked.ToString();
                     }    
-                    _serviceUsers.Update(user);
+                    _serviceOperators.Update(user);
                     _unitOfWork.SaveChangesAsync();
 
                     return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
@@ -194,7 +192,7 @@ namespace TTFrontEnd.Controllers
                 user.LastLogin = DateTime.Now;
                 user.LoginFailedCount = 0;
                 user.Status = AccountStatus.Actived.ToString();
-                _serviceUsers.Update(user);
+                _serviceOperators.Update(user);
                 _unitOfWork.SaveChangesAsync();
 
                 var claims = new List<Claim>();
@@ -202,7 +200,7 @@ namespace TTFrontEnd.Controllers
                 claims.Add(new Claim("fullName", user.FullName));
                 claims.Add(new Claim("email", login.Email));
 
-                var roleIdList = _serviceUserRole.Queryable().Where(x => x.UserId == user.Id).ToList();
+                var roleIdList = _serviceOperatorRoles.Queryable().Where(x => x.UserId == user.Id).ToList();
                 foreach (var item in roleIdList)
                 {
                     claims.Add(new Claim("role", _serviceRoles.Queryable().Where(x => x.Id == item.RoleId).FirstOrDefault().Name));
@@ -236,7 +234,7 @@ namespace TTFrontEnd.Controllers
 
         // GET: api/ManageUser
         [HttpGet]
-        public async Task<PaggingModel<Users>> Get(
+        public async Task<PaggingModel<Operators>> Get(
             int pageSize, int? pageIndex
             , string? fullName
             , string? email
@@ -246,7 +244,7 @@ namespace TTFrontEnd.Controllers
 
             )
         {
-            ExpressionStarter<Users> searCondition = PredicateBuilder.New<Users>(true);
+            ExpressionStarter<Operators> searCondition = PredicateBuilder.New<Operators>(true);
 
             if (fullName != null && fullName.Length > 0)
             {
@@ -270,14 +268,14 @@ namespace TTFrontEnd.Controllers
                 searCondition = searCondition.And(x => x.CreatedDate >= fdate && x.CreatedDate <= tdate);
             }
 
-            var listUser = _serviceUsers.Queryable().Where(searCondition).OrderByDescending(x => x.CreatedDate);
+            var listUser = _serviceOperators.Queryable().Where(searCondition).OrderByDescending(x => x.CreatedDate);
 
             pageSize = pageSize == 0 ? Constants.DEFAULT_PAGE_SIZE : pageSize;
-            var pagedListUser = await PaginatedList<Users>.CreateAsync(listUser, pageIndex ?? 1, pageSize);
+            var pagedListUser = await PaginatedList<Operators>.CreateAsync(listUser, pageIndex ?? 1, pageSize);
             //var pagedListUser = await PaginatedList<Users>.CreateAsync(listUser,pageSize);
-            PaggingModel<Users> returnResult = new PaggingModel<Users>()
+            PaggingModel<Operators> returnResult = new PaggingModel<Operators>()
             {
-                ListData = pagedListUser.Adapt<List<Users>>(),
+                ListData = pagedListUser.Adapt<List<Operators>>(),
                 TotalRows = pagedListUser.TotalRows,
             };
 
@@ -292,8 +290,8 @@ namespace TTFrontEnd.Controllers
         {
             try
             {
-                var user = await _serviceUsers.FindAsync(id);
-                var role = _serviceUserRole.Queryable().Where(x => x.UserId == user.Id).FirstOrDefault();
+                var user = await _serviceOperators.FindAsync(id);
+                var role = _serviceOperatorRoles.Queryable().Where(x => x.UserId == user.Id).FirstOrDefault();
 
                 var userDetail = user.Adapt<UserDetail>();
                 if (role != null) userDetail.RoleId = role.RoleId;
@@ -318,36 +316,33 @@ namespace TTFrontEnd.Controllers
             {
                 if (model.Id != null && model.Id.Length > 0)
                 {
-                    var user = await _serviceUsers.FindAsync(model.Id);
+                    var user = await _serviceOperators.FindAsync(model.Id);
                     if (user != null)
                     {
-                        user.Address = model.Address;
-                        user.Avatar = (model.Avatar?.Length ?? 0) > 0 ? model.Avatar : user.Avatar;
                         user.FullName = model.FullName;
-                        user.Gender = model.Gender;
                         user.PhoneNumber = model.PhoneNumber;
                         user.Status = model.Status;
                         if(user.Status == AccountStatus.Actived.ToString())
                         {
                             user.LoginFailedCount = 0;
                         }    
-                        _serviceUsers.Update(user);
+                        _serviceOperators.Update(user);
 
                         if ((model.RoleId?.Length ?? 0) > 0)
                         {
-                            var roleUser = _serviceUserRole.Queryable().Where(x => x.UserId == model.Id).FirstOrDefault();
+                            var roleUser = _serviceOperatorRoles.Queryable().Where(x => x.UserId == model.Id).FirstOrDefault();
 
                             if (roleUser != null)
                             {
-                                _serviceUserRole.Delete(roleUser);
+                                _serviceOperatorRoles.Delete(roleUser);
                             }
 
-                            roleUser = new UserRoles()
+                            roleUser = new OperatorRoles()
                             {
                                 UserId = model.Id,
                                 RoleId = model.RoleId
                             };
-                            _serviceUserRole.Insert(roleUser);
+                            _serviceOperatorRoles.Insert(roleUser);
                         }
                         await _unitOfWork.SaveChangesAsync();
                         isActionSuccess = true;
@@ -427,13 +422,13 @@ namespace TTFrontEnd.Controllers
 
                 return Ok(new RegisterResult { Successful = false, Error = errorMessage });
             }
-            var user = await _serviceUsers.FindAsync(passwordRequest.Id);
+            var user = await _serviceOperators.FindAsync(passwordRequest.Id);
             if (user != null)
             {
                 var userDto = user.Adapt<User>();
                 string hasPassword = userDto.SetPassword(passwordRequest.Password);
                 user.PasswordHash = hasPassword;
-                _serviceUsers.Update(user);
+                _serviceOperators.Update(user);
                 await _unitOfWork.SaveChangesAsync();
 
                 return Ok(new { Successful = true, Error = "Set password successfull" });
@@ -454,7 +449,7 @@ namespace TTFrontEnd.Controllers
                 return Ok(new RegisterResult { Successful = false, Error = errorMessage });
             }
 
-            var user = await _serviceUsers.FindAsync(passwordRequest.Id);
+            var user = await _serviceOperators.FindAsync(passwordRequest.Id);
             if (user != null)
             {
                 var userDto = user.Adapt<User>();
@@ -468,7 +463,7 @@ namespace TTFrontEnd.Controllers
                 {
                     string hasPassword = userDto.SetPassword(passwordRequest.NewPassword);
                     user.PasswordHash = hasPassword;
-                    _serviceUsers.Update(user);
+                    _serviceOperators.Update(user);
                     await _unitOfWork.SaveChangesAsync();
 
                     return Ok(new { Successful = true, Error = "Change password successfull" });

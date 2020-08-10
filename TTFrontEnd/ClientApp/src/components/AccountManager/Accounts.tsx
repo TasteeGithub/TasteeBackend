@@ -84,7 +84,6 @@ export default class Accounts extends Component<{}, DataState> {
                 },
                 { data: "email" },
                 { data: "phoneNumber" },
-                { data: "gender" },
                 {
                     data: "status",
                     render: function (data: any, type: any, row: any) {
@@ -234,7 +233,6 @@ export default class Accounts extends Component<{}, DataState> {
                                     <th>Full name</th>
                                     <th>Email</th>
                                     <th>Phone</th>
-                                    <th>Gender</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>

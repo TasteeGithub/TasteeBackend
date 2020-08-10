@@ -30,14 +30,14 @@ namespace TTFrontEnd
             //services.AddScoped<ITrackableRepository<Operator>, TrackableRepository<Operator>>();
             //services.AddScoped<ITTService<Operator>, TTService<Operator>>();
 
-            services.AddScoped<ITrackableRepository<Users>, TrackableRepository<Users>>();
-            services.AddScoped<ITTService<Users>, TTService<Users>>();
+            services.AddScoped<ITrackableRepository<Operators>, TrackableRepository<Operators>>();
+            services.AddScoped<ITTService<Operators>, TTService<Operators>>();
 
             services.AddScoped<ITrackableRepository<Roles>, TrackableRepository<Roles>>();
             services.AddScoped<ITTService<Roles>, TTService<Roles>>();
 
-            services.AddScoped<ITrackableRepository<UserRoles>, TrackableRepository<UserRoles>>();
-            services.AddScoped<ITTService<UserRoles>, TTService<UserRoles>>();
+            services.AddScoped<ITrackableRepository<OperatorRoles>, TrackableRepository<OperatorRoles>>();
+            services.AddScoped<ITTService<OperatorRoles>, TTService<OperatorRoles>>();
 
 
 

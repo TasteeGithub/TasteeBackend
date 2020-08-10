@@ -15,8 +15,9 @@ namespace TTFrontEnd.Models.DataContext
         {
         }
 
+        public virtual DbSet<OperatorRoles> OperatorRoles { get; set; }
+        public virtual DbSet<Operators> Operators { get; set; }
         public virtual DbSet<Roles> Roles { get; set; }
-        public virtual DbSet<UserRoles> UserRoles { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -30,16 +31,7 @@ namespace TTFrontEnd.Models.DataContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Roles>(entity =>
-            {
-                entity.Property(e => e.Id).HasMaxLength(200);
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(256);
-            });
-
-            modelBuilder.Entity<UserRoles>(entity =>
+            modelBuilder.Entity<OperatorRoles>(entity =>
             {
                 entity.HasKey(e => new { e.UserId, e.RoleId })
                     .HasName("UserRoles_pkey");
@@ -47,6 +39,36 @@ namespace TTFrontEnd.Models.DataContext
                 entity.Property(e => e.UserId).HasMaxLength(200);
 
                 entity.Property(e => e.RoleId).HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<Operators>(entity =>
+            {
+                entity.Property(e => e.Id).HasMaxLength(200);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("timestamp(3) without time zone");
+
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasMaxLength(256);
+
+                entity.Property(e => e.FullName).IsRequired();
+
+                entity.Property(e => e.LastLogin).HasColumnType("timestamp(3) without time zone");
+
+                entity.Property(e => e.LoginFailedCount).HasColumnType("numeric");
+
+                entity.Property(e => e.PasswordHash).IsRequired();
+
+                entity.Property(e => e.Status).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Roles>(entity =>
+            {
+                entity.Property(e => e.Id).HasMaxLength(200);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(256);
             });
 
             modelBuilder.Entity<Users>(entity =>

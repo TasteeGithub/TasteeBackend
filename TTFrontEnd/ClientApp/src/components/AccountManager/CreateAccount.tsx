@@ -13,10 +13,6 @@ interface AccountInfo {
     password: string,
     rePassword: string,
     phoneNumber: string,
-    birthday: string,
-    gender: string,
-    address: string,
-    avatar: string,
     roleId:string
 };
 
@@ -32,7 +28,6 @@ class CreateAccount extends React.PureComponent<{}, IState> {
     constructor(props: any) {
         super(props);
         this.state = { selectedGender: "Female", imgagePreviewUrl: "", avatarFile: null, isFinished: false, birthday: new Date() };
-        this.accountInfo.birthday = formatDate(this.state.birthday.toString());
     }
     inputBirth: any;
     $inputBirth: any;
@@ -57,15 +52,11 @@ class CreateAccount extends React.PureComponent<{}, IState> {
     }
 
     accountInfo: AccountInfo = {
-        birthday:"",
         email: "",
         fullName: "",
         password: "",
         phoneNumber: "",
-        address: "",
         rePassword: "",
-        gender: "Female",
-        avatar: "",
         roleId:""
     };
     handleSubmit = (e: React.FormEvent<HTMLElement>) => {
@@ -80,19 +71,19 @@ class CreateAccount extends React.PureComponent<{}, IState> {
         else
             return;
 
-        if (this.state.avatarFile?.name != null) {
-            let formData = new FormData();
-            formData.append("myFile", this.state.avatarFile, this.state.avatarFile.name);
-            let rs = await axios.post("https://localhost:44354/api/accounts/uploadfile", formData);
+        //if (this.state.avatarFile?.name != null) {
+        //    let formData = new FormData();
+        //    formData.append("myFile", this.state.avatarFile, this.state.avatarFile.name);
+        //    let rs = await axios.post("https://localhost:44354/api/accounts/uploadfile", formData);
 
-            if (rs.status == 200) {
-                this.accountInfo.avatar = rs.data.newFileName;
-            }
-            else {
-                alert(rs.status);
-                return;
-            }
-        }
+        //    if (rs.status == 200) {
+        //        this.accountInfo.avatar = rs.data.newFileName;
+        //    }
+        //    else {
+        //        alert(rs.status);
+        //        return;
+        //    }
+        //}
 
         let accountModel = {
             email: this.accountInfo.email,
@@ -100,14 +91,7 @@ class CreateAccount extends React.PureComponent<{}, IState> {
             confirmPassword: this.accountInfo.rePassword,
             fullName: this.accountInfo.fullName,
             phoneNumber: this.accountInfo.phoneNumber,
-            birthday: this.accountInfo.birthday,
-            gender: this.accountInfo.gender,
-            address: this.accountInfo.address,
             role:"",
-            userLevel: 1,
-            merchantLevel: 10,
-            avatar: this.accountInfo.avatar,
-            status: "Active",
             roleId: this.accountInfo.roleId
         }
 
@@ -194,29 +178,6 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                 break;
             case "phone":
                 this.accountInfo.phoneNumber = e.currentTarget.value;
-                break;
-            case "address":
-                this.accountInfo.address = e.currentTarget.value;
-                break;
-            case "birthday":
-                this.accountInfo.birthday = e.currentTarget.value;
-                this.setState({
-                    selectedGender:this.state.selectedGender,
-                    imgagePreviewUrl: this.state.imgagePreviewUrl,
-                    avatarFile: this.state.avatarFile,
-                    isFinished: this.state.isFinished,
-                    birthday:new Date(e.currentTarget.value)
-                });
-                break;
-            case "radioGender":
-                this.accountInfo.gender = e.currentTarget.value;
-                this.setState({
-                    selectedGender: e.currentTarget.value,
-                    imgagePreviewUrl: this.state.imgagePreviewUrl,
-                    avatarFile: this.state.avatarFile,
-                    isFinished: this.state.isFinished,
-                    birthday: this.state.birthday
-                });
                 break;
         }
     }
@@ -350,67 +311,6 @@ class CreateAccount extends React.PureComponent<{}, IState> {
                             </div>
                         </div>
 
-                        <div className="form-group row">
-                            <label htmlFor="inputAddress" className="col-sm-3 col-md-2 col-form-label">
-                                Address
-                            </label>
-                            <div className="col-sm-9 col-md-4">
-                                <input
-                                    required
-                                    name="address"
-                                    type="text"
-                                    className="form-control"
-                                    id="inputAddress"
-                                    placeholder="Address"
-                                    onChange={this.handleChange}
-                                    maxLength={500}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="form-group row">
-                            <label htmlFor="inputBithday" className="col-sm-3 col-md-2 col-form-label">
-                                Birthday
-                            </label>
-                            <div className="col-sm-9 col-md-4">
-                                <input type="date"
-                                    className="form-control datetimepicker-input"
-                                    id="inputBithday"
-                                    name="birthday"
-                                    value={formatDate(this.state.birthday.toString())}
-                                    onChange={this.handleChange}
-                                />
-
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <label className="col-sm-3 col-md-2 col-form-label">
-                                Gender
-                            </label>
-                            <div className="form-radio col-sm-9">
-                                <div className="radio radio-inline">
-                                    <label>
-                                        <input type="radio" value="Female" name="radioGender" checked={this.state.selectedGender === "Female"}
-                                            onChange={this.handleChange} />
-                                        <i className="helper"></i>Female
-                                    </label>
-                                </div>
-                                <div className="radio radio-inline">
-                                    <label>
-                                        <input type="radio" value="Male" name="radioGender" checked={this.state.selectedGender === "Male"}
-                                            onChange={this.handleChange} />
-                                        <i className="helper"></i>Male
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <label className="col-sm-3 col-md-2 col-form-label">Avatar</label>
-                            <div className="col-sm-9 col-md-4">
-                                <input type="file" id="inputavatar" name="avatar" onChange={this.handleImageChange} />
-                                {$imagePrivew}
-                            </div>
-                        </div>
                         <div className="form-group row">
                             <label className="col-sm-3 col-md-2 col-form-label">Role</label>
                             <div className="col-sm-9 col-md-4">

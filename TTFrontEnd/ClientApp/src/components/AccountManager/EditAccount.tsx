@@ -11,10 +11,6 @@ export interface IValues {
     phoneNumber: string,
     fullName: string,
     createdDate: number,
-    birthday: string,
-    gender: string,
-    address: string,
-    avatar: string,
     status: string
     roleId:string
 }
@@ -81,15 +77,6 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                 break;
             case "phone":
                 await setValues({ ...values, phoneNumber: e.currentTarget.value });
-                break;
-            case "address":
-                await setValues({ ...values, address: e.currentTarget.value });
-                break;
-            case "birthday":
-                await setValues({ ...values, birthday: e.currentTarget.value });
-                break;
-            case "radioGender":
-                await setValues({ ...values, gender: e.currentTarget.value });
                 break;
         }
     }
@@ -167,61 +154,6 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                             </div>
                         </div>
 
-                        <div className="form-group row">
-                            <label htmlFor="inputAddress" className="col-sm-3 col-md-2 col-form-label">
-                                Address
-                            </label>
-                            <div className="col-sm-9 col-md-4">
-                                <input
-                                    required
-                                    name="address"
-                                    type="text"
-                                    className="form-control"
-                                    id="inputAddress"
-                                    placeholder="Address"
-                                    value={values.address}
-                                    onChange={handleChange}
-                                    maxLength={500}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="form-group row">
-                            <label htmlFor="inputBithday" className="col-sm-3 col-md-2 col-form-label">
-                                Birthday
-                            </label>
-                            <div className="col-sm-9 col-md-4">
-                                <input type="date"
-                                    className="form-control datetimepicker-input"
-                                    id="inputBithday"
-                                    name="birthday"
-                                    value={formatDate(values.birthday)}
-                                    onChange={handleChange}
-                                />
-
-                            </div>
-                        </div>
-                        <div className="form-group row">
-                            <label className="col-sm-3 col-md-2 col-form-label">
-                                Gender
-                            </label>
-                            <div className="form-radio col-sm-9">
-                                <div className="radio radio-inline">
-                                    <label>
-                                        <input type="radio" value="Female" name="radioGender" checked={values.gender === "Female"}
-                                            onChange={handleChange} />
-                                        <i className="helper"></i>Female
-                                    </label>
-                                </div>
-                                <div className="radio radio-inline">
-                                    <label>
-                                        <input type="radio" value="Male" name="radioGender" checked={values.gender === "Male"}
-                                            onChange={handleChange} />
-                                        <i className="helper"></i>Male
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
                         <form className="form-group row">
                             <label className="col-sm-3 col-md-2 col-form-label">Status</label>
                             <div className="col-sm-9 col-md-4">
@@ -233,14 +165,7 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
                                 </select>
                             </div>
                         </form>
-                        {(values.avatar?.length?? 0) > 0 &&
-                            <div className="form-group row">
-                                <label className="col-sm-3 col-md-2 col-form-label"></label>
-                                <div className="col-sm-9 col-md-4">
-                                    <div style={{ paddingTop: "20px" }}><img style={{ maxWidth: "200px" }} src={"/Images/Avatar/" + values.avatar} /></div>
-                                </div>
-                            </div>
-                        }
+                        
                         <div className="form-group row">
                             <label className="col-sm-3 col-md-2 col-form-label">Role</label>
                             <div className="col-sm-9 col-md-4">
