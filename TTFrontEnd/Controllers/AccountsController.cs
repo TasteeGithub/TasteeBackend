@@ -236,9 +236,9 @@ namespace TTFrontEnd.Controllers
         [HttpGet]
         public async Task<PaggingModel<Operators>> Get(
             int pageSize, int? pageIndex
-            , string? fullName
-            , string? email
-            , string? phone, string? status
+            , string fullName
+            , string email
+            , string phone, string status
             , DateTime? fdate
             , DateTime? tdate
 
@@ -265,6 +265,7 @@ namespace TTFrontEnd.Controllers
             }
             if (fdate != null && tdate != null)
             {
+                tdate = new DateTime(tdate.Value.Year, tdate.Value.Month, tdate.Value.Day,23,59,59,990);
                 searCondition = searCondition.And(x => x.CreatedDate >= fdate && x.CreatedDate <= tdate);
             }
 

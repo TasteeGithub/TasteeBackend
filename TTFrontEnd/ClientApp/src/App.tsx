@@ -15,6 +15,7 @@ import GuestRoute from './utils/GuestRoute';
 import LoginRoute from './utils/LoginRoute';
 import Dashboard from './components/Dashboard';
 import ChangePassword from './components/AccountManager/ChangePassword';
+import CustomLayout from './components/MerchantLayut/CustomLayout';
 
 type AppProps = AuthenticatedState & typeof actionCreator;
 
@@ -30,6 +31,7 @@ const App: React.FunctionComponent<AppProps> = (props: AppProps) => {
                 <GuestRoute component={FetchData} path='/fetch-data/:startDateIndex?' />
                 <PrivateRoute path="/counter" component={Counter} />
                 <PrivateRoute path="/change-password" component={ChangePassword} />
+                <GuestRoute path="/layout" component={CustomLayout} />
             </Switch>
         </Router>
     );
