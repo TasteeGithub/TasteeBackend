@@ -48,7 +48,9 @@
     <None Remove="ClientApp\src\components\AccountManager\ChangePassword.tsx" />
     <None Remove="ClientApp\src\components\AccountManager\Role.tsx" />
     <None Remove="ClientApp\src\components\AccountManager\SetPassword.tsx" />
-    <None Remove="ClientApp\src\components\MerchantLayut\CustomLayout.tsx" />
+    <None Remove="ClientApp\src\components\MerchantLayout\CustomLayout.tsx" />
+    <None Remove="ClientApp\src\Demobar.tsx" />
+    <None Remove="ClientApp\src\ReactForm.tsx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -77,7 +79,7 @@
     <TypeScriptCompile Include="ClientApp\src\components\AccountManager\Accounts.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\AccountManager\CreateAccount.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\AccountManager\Role.tsx" />
-    <TypeScriptCompile Include="ClientApp\src\components\MerchantLayut\CustomLayout.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\MerchantLayout\CustomLayout.tsx" />
   </ItemGroup>
 
   <ItemGroup>

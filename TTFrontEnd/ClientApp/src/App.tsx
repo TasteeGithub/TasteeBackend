@@ -15,7 +15,7 @@ import GuestRoute from './utils/GuestRoute';
 import LoginRoute from './utils/LoginRoute';
 import Dashboard from './components/Dashboard';
 import ChangePassword from './components/AccountManager/ChangePassword';
-import CustomLayout from './components/MerchantLayut/CustomLayout';
+import CustomLayout from './components/MerchantLayout/CustomLayout';
 
 type AppProps = AuthenticatedState & typeof actionCreator;
 
