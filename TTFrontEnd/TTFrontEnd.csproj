@@ -49,11 +49,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp\src\components\AccountManager\Accounts.tsx" />
-    <None Remove="ClientApp\src\components\AccountManager\ChangePassword.tsx" />
-    <None Remove="ClientApp\src\components\AccountManager\Role.tsx" />
-    <None Remove="ClientApp\src\components\AccountManager\SetPassword.tsx" />
+    <None Remove="ClientApp\src\components\OperatorManager\Accounts.tsx" />
+    <None Remove="ClientApp\src\components\OperatorManager\ChangePassword.tsx" />
+    <None Remove="ClientApp\src\components\OperatorManager\Role.tsx" />
+    <None Remove="ClientApp\src\components\OperatorManager\SetPassword.tsx" />
     <None Remove="ClientApp\src\components\MerchantLayout\CustomLayout.tsx" />
+    <None Remove="ClientApp\src\components\UserManager\Users.tsx" />
     <None Remove="ClientApp\src\Demobar.tsx" />
     <None Remove="ClientApp\src\ReactForm.tsx" />
   </ItemGroup>
@@ -75,16 +76,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="ClientApp\src\components\AccountManager\ChangePassword.tsx">
+    <TypeScriptCompile Include="ClientApp\src\components\OperatorManager\ChangePassword.tsx">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="ClientApp\src\components\AccountManager\SetPassword.tsx">
+    <TypeScriptCompile Include="ClientApp\src\components\OperatorManager\SetPassword.tsx">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="ClientApp\src\components\AccountManager\Accounts.tsx" />
-    <TypeScriptCompile Include="ClientApp\src\components\AccountManager\CreateAccount.tsx" />
-    <TypeScriptCompile Include="ClientApp\src\components\AccountManager\Role.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\OperatorManager\Accounts.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\OperatorManager\CreateAccount.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\OperatorManager\Role.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\MerchantLayout\CustomLayout.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\UserManager\Users.tsx">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
   </ItemGroup>
 
   <ItemGroup>

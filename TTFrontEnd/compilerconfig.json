@@ -4,7 +4,7 @@
     "inputFile": "ClientApp/public/src/scss/theme.scss"
   },
   {
-    "outputFile": "ClientApp/src/components/AccountManager/SetPassword.es5.js",
-    "inputFile": "ClientApp/src/components/AccountManager/SetPassword.js"
+    "outputFile": "ClientApp/src/components/OperatorManager/SetPassword.es5.js",
+    "inputFile": "ClientApp/src/components/OperatorManager/SetPassword.js"
   }
 ]

@@ -3,7 +3,7 @@ import { formatDate } from "../../utils/Utilities";
 
 import axios from 'axios';
 import { Redirect } from 'react-router';
-import Role from '../AccountManager/Role';
+import Role from '../OperatorManager/Role';
 const $ = require('jquery');
 
 

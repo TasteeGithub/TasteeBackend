@@ -8,14 +8,16 @@ import Login from './components/Authentication/Login';
 import { AuthenticatedState, actionCreator } from './store/Login';
 import { ApplicationState } from './store';
 import PrivateRoute from './utils/PrivateRoute';
-import Accounts from './components/AccountManager/Accounts';
-import CreateAccount from './components/AccountManager/CreateAccount';
-import EditAccount from './components/AccountManager/EditAccount';
+import Accounts from './components/OperatorManager/Accounts';
+import CreateAccount from './components/OperatorManager/CreateAccount';
+import EditAccount from './components/OperatorManager/EditAccount';
 import GuestRoute from './utils/GuestRoute';
 import LoginRoute from './utils/LoginRoute';
 import Dashboard from './components/Dashboard';
-import ChangePassword from './components/AccountManager/ChangePassword';
+import ChangePassword from './components/OperatorManager/ChangePassword';
 import CustomLayout from './components/MerchantLayout/CustomLayout';
+import Users from './components/UserManager/Users';
+import EditUser from './components/UserManager/EditUser';
 
 type AppProps = AuthenticatedState & typeof actionCreator;
 
@@ -32,6 +34,10 @@ const App: React.FunctionComponent<AppProps> = (props: AppProps) => {
                 <PrivateRoute path="/counter" component={Counter} />
                 <PrivateRoute path="/change-password" component={ChangePassword} />
                 <GuestRoute path="/layout" component={CustomLayout} />
+
+                <PrivateRoute component={Users} path='/users/:startDateIndex?' />
+                <GuestRoute path="/edit-user/:id?" component={EditUser} />
+
             </Switch>
         </Router>
     );
