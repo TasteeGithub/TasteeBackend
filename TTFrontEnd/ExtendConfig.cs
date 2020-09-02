@@ -39,7 +39,8 @@ namespace TTFrontEnd
             services.AddScoped<ITrackableRepository<OperatorRoles>, TrackableRepository<OperatorRoles>>();
             services.AddScoped<ITTService<OperatorRoles>, TTService<OperatorRoles>>();
 
-
+            services.AddScoped<ITrackableRepository<Users>, TrackableRepository<Users>>();
+            services.AddScoped<ITTService<Users>, TTService<Users>>();
 
             return services;
         }

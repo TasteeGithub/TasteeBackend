@@ -128,11 +128,12 @@ const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) =>
                     <div className="sidebar-content">
                         <div className="nav-container">
                             <nav id="main-menu-navigation" className="navigation-main">
+
                                 <div className="nav-item">
-                                    <Link to="/accounts/"><i className="ik ik-users"></i><span>Accounts</span></Link>
+                                    <Link to="/accounts/"><i className="ik ik-users"></i><span>Operators</span></Link>
                                 </div>
                                 <div className="nav-item">
-                                    <Link to="/create-account/"><i className="ik ik-user-plus"></i><span>New Account</span></Link>
+                                    <Link to="/create-account/"><i className="ik ik-user-plus"></i><span>New Operator</span></Link>
                                 </div>
                                 <div className="nav-item">
                                     <a href="pages/navbar.html"><i className="ik ik-menu"></i><span>Navigation</span> <span className="badge badge-success">New</span></a>

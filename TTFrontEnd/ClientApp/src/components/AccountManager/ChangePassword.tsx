@@ -39,7 +39,7 @@ const ChangPassword: React.FunctionComponent = () => {
             password: password,
             newPassword: newPassword
         }
-        var response = await axios.put("https://localhost:44354/api/Accounts/change-password/", ChangePasswordRequest);
+        var response = await axios.put("https://localhost:44354/api/operators/change-password/", ChangePasswordRequest);
         if (response.data.successful) {
             CheckAuthentication.Sigout();
             history.push("/login");

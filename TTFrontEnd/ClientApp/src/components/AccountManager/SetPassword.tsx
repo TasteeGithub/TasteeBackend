@@ -58,7 +58,7 @@ const SetPassword: React.FunctionComponent<IProps> = (props: IProps) => {
             id: props.accountId,
             password: password
         }
-        var response = await axios.put("https://localhost:44354/api/Accounts/set-password/", setPasswordRequest);
+        var response = await axios.put("https://localhost:44354/api/operators/set-password/", setPasswordRequest);
         if (response.data.successful) {
             //TODO: Close popup
             setSuccessMessage("Set password success !");

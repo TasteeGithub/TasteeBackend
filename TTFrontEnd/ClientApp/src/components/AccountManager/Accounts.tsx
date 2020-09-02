@@ -49,7 +49,7 @@ export default class Accounts extends Component<{}, DataState> {
 
             "ajax":
             {
-                "url": "https://localhost:44354/api/accounts/load-data/",
+                "url": "https://localhost:44354/api/operators/load-data/",
                 "type": "POST",
                 "dataType": "JSON",
                 "contentType": "application/x-www-form-urlencoded",

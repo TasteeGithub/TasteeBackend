@@ -43,7 +43,7 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
         const authToken = localStorage.token;
         if (authToken != null) {
             axios.defaults.headers.common['Authorization'] = authToken;
-            const result = await axios.get(`https://localhost:44354/api/accounts/detail/${id}`);
+            const result = await axios.get(`https://localhost:44354/api/operators/detail/${id}`);
             await setValues(result.data);
 
             if (!result.data.id) history.push("/");
@@ -57,7 +57,7 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
         const authToken = localStorage.token;
         if (authToken != null) {
             axios.defaults.headers.common['Authorization'] = authToken;
-            axios.put(`https://localhost:44354/api/accounts`, values)
+            axios.put(`https://localhost:44354/api/operators`, values)
                 .then(result => {
                     if (result.data.successful) {
                         setSuccess(true);
