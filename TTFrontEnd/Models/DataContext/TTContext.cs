@@ -15,6 +15,7 @@ namespace TTFrontEnd.Models.DataContext
         {
         }
 
+        public virtual DbSet<Brands> Brands { get; set; }
         public virtual DbSet<OperatorRoles> OperatorRoles { get; set; }
         public virtual DbSet<Operators> Operators { get; set; }
         public virtual DbSet<Roles> Roles { get; set; }
@@ -31,6 +32,65 @@ namespace TTFrontEnd.Models.DataContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Brands>(entity =>
+            {
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasColumnType("character varying");
+
+                entity.Property(e => e.Address).IsRequired();
+
+                entity.Property(e => e.Area).HasColumnType("character varying");
+
+                entity.Property(e => e.Categories).HasColumnType("character varying");
+
+                entity.Property(e => e.City).HasColumnType("character varying");
+
+                entity.Property(e => e.CreatedDate).HasColumnType("timestamp(3) without time zone");
+
+                entity.Property(e => e.Cuisines).HasColumnType("character varying");
+
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasColumnType("character varying");
+
+                entity.Property(e => e.HeadOffice)
+                    .IsRequired()
+                    .HasColumnType("character varying");
+
+                entity.Property(e => e.Hotline)
+                    .IsRequired()
+                    .HasColumnType("character varying");
+
+                entity.Property(e => e.Logo).HasColumnType("character varying");
+
+                entity.Property(e => e.MerchantId)
+                    .HasColumnType("character varying")
+                    .HasComment("User id của merchant quản lý brand này");
+
+                entity.Property(e => e.Name).IsRequired();
+
+                entity.Property(e => e.Phone)
+                    .IsRequired()
+                    .HasColumnType("character varying");
+
+                entity.Property(e => e.SeoImage).HasColumnType("character varying");
+
+                entity.Property(e => e.SeoTitle).HasColumnType("character varying");
+
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasColumnType("character varying");
+
+                entity.Property(e => e.UpdateBy).HasColumnType("character varying");
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("timestamp(3) without time zone");
+
+                entity.Property(e => e.Uri)
+                    .IsRequired()
+                    .HasColumnType("character varying");
+            });
+
             modelBuilder.Entity<OperatorRoles>(entity =>
             {
                 entity.HasKey(e => new { e.UserId, e.RoleId })

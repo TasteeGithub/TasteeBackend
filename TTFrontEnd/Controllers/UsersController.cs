@@ -38,24 +38,17 @@ namespace TTFrontEnd.Controllers
         private readonly ILogger<UsersController> _logger;
 
         private readonly IConfiguration _configuration;
-        //private readonly ITTService<OperatorRoles> _serviceOperatorRoles;
-        //private readonly ITTService<Roles> _serviceRoles;
-
         public UsersController(
             IConfiguration configuration,
             ILogger<UsersController> logger,
             IUnitOfWork unitOfWork,
-            ITTService<Users> serviceUsers,
-            //ITTService<UserRoles> serviceUserRole,
-            ITTService<Roles> serviceRoles
+            ITTService<Users> serviceUsers
             )
         {
             _configuration = configuration;
             _unitOfWork = unitOfWork;
             _logger = logger;
             _serviceUsers = serviceUsers;
-            //_serviceRoles = serviceRoles;
-            //_serviceUserRoles = serviceUserRole;
         }
 
         [HttpPost]
@@ -93,16 +86,6 @@ namespace TTFrontEnd.Controllers
 
             try
             {
-                //if ((model.RoleId?.Length ?? 0) > 0)
-                //{
-                //    UserRoles UserRoles = new UserRoles()
-                //    {
-                //        RoleId = model.RoleId,
-                //        UserId = newUsers.Id
-                //    };
-                //    _serviceUserRoles.Insert(UserRoles);
-                //}
-
                 await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -130,7 +113,7 @@ namespace TTFrontEnd.Controllers
                     string newFileName = System.IO.Path.GetRandomFileName() + fileInfo.Extension;
 
                     var fullPath = Path.Combine(pathToSave, newFileName);
-                    //var dbPath = Path.Combine(folderName, fileName);
+
                     using (var stream = new FileStream(fullPath, FileMode.Create))
                     {
                         file.CopyTo(stream);
@@ -190,16 +173,12 @@ namespace TTFrontEnd.Controllers
                 _serviceUsers.Update(user);
                 _unitOfWork.SaveChangesAsync();
 
-                var claims = new List<Claim>();
-                claims.Add(new Claim("userId", user.Id));
-                claims.Add(new Claim("fullName", user.FullName));
-                claims.Add(new Claim("email", login.Email));
-
-                //var roleIdList = _serviceUserRoles.Queryable().Where(x => x.UserId == user.Id).ToList();
-                //foreach (var item in roleIdList)
-                //{
-                //    claims.Add(new Claim("role", _serviceRoles.Queryable().Where(x => x.Id == item.RoleId).FirstOrDefault().Name));
-                //}
+                var claims = new List<Claim>
+                {
+                    new Claim("userId", user.Id),
+                    new Claim("fullName", user.FullName),
+                    new Claim("email", login.Email)
+                };
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -287,10 +266,9 @@ namespace TTFrontEnd.Controllers
             try
             {
                 var user = await _serviceUsers.FindAsync(id);
-                //var role = _serviceUserRoles.Queryable().Where(x => x.UserId == user.Id).FirstOrDefault();
 
                 var userDetail = user.Adapt<UserDetail>();
-                //if (role != null) userDetail.RoleId = role.RoleId;
+
                 return userDetail;
             }
             catch (Exception ex)
@@ -324,22 +302,6 @@ namespace TTFrontEnd.Controllers
                         }    
                         _serviceUsers.Update(user);
 
-                        //if ((model.RoleId?.Length ?? 0) > 0)
-                        //{
-                        //    var roleUser = _serviceUserRoles.Queryable().Where(x => x.UserId == model.Id).FirstOrDefault();
-
-                        //    if (roleUser != null)
-                        //    {
-                        //        _serviceUserRoles.Delete(roleUser);
-                        //    }
-
-                        //    roleUser = new UserRoles()
-                        //    {
-                        //        UserId = model.Id,
-                        //        RoleId = model.RoleId
-                        //    };
-                        //    _serviceUserRoles.Insert(roleUser);
-                        //}
                         await _unitOfWork.SaveChangesAsync();
                         isActionSuccess = true;
                         return Ok(new { Successful = true });
@@ -359,7 +321,7 @@ namespace TTFrontEnd.Controllers
             }
             finally
             {
-                _logger.LogInformation("Update user, User: {0}, Result status: ", model, isActionSuccess);
+                _logger.LogInformation("Update user, User: {0}, Result status: {1}", model, isActionSuccess);
             }
             return Ok(new { Successful = false, Error = "Has error when update" });
         }

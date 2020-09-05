@@ -160,10 +160,12 @@ namespace TTFrontEnd.Controllers
                 _serviceOperators.Update(user);
                 _unitOfWork.SaveChangesAsync();
 
-                var claims = new List<Claim>();
-                claims.Add(new Claim("userId", user.Id));
-                claims.Add(new Claim("fullName", user.FullName));
-                claims.Add(new Claim("email", login.Email));
+                var claims = new List<Claim>
+                {
+                    new Claim("userId", user.Id),
+                    new Claim("fullName", user.FullName),
+                    new Claim("email", login.Email)
+                };
 
                 var roleIdList = _serviceOperatorRoles.Queryable().Where(x => x.UserId == user.Id).ToList();
                 foreach (var item in roleIdList)
@@ -329,7 +331,7 @@ namespace TTFrontEnd.Controllers
             }
             finally
             {
-                _logger.LogInformation("Update user, Operator: {0}, Result status: ", model, isActionSuccess);
+                _logger.LogInformation("Update user, Operator: {0}, Result status: {1}", model, isActionSuccess);
             }
             return Ok(new { Successful = false, Error = "Has error when update" });
         }

@@ -18,6 +18,7 @@ import ChangePassword from './components/OperatorManager/ChangePassword';
 import CustomLayout from './components/MerchantLayout/CustomLayout';
 import Users from './components/UserManager/Users';
 import EditUser from './components/UserManager/EditUser';
+import Brands from './components/BrandManager/Brands';
 
 type AppProps = AuthenticatedState & typeof actionCreator;
 
@@ -27,16 +28,23 @@ const App: React.FunctionComponent<AppProps> = (props: AppProps) => {
             <Switch>
                 <GuestRoute exact path="/" component={Dashboard} />
                 <LoginRoute path="/login" component={Login} />
+                <PrivateRoute path="/change-password" component={ChangePassword} />
+
+                //Operator
                 <PrivateRoute component={Accounts} path='/accounts/:startDateIndex?' />
                 <GuestRoute path="/create-account" component={CreateAccount} />
                 <GuestRoute path="/edit-account/:id?" component={EditAccount} />
+
+
                 <GuestRoute component={FetchData} path='/fetch-data/:startDateIndex?' />
                 <PrivateRoute path="/counter" component={Counter} />
-                <PrivateRoute path="/change-password" component={ChangePassword} />
+                
                 <GuestRoute path="/layout" component={CustomLayout} />
 
                 <PrivateRoute component={Users} path='/users/:startDateIndex?' />
                 <GuestRoute path="/edit-user/:id?" component={EditUser} />
+
+                <PrivateRoute component={Brands} path='/brands' />
 
             </Switch>
         </Router>

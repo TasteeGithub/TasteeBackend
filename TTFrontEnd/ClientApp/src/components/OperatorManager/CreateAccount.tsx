@@ -92,7 +92,8 @@ class CreateAccount extends React.PureComponent<{}, IState> {
             fullName: this.accountInfo.fullName,
             phoneNumber: this.accountInfo.phoneNumber,
             role:"",
-            roleId: this.accountInfo.roleId
+            roleId: this.accountInfo.roleId,
+            status: "Active"
         }
 
         axios.post("https://localhost:44354/api/operators", accountModel)

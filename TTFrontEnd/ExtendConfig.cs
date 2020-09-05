@@ -23,12 +23,7 @@ namespace TTFrontEnd
             //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<DbContext, TTContext>();
-            //services.AddScoped<DbContext, TTContext>();
-
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            //services.AddScoped<ITrackableRepository<Operator>, TrackableRepository<Operator>>();
-            //services.AddScoped<ITTService<Operator>, TTService<Operator>>();
 
             services.AddScoped<ITrackableRepository<Operators>, TrackableRepository<Operators>>();
             services.AddScoped<ITTService<Operators>, TTService<Operators>>();
@@ -41,6 +36,9 @@ namespace TTFrontEnd
 
             services.AddScoped<ITrackableRepository<Users>, TrackableRepository<Users>>();
             services.AddScoped<ITTService<Users>, TTService<Users>>();
+
+            services.AddScoped<ITrackableRepository<Brands>, TrackableRepository<Brands>>();
+            services.AddScoped<ITTService<Brands>, TTService<Brands>>();
 
             return services;
         }

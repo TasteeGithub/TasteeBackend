@@ -20,4 +20,24 @@ namespace TTBackEnd.Shared
         Locked,
         Closed
     }
+
+    public enum BrandsStatus
+    {
+        /// <summary>
+        /// Chờ kích hoạt
+        /// </summary>
+        Pending,
+        /// <summary>
+        /// Đang hoạt động
+        /// </summary>
+        Actived,
+        /// <summary>
+        /// Tạm ngừng
+        /// </summary>
+        InActived,
+        /// <summary>
+        /// Ngừng hoạt động/ khóa
+        /// </summary>
+        Locked
+    }
 }
