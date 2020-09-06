@@ -80,7 +80,7 @@ export default class Brands extends Component<{}, DataState> {
                 {
                     data: "name",
                     render: function (data: any, type: any, row: any) {
-                        return "<a href='/edit-account/" + row.id + "'>" + data + " </a>"
+                        return "<a href='/edit-brand/" + row.id + "'>" + data + " </a>"
                     }
                 },
                 { data: "logo" },
@@ -165,7 +165,7 @@ export default class Brands extends Component<{}, DataState> {
         if (!CheckAuthentication.IsSigning())
             return <Redirect to="/Login" />
         if (this.state.isRedirectToCreate)
-            return <Redirect to="/create-account" />
+            return <Redirect to="/create-brand" />
         return (
             <div>
                 <div className="card">

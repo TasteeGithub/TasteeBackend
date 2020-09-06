@@ -19,6 +19,7 @@ import CustomLayout from './components/MerchantLayout/CustomLayout';
 import Users from './components/UserManager/Users';
 import EditUser from './components/UserManager/EditUser';
 import Brands from './components/BrandManager/Brands';
+import CreateBrand from './components/BrandManager/CreateBrand';
 
 type AppProps = AuthenticatedState & typeof actionCreator;
 
@@ -32,19 +33,20 @@ const App: React.FunctionComponent<AppProps> = (props: AppProps) => {
 
                 //Operator
                 <PrivateRoute component={Accounts} path='/accounts/:startDateIndex?' />
-                <GuestRoute path="/create-account" component={CreateAccount} />
-                <GuestRoute path="/edit-account/:id?" component={EditAccount} />
+                <PrivateRoute path="/create-account" component={CreateAccount} />
+                <PrivateRoute path="/edit-account/:id?" component={EditAccount} />
 
 
                 <GuestRoute component={FetchData} path='/fetch-data/:startDateIndex?' />
                 <PrivateRoute path="/counter" component={Counter} />
                 
-                <GuestRoute path="/layout" component={CustomLayout} />
+                <PrivateRoute path="/layout" component={CustomLayout} />
 
                 <PrivateRoute component={Users} path='/users/:startDateIndex?' />
-                <GuestRoute path="/edit-user/:id?" component={EditUser} />
+                <PrivateRoute path="/edit-user/:id?" component={EditUser} />
 
                 <PrivateRoute component={Brands} path='/brands' />
+                <PrivateRoute path="/create-brand" component={CreateBrand} />
 
             </Switch>
         </Router>
