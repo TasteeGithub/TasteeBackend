@@ -60,14 +60,14 @@ export default class Brands extends Component<{}, DataState> {
                 "error": function (a: any, b: any, c: any) {
                     alert(stringify(a));
                 },
-                //"data": function (d: any) {
-                //    d.name = $("#name").val();
-                //    d.email = $("#email").val();
-                //    d.phone = $("#phone").val();
-                //    d.fromDate = $("#from").val();
-                //    d.toDate = $("#to").val();
-                //    d.status = $("#status").val();
-                //}
+                "data": function (d: any) {
+                    d.name = $("#name").val();
+                    //d.email = $("#email").val();
+                    //d.phone = $("#phone").val();
+                    //d.fromDate = $("#from").val();
+                    //d.toDate = $("#to").val();
+                    //d.status = $("#status").val();
+                }
             },
             "columns": [
                 {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LinqKit;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -41,8 +42,8 @@ namespace TTFrontEnd.Controllers
             [FromForm] string draw,
             [FromForm] string start,
             [FromForm] string length
+            ,[FromForm] string name
             //,
-            //[FromForm] string name,
             //[FromForm] string email,
             //[FromForm] string phone,
             //[FromForm] DateTime? fromDate,
@@ -58,7 +59,7 @@ namespace TTFrontEnd.Controllers
                 int recordsTotal = 0;
 
                 //var rs = await Get(pageSize, pageIndex, name, email, phone, status, fromDate, toDate);
-                var rs = await Get(pageSize, pageIndex);
+                var rs = await Get(pageSize, pageIndex, name);
 
                 //total number of rows counts
                 recordsTotal = rs.TotalRows;
@@ -80,9 +81,16 @@ namespace TTFrontEnd.Controllers
         }
         // GET: api/Brands
         [HttpGet]
-        public async Task<PaggingModel<Brands>> Get(int pageSize, int? pageIndex)
+        public async Task<PaggingModel<Brands>> Get(int pageSize, int? pageIndex,string name)
         {
-            var listBrands = _serviceBrands.Queryable();
+            ExpressionStarter<Brands> searchCondition = PredicateBuilder.New<Brands>(true);
+
+            if (name != null && name.Length > 0)
+            {
+                searchCondition = searchCondition.And(x => x.Name.ToLower().Contains(name.ToLower()));
+            }
+
+            var listBrands = _serviceBrands.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate);
 
             var pagedListUser = await PaginatedList<Brands>.CreateAsync(listBrands, pageIndex ?? 1, pageSize);
 
