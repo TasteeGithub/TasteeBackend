@@ -49,7 +49,7 @@ export default class Brands extends Component<{}, DataState> {
 
             "ajax":
             {
-                "url": "https://localhost:44354/api/brands/load-data/",
+                "url": "/api/brands/load-data/",
                 "type": "POST",
                 "dataType": "JSON",
                 "contentType": "application/x-www-form-urlencoded",

@@ -41,7 +41,7 @@ const EditUser: React.FunctionComponent<RouteComponentProps> = () => {
         const authToken = localStorage.token;
         if (authToken != null) {
             axios.defaults.headers.common['Authorization'] = authToken;
-            const result = await axios.get(`https://localhost:44354/api/users/detail/${id}`);
+            const result = await axios.get(`/api/users/detail/${id}`);
             await setValues(result.data);
 
             if (!result.data.id) history.push("/");
@@ -55,7 +55,7 @@ const EditUser: React.FunctionComponent<RouteComponentProps> = () => {
         const authToken = localStorage.token;
         if (authToken != null) {
             axios.defaults.headers.common['Authorization'] = authToken;
-            axios.put(`https://localhost:44354/api/users`, values)
+            axios.put(`/api/users`, values)
                 .then(result => {
                     if (result.data.successful) {
                         setSuccess(true);

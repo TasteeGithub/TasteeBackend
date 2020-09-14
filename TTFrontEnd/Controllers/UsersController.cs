@@ -17,7 +17,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using TTBackEnd.Shared;
-using TTFrontEnd.Models.DataContext;
+using TTFrontEnd.Models.SqlDataContext;
 using TTFrontEnd.Models.DTO;
 
 using TTFrontEnd.Services;
@@ -28,7 +28,7 @@ using Constants = TTBackEnd.Shared.Constants;
 
 namespace TTFrontEnd.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
@@ -169,7 +169,7 @@ namespace TTFrontEnd.Controllers
 
                 user.LastLogin = DateTime.Now;
                 user.LoginFailedCount = 0;
-                user.Status = AccountStatus.Actived.ToString();
+                user.Status = AccountStatus.Active.ToString();
                 _serviceUsers.Update(user);
                 _unitOfWork.SaveChangesAsync();
 
@@ -296,7 +296,7 @@ namespace TTFrontEnd.Controllers
                         user.FullName = model.FullName;
                         user.PhoneNumber = model.PhoneNumber;
                         user.Status = model.Status;
-                        if(user.Status == AccountStatus.Actived.ToString())
+                        if(user.Status == AccountStatus.Active.ToString())
                         {
                             user.LoginFailedCount = 0;
                         }    

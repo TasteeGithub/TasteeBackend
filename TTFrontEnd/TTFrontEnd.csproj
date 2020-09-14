@@ -35,13 +35,19 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="Models\DataContext\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="Models\DataContext\**" />
+    <EmbeddedResource Remove="Models\DataContext\**" />
+    <EntityDeploy Remove="Models\DataContext\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="Models\DataContext\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Controllers\AccountsController.cs" />
+    <Compile Remove="Models\SqlDataContext\TTContext.cs" />
   </ItemGroup>
 
   <ItemGroup>

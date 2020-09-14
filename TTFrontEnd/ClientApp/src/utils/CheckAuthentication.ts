@@ -11,7 +11,7 @@ export const CheckAuthentication = {
     authenError: "",
     async Login(loginInfo: LoginInfo) {
 
-        let response = await axios.post("https://localhost:44354/api/operators/Login", {
+        let response = await axios.post("/api/operators/Login", {
             email: loginInfo.email,
             password: loginInfo.password
         });

@@ -20,6 +20,7 @@ import Users from './components/UserManager/Users';
 import EditUser from './components/UserManager/EditUser';
 import Brands from './components/BrandManager/Brands';
 import CreateBrand from './components/BrandManager/CreateBrand';
+import FrontEnd from './components/FrontEnd';
 
 type AppProps = AuthenticatedState & typeof actionCreator;
 
@@ -27,7 +28,8 @@ const App: React.FunctionComponent<AppProps> = (props: AppProps) => {
     return (
         <Router>
             <Switch>
-                <GuestRoute exact path="/" component={Dashboard} />
+                <GuestRoute exact path="/" component={FrontEnd} />
+                <PrivateRoute path="/dashboard" component={Dashboard} />
                 <LoginRoute path="/login" component={Login} />
                 <PrivateRoute path="/change-password" component={ChangePassword} />
 

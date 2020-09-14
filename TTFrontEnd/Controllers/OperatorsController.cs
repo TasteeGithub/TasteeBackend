@@ -16,7 +16,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using TTBackEnd.Shared;
-using TTFrontEnd.Models.DataContext;
+using TTFrontEnd.Models.SqlDataContext;
 using TTFrontEnd.Models.DTO;
 
 using TTFrontEnd.Services;
@@ -27,7 +27,7 @@ using Constants = TTBackEnd.Shared.Constants;
 
 namespace TTFrontEnd.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class OperatorsController: ControllerBase
@@ -123,7 +123,7 @@ namespace TTFrontEnd.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("Login")]
-        public IActionResult Login(LoginModel login)
+        public async Task<IActionResult> Login(LoginModel login)
         {
             bool IsActionSuccess = false;
             try
@@ -137,7 +137,7 @@ namespace TTFrontEnd.Controllers
                     return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
                 }    
 
-                var dtoUser = user.Adapt<TTFrontEnd.Models.DTO.User>();
+                var dtoUser = user.Adapt<User>();
                 var verifyResult = dtoUser.VerifyPassword(login);
 
                 if (verifyResult == PasswordVerificationResult.Failed)
@@ -149,16 +149,16 @@ namespace TTFrontEnd.Controllers
                         user.Status = AccountStatus.Locked.ToString();
                     }    
                     _serviceOperators.Update(user);
-                    _unitOfWork.SaveChangesAsync();
+                    await _unitOfWork.SaveChangesAsync();
 
                     return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
                 }
 
                 user.LastLogin = DateTime.Now;
                 user.LoginFailedCount = 0;
-                user.Status = AccountStatus.Actived.ToString();
+                user.Status = AccountStatus.Active.ToString();
                 _serviceOperators.Update(user);
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
 
                 var claims = new List<Claim>
                 {
@@ -290,7 +290,7 @@ namespace TTFrontEnd.Controllers
                         user.FullName = model.FullName;
                         user.PhoneNumber = model.PhoneNumber;
                         user.Status = model.Status;
-                        if(user.Status == AccountStatus.Actived.ToString())
+                        if(user.Status == AccountStatus.Active.ToString())
                         {
                             user.LoginFailedCount = 0;
                         }    

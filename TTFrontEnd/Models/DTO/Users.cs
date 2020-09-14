@@ -4,7 +4,7 @@ using TTBackEnd.Shared;
 
 namespace TTFrontEnd.Models.DTO
 {
-    public partial class User : DataContext.Users
+    public partial class User : SqlDataContext.Users
     {
         public string Password { get; set; }
 

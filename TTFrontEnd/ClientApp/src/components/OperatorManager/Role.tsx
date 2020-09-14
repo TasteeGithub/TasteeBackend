@@ -23,7 +23,7 @@ const Role: React.FunctionComponent<IProps> = (props:IProps) => {
         const authToken = localStorage.token;
         if (authToken != null) {
             axios.defaults.headers.common['Authorization'] = authToken;
-            const result = await axios.get(`https://localhost:44354/api/Roles/`);
+            const result = await axios.get(`/api/Roles/`);
             setRoles(result.data);
         }
     }

@@ -15,8 +15,8 @@ namespace TTBackEnd.Shared
     public enum AccountStatus
     {
         Pending,
-        Actived,
-        InActived,
+        Active,
+        InActive,
         Locked,
         Closed
     }
@@ -30,11 +30,11 @@ namespace TTBackEnd.Shared
         /// <summary>
         /// Đang hoạt động
         /// </summary>
-        Actived,
+        Active,
         /// <summary>
         /// Tạm ngừng
         /// </summary>
-        InActived,
+        InActive,
         /// <summary>
         /// Ngừng hoạt động/ khóa
         /// </summary>

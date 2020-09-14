@@ -73,7 +73,7 @@ class CreateBrand extends React.PureComponent<{}, IState> {
         //if (this.state.avatarFile?.name != null) {
         //    let formData = new FormData();
         //    formData.append("myFile", this.state.avatarFile, this.state.avatarFile.name);
-        //    let rs = await axios.post("https://localhost:44354/api/operators/uploadfile", formData);
+        //    let rs = await axios.post("/api/operators/uploadfile", formData);
 
         //    if (rs.status == 200) {
         //        this.accountInfo.avatar = rs.data.newFileName;
@@ -95,7 +95,7 @@ class CreateBrand extends React.PureComponent<{}, IState> {
             status: "Active"
         }
 
-        axios.post("https://localhost:44354/api/operators", accountModel)
+        axios.post("/api/operators", accountModel)
             .then((rs) => {
                 if (rs.data.successful)
                     this.setState({
@@ -148,7 +148,7 @@ class CreateBrand extends React.PureComponent<{}, IState> {
             });
 
         //try {
-        //    let resp = await axios.post("https://localhost:44354/api/operators", accountModel);
+        //    let resp = await axios.post("/api/operators", accountModel);
 
         //    if (resp.data.successful)
         //        this.setState({

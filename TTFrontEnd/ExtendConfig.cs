@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TTFrontEnd.Models.DataContext;
 //using TTFrontEnd.Models.SqlDataContext;
+using TTFrontEnd.Models.SqlDataContext;
 using TTFrontEnd.Services;
 using URF.Core.Abstractions;
 using URF.Core.Abstractions.Trackable;
@@ -16,13 +16,13 @@ namespace TTFrontEnd
         const string CONNECTION_STRING_NAME = "DbConnectString";
         public static IServiceCollection InsideConfigServices(this IServiceCollection services, IConfiguration Configuration)
         {
-            services.AddDbContext<TTContext>(options =>
-            options.UseNpgsql(Configuration.GetSection(CONNECTION_STRING_NAME).Value));
-
             //services.AddDbContext<TTContext>(options =>
-            //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            //options.UseNpgsql(Configuration.GetSection(CONNECTION_STRING_NAME).Value));
 
-            services.AddScoped<DbContext, TTContext>();
+            services.AddDbContext<tas77143_tasteeContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("TasteeConnection")));
+
+            services.AddScoped<DbContext, tas77143_tasteeContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<ITrackableRepository<Operators>, TrackableRepository<Operators>>();

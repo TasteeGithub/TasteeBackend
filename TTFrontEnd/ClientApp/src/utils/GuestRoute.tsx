@@ -1,16 +1,16 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
 import MainLayout from '../components/MainLayout';
-import Layout from '../components/Layout';
+import FrontLayout from '../components/FrontLayout';
 //redux stuff
 
 const GuestRoute: React.SFC<any> = ({ component: Component, ...rest }) => (
     <Route
         {...rest}
         render={(props) =>
-            <MainLayout>
+            <FrontLayout>
                 <Component {...props} />
-            </MainLayout>
+            </FrontLayout>
         }
     />
 );

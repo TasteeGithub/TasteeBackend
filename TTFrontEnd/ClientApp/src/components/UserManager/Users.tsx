@@ -49,7 +49,7 @@ export default class Users extends Component<{}, DataState> {
 
             "ajax":
             {
-                "url": "https://localhost:44354/api/users/load-data/",
+                "url": "/api/users/load-data/",
                 "type": "POST",
                 "dataType": "JSON",
                 "contentType": "application/x-www-form-urlencoded",
