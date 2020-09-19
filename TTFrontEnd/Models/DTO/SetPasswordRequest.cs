@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TTFrontEnd.Models.DTO
+namespace Tastee.Models.DTO
 {
     public class SetPasswordRequest
     {

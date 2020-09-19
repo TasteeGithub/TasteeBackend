@@ -50,7 +50,9 @@ const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) =>
                             </div>
                             <button type="button" id="navbar-fullscreen" className="nav-link"><i className="ik ik-maximize"></i></button>
                         </div>
+                        
                         <div className="top-menu d-flex align-items-center">
+                            {/*  TODO : Phần này tích hợp các thông báo cho operator
                             <div className="dropdown">
                                 <a className="nav-link dropdown-toggle" href="#" id="notiDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i className="ik ik-bell"></i><span className="badge bg-danger">3</span></a>
                                 <div className="dropdown-menu dropdown-menu-right notification-dropdown" aria-labelledby="notiDropdown">
@@ -106,6 +108,7 @@ const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) =>
                                 </div>
                             </div>
                             <button type="button" className="nav-link ml-10" id="apps_modal_btn" data-toggle="modal" data-target="#appsModal"><i className="ik ik-grid"></i></button>
+                            */}
                             <LoginStatus />
 
                         </div>
@@ -115,11 +118,12 @@ const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) =>
             <div className="page-wrap">
                 <div className="app-sidebar colored">
                     <div className="sidebar-header">
-                        <a className="header-brand" href="/">
+                        <a className="header-brand" href="/dashboard">
                             <div className="logo-img">
-                                <img src="src/img/brand-white.svg" className="header-brand-img" alt="lavalite" />
+                                {/*<img src="src/img/brand-white.svg" className="header-brand-img" alt="lavalite" />
+                                */}
                             </div>
-                            <span className="text">TTPro</span>
+                            <span className="text">TASTEE</span>
                         </a>
                         <button type="button" className="nav-toggle"><i data-toggle="expanded" className="ik ik-toggle-right toggle-icon"></i></button>
                         <button id="sidebarClose" className="nav-close"><i className="ik ik-x"></i></button>
@@ -291,7 +295,7 @@ const Main: React.FunctionComponent = (props: { children?: React.ReactNode }) =>
 
                 <footer className="footer">
                     <div className="w-100 clearfix">
-                        <span className="text-center text-sm-left d-md-inline-block">Copyright © 2020 Nguyen Minh Thu All Rights Reserved.</span>
+                        <span className="text-center text-sm-left d-md-inline-block">Copyright © 2020 Tastee All Rights Reserved.</span>
                     </div>
                 </footer>
 

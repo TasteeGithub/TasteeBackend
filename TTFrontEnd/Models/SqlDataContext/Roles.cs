@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using URF.Core.EF.Trackable;
 
-namespace TTFrontEnd.Models.SqlDataContext
+namespace Tastee.Models.SqlDataContext
 {
     public partial class Roles : Entity
     {

@@ -58,13 +58,13 @@ const EditAccount: React.FunctionComponent<RouteComponentProps> = () => {
         const authToken = localStorage.token;
         if (authToken != null) {
             axios.defaults.headers.common['Authorization'] = authToken;
-            axios.put(`/api/operators`, values)
+            axios.post(`/api/Operators/Update/`, values)
                 .then(result => {
                     if (result.data.successful) {
                         setSuccess(true);
                     }
                     else {
-                        alert(result.data.error);
+                        alert(stringify(result.data.error));
                         console.log(result);
                     }
                 

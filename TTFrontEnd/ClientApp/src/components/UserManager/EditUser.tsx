@@ -55,7 +55,7 @@ const EditUser: React.FunctionComponent<RouteComponentProps> = () => {
         const authToken = localStorage.token;
         if (authToken != null) {
             axios.defaults.headers.common['Authorization'] = authToken;
-            axios.put(`/api/users`, values)
+            axios.post(`/api/users/update/`, values)
                 .then(result => {
                     if (result.data.successful) {
                         setSuccess(true);

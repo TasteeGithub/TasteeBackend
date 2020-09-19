@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace TTFrontEnd.Models.SqlDataContext
+namespace Tastee.Models.SqlDataContext
 {
     public partial class tas77143_tasteeContext : DbContext
     {
@@ -26,7 +26,7 @@ namespace TTFrontEnd.Models.SqlDataContext
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=112.78.2.36;Initial Catalog=xxx;Persist Security Info=True;User ID=xxx;Password=xxx");
+                optionsBuilder.UseSqlServer("Data Source=MINHTHU-PC;Initial Catalog=tastee;Persist Security Info=True;User ID=tas77143_tastee;Password=K5EOcP3MPgUpc");
             }
         }
 

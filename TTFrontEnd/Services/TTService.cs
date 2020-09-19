@@ -2,7 +2,7 @@
 using URF.Core.Abstractions.Trackable;
 using URF.Core.Services;
 
-namespace TTFrontEnd.Services
+namespace Tastee.Services
 {
     public class TTService<T> : Service<T>, ITTService<T> where T : class, ITrackable
     {

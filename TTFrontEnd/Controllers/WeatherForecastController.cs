@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace TTFrontEnd.Controllers
+namespace TasteeFrontEnd.Controllers
 {
     [ApiController]
     [Route("[controller]")]

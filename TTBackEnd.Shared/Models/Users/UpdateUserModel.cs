@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace TTBackEnd.Shared
+namespace Tastee.Shared
 {
     public class UpdateUserModel
     {

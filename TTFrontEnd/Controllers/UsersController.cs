@@ -16,17 +16,17 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using TTBackEnd.Shared;
-using TTFrontEnd.Models.SqlDataContext;
-using TTFrontEnd.Models.DTO;
+using Tastee.Shared;
+using Tastee.Models.SqlDataContext;
+using Tastee.Models.DTO;
 
-using TTFrontEnd.Services;
+using Tastee.Services;
 using URF.Core.Abstractions;
-using Constants = TTBackEnd.Shared.Constants;
+using Constants = Tastee.Shared.Constants;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace TTFrontEnd.Controllers
+namespace Tastee.Controllers
 {
     [Authorize]
     [ApiController]
@@ -150,7 +150,7 @@ namespace TTFrontEnd.Controllers
                     return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
                 }    
 
-                var dtoUser = user.Adapt<TTFrontEnd.Models.DTO.User>();
+                var dtoUser = user.Adapt<Tastee.Models.DTO.User>();
                 var verifyResult = dtoUser.VerifyPassword(login);
 
                 if (verifyResult == PasswordVerificationResult.Failed)
@@ -282,7 +282,8 @@ namespace TTFrontEnd.Controllers
             return null;
         }
 
-        [HttpPut]
+        [HttpPost]
+        [Route("Update")]
         public async Task<IActionResult> Put(UserDetail model)
         {
             bool isActionSuccess = false;
@@ -381,7 +382,7 @@ namespace TTFrontEnd.Controllers
                     new { draw, recordsFiltered = 0, recordsTotal = 0, data = new List<Users>() });
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("set-password")]
         public async Task<IActionResult> SetPassword(SetPasswordRequest passwordRequest)
         {
@@ -407,7 +408,7 @@ namespace TTFrontEnd.Controllers
             return Ok(new { Successful = false, Error = "Set password failed" });
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("change-password")]
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest passwordRequest)
         {

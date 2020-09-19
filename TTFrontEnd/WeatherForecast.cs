@@ -1,6 +1,6 @@
 using System;
 
-namespace TTFrontEnd
+namespace Tastee
 {
     public class WeatherForecast
     {

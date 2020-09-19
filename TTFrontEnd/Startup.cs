@@ -13,7 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace TTFrontEnd
+namespace Tastee
 {
     public class Startup
     {
@@ -59,10 +59,10 @@ namespace TTFrontEnd
                 {
                     c.SwaggerDoc("v1", new OpenApiInfo
                     {
-                        Title = "TT Api",
+                        Title = "Tastee Api",
                         Version = "v1",
                         Contact = new OpenApiContact { Email = "minhthu2511@gmail.com", Name = "Nguyễn Minh Thư" },
-                        Description = "Api back end for integrate on front end and mobile",
+                        Description = "Api for integrate on front end and mobile app",
                     });
                     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                     {
@@ -127,7 +127,7 @@ namespace TTFrontEnd
                 // specifying the Swagger JSON endpoint.
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TT Api backend ");
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tastee Api");
                 //To serve the Swagger UI at the app's root (http://localhost:<port>/), set the RoutePrefix property to an empty string:
                     c.RoutePrefix = "docs";
                 });

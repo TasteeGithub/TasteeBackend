@@ -10,12 +10,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Web.CodeGeneration;
-using TTBackEnd.Shared;
-using TTFrontEnd.Models.SqlDataContext;
-using TTFrontEnd.Services;
+using Tastee.Shared;
+using Tastee.Models.SqlDataContext;
+using Tastee.Services;
 using URF.Core.Abstractions;
 
-namespace TTFrontEnd.Controllers
+namespace Tastee.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
@@ -155,8 +155,9 @@ namespace TTFrontEnd.Controllers
         }
 
         // PUT: api/Brands/5
-        [HttpPut]
-        public async Task<IActionResult> Put(Brands model)
+        [HttpPost]
+        [Route("Update")]
+        public async Task<IActionResult> Update(Brands model)
         {
             bool isActionSuccess = false;
             try

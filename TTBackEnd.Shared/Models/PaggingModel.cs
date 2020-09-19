@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TTBackEnd.Shared
+namespace Tastee.Shared
 {
     /// <summary>
     /// Model for api to get pagged data

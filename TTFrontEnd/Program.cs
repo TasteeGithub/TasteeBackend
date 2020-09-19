@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using NLog.Web;
 using System;
 
-namespace TTFrontEnd
+namespace Tastee
 {
     public class Program
     {

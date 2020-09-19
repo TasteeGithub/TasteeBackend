@@ -1,4 +1,4 @@
-﻿namespace TTBackEnd.Shared
+﻿namespace Tastee.Shared
 {
     public class LoginResult
     {

@@ -58,10 +58,9 @@ class Login extends React.Component<RouteComponentProps<{}, StaticContext, Locat
                             <div className="col-xl-4 col-lg-6 col-md-7 my-auto p-0">
                                 <div className="authentication-form mx-auto">
                                     <div className="logo-centered">
-                                        <a href="/"><img src="../src/img/brand.svg" alt="" /></a>
+                                        <a href="/"><h2>TASTEE</h2></a>
                                     </div>
-                                    <h3>Sign In to ThemeKit</h3>
-                                    <p>Happy to see you again!</p>
+                                    <h3>Sign In to Tastee</h3>
                                     <form onSubmit={this.handleSubmit}>
                                         <div className="form-group">
                                             <input type="text" onChange={this.handleEmailChange} className="form-control" placeholder="Email" required />
@@ -70,17 +69,6 @@ class Login extends React.Component<RouteComponentProps<{}, StaticContext, Locat
                                         <div className="form-group">
                                             <input type="password" onChange={this.handlePassChange} className="form-control" placeholder="Password" required />
                                             <i className="ik ik-lock"></i>
-                                        </div>
-                                        <div className="row">
-                                            <div className="col text-left">
-                                                <label className="custom-control custom-checkbox">
-                                                    <input type="checkbox" className="custom-control-input" id="item_checkbox" name="item_checkbox" value="option1" />
-                                                    <span className="custom-control-label">&nbsp;Remember Me</span>
-                                                </label>
-                                            </div>
-                                            <div className="col text-right">
-                                                <a href="forgot-password.html">Forgot Password ?</a>
-                                            </div>
                                         </div>
                                         {this.state.error.length > 0 && <div className="alert alert-danger" role="alert">
                                             {this.state.error}

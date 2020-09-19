@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TTBackEnd.Shared
+namespace Tastee.Shared
 {
     public static class Utils
     {

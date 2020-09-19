@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TTBackEnd.Shared
+namespace Tastee.Shared
 {
     public class RegisterResult
     {

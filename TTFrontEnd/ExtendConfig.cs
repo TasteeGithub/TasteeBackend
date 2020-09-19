@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-//using TTFrontEnd.Models.SqlDataContext;
-using TTFrontEnd.Models.SqlDataContext;
-using TTFrontEnd.Services;
+//using Tastee.Models.SqlDataContext;
+using Tastee.Models.SqlDataContext;
+using Tastee.Services;
 using URF.Core.Abstractions;
 using URF.Core.Abstractions.Trackable;
 using URF.Core.EF;
 using URF.Core.EF.Trackable;
 
-namespace TTFrontEnd
+namespace Tastee
 {
     public static class ExtendConfig
     {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
-using TTBackEnd.Shared;
+using Tastee.Shared;
 
-namespace TTFrontEnd.Models.DTO
+namespace Tastee.Models.DTO
 {
     public partial class User : SqlDataContext.Users
     {

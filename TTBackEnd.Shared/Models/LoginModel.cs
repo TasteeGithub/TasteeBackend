@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TTBackEnd.Shared
+namespace Tastee.Shared
 {
     public class LoginModel
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TTBackEnd.Shared
+namespace Tastee.Shared
 {
     public class UserDetail
     {

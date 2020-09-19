@@ -15,11 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "URF.Core.EF.Trackable", "UR
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "URF.Core.Services", "URF.Core.Services\URF.Core.Services.csproj", "{EB8E2814-AE92-4CCC-85C8-E1B88663E645}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTBackEnd.Shared", "TTBackEnd.Shared\TTBackEnd.Shared.csproj", "{3024137F-D26D-4C40-A5D8-D609818F8334}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tastee.Shared", "TTBackEnd.Shared\Tastee.Shared.csproj", "{3024137F-D26D-4C40-A5D8-D609818F8334}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{7011050E-5387-4F0D-BB29-DA1864000BD6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTFrontEnd", "TTFrontEnd\TTFrontEnd.csproj", "{F495E235-89AC-4E97-BF25-C5EDDCEBDBF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tastee", "TTFrontEnd\Tastee.csproj", "{F495E235-89AC-4E97-BF25-C5EDDCEBDBF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

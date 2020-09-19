@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TTBackEnd.Shared
+namespace Tastee.Shared
 {
     public class PaginatedList<T> : List<T>
     {
