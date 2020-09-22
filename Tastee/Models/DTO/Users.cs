@@ -3,7 +3,7 @@ using Tastee.Shared;
 
 namespace Tastee.Models.DTO
 {
-    public partial class User : SqlDataContext.Users
+    public partial class User : Tastee.Infrastucture.Data.Context.Users
     {
         public PasswordVerificationResult VerifyPassword(LoginModel login)
         {

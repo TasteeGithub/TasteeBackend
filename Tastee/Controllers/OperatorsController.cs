@@ -16,12 +16,13 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Tastee.Shared;
-using Tastee.Models.SqlDataContext;
+using Tastee.Infrastucture.Data.Context;
 using Tastee.Models.DTO;
 
 using Tastee.Services;
 using URF.Core.Abstractions;
 using Constants = Tastee.Shared.Constants;
+using Tastee.Application.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

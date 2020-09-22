@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Tastee.Infrastructure.IoC;
 
 namespace Tastee
 {
@@ -93,7 +94,7 @@ namespace Tastee
                 });
 
             }
-            services.InsideConfigServices(Configuration);
+            //services.InsideConfigServices(Configuration);
             services.AddControllersWithViews();
 
             // In production, the React files will be served from this directory
@@ -101,6 +102,8 @@ namespace Tastee
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            RegisterServices(services, Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -166,6 +169,11 @@ namespace Tastee
                     //spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
                 }
             });
+        }
+
+        private static void RegisterServices(IServiceCollection services, IConfiguration configuration)
+        {
+            DependencyContainer.RegisterServices(services,configuration);
         }
     }
 }

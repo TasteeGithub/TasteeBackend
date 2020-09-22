@@ -8,9 +8,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tastee.Shared;
-using Tastee.Models.SqlDataContext;
-using Tastee.Services;
+
 using URF.Core.Abstractions;
+using Tastee.Application.Interfaces;
+using Tastee.Infrastucture.Data.Context;
 
 namespace Tastee.Controllers
 {
