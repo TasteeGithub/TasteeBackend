@@ -33,7 +33,7 @@ namespace Tastee.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly ITTService<Users> _serviceUsers;
+        private readonly ITasteeService<Users> _serviceUsers;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<UsersController> _logger;
 
@@ -42,7 +42,7 @@ namespace Tastee.Controllers
             IConfiguration configuration,
             ILogger<UsersController> logger,
             IUnitOfWork unitOfWork,
-            ITTService<Users> serviceUsers
+            ITasteeService<Users> serviceUsers
             )
         {
             _configuration = configuration;

@@ -32,21 +32,21 @@ namespace Tastee.Controllers
     [Route("api/[controller]")]
     public class OperatorsController: ControllerBase
     {
-        private readonly ITTService<Operators> _serviceOperators;
+        private readonly ITasteeService<Operators> _serviceOperators;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<OperatorsController> _logger;
 
         private readonly IConfiguration _configuration;
-        private readonly ITTService<OperatorRoles> _serviceOperatorRoles;
-        private readonly ITTService<Roles> _serviceRoles;
+        private readonly ITasteeService<OperatorRoles> _serviceOperatorRoles;
+        private readonly ITasteeService<Roles> _serviceRoles;
 
         public OperatorsController(
             IConfiguration configuration,
             ILogger<OperatorsController> logger,
             IUnitOfWork unitOfWork,
-            ITTService<Operators> serviceOperators,
-            ITTService<OperatorRoles> serviceUserRole,
-            ITTService<Roles> serviceRoles
+            ITasteeService<Operators> serviceOperators,
+            ITasteeService<OperatorRoles> serviceUserRole,
+            ITasteeService<Roles> serviceRoles
             )
         {
             _configuration = configuration;

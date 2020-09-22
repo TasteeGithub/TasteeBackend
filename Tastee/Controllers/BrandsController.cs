@@ -22,12 +22,12 @@ namespace Tastee.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<BrandsController> _logger;
 
-        private readonly ITTService<Brands> _serviceBrands;
+        private readonly ITasteeService<Brands> _serviceBrands;
 
         public BrandsController(
             ILogger<BrandsController> logger,
             IUnitOfWork unitOfWork,
-            ITTService<Brands> serviceBrands
+            ITasteeService<Brands> serviceBrands
             )
         {
             _unitOfWork = unitOfWork;

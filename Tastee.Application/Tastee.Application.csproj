@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mapster" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Tastee.Domain\Tastee.Domain.csproj" />
+    <ProjectReference Include="..\Tastee.Infrasture.Data\Tastee.Infrastucture.Data.csproj" />
+    <ProjectReference Include="..\URF.Core.Abstractions.Services\URF.Core.Abstractions.Services.csproj" />
+    <ProjectReference Include="..\URF.Core.Services\URF.Core.Services.csproj" />
+  </ItemGroup>
+
+</Project>

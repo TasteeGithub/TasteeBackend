@@ -1,27 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Tastee.Models.SqlDataContext;
+using System;
+using Tastee.Application.Interfaces;
+using Tastee.Infrastucture.Data.Context;
 using Tastee.Services;
 using URF.Core.Abstractions;
 using URF.Core.Abstractions.Trackable;
 using URF.Core.EF;
 using URF.Core.EF.Trackable;
 
-namespace Tastee
+namespace Tastee.Infrastructure.IoC
 {
-    public static class ExtendConfig
+    public class DependencyContainer
     {
-        const string CONNECTION_STRING_NAME = "DbConnectString";
-        public static IServiceCollection InsideConfigServices(this IServiceCollection services, IConfiguration Configuration)
+        public static void RegisterServices(IServiceCollection services, IConfiguration Configuration)
         {
-            //services.AddDbContext<TTContext>(options =>
-            //options.UseNpgsql(Configuration.GetSection(CONNECTION_STRING_NAME).Value));
-
-            services.AddDbContext<TasteeContext>(options =>
+            services.AddDbContext<tasteeContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("TasteeConnection")));
 
-            services.AddScoped<DbContext, TasteeContext>();
+            services.AddScoped<DbContext, tasteeContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<ITrackableRepository<Operators>, TrackableRepository<Operators>>();
@@ -39,7 +37,6 @@ namespace Tastee
             services.AddScoped<ITrackableRepository<Brands>, TrackableRepository<Brands>>();
             services.AddScoped<ITasteeService<Brands>, TasteeService<Brands>>();
 
-            return services;
         }
     }
 }

@@ -3,7 +3,7 @@ using URF.Core.Abstractions.Services;
 
 namespace Tastee.Services
 {
-    public interface ITTService<T> : IService<T> where T : class, ITrackable
+    public interface ITasteeService<T> : IService<T> where T : class, ITrackable
     {
     }
 }

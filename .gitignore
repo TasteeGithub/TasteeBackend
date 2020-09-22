@@ -21,3 +21,13 @@
 /TTFrontEnd/obj
 /Tastee.Shared/bin
 /Tastee.Shared/obj
+/Tastee.Application/bin
+/Tastee.Application/obj
+/Tastee.Domain/bin
+/Tastee.Domain/obj
+/Tastee.Infrastructure.IoC/bin
+/Tastee.Infrastructure.IoC/obj
+/Tastee.Infrasture.Data/bin
+/Tastee.Infrasture.Data/obj
+/Tastee.UnitTest/bin
+/Tastee.UnitTest/obj

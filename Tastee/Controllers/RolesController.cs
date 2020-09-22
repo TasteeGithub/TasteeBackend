@@ -14,10 +14,10 @@ namespace Tastee.Controllers
     [ApiController]
     public class RolesController : ControllerBase
     {
-        private readonly ITTService<Roles> _serviceRoles;
+        private readonly ITasteeService<Roles> _serviceRoles;
 
         public RolesController(
-            ITTService<Roles> serviceRoles
+            ITasteeService<Roles> serviceRoles
             )
         {
             _serviceRoles = serviceRoles;
