@@ -1,8 +1,10 @@
-﻿
-namespace Tastee.Shared
+﻿using System;
+
+namespace Tastee.Domain.Entities
 {
-    public class BrandModel
+    public partial class Brand 
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
         public string Hotline { get; set; }
@@ -16,7 +18,9 @@ namespace Tastee.Shared
         public int? MinPrice { get; set; }
         public int? MaxPrice { get; set; }
         public string Status { get; set; }
-        public string UpdateBy { get; set; } 
+        public DateTime CreatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
+        public string UpdateBy { get; set; }
         public string MetaDescription { get; set; }
         public string SeoTitle { get; set; }
         public string SeoDescription { get; set; }

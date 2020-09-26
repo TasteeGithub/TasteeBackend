@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Tastee.Domain.Models
+namespace Tastee.Domain.Entities
 {
-    public partial class Nlogs
+    public partial class Nlog
     {
         public int Id { get; set; }
         public string Application { get; set; }

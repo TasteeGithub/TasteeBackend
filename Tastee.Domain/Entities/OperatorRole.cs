@@ -1,7 +1,7 @@
 ﻿
-namespace Tastee.Domain.Models
+namespace Tastee.Domain.Entities
 {
-    public partial class OperatorRoles
+    public partial class OperatorRole
     {
         public string UserId { get; set; }
         public string RoleId { get; set; }

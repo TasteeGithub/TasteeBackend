@@ -5,12 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="LinqKit" Version="1.1.17" />
     <PackageReference Include="Mapster" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Tastee.Domain\Tastee.Domain.csproj" />
     <ProjectReference Include="..\Tastee.Infrasture.Data\Tastee.Infrastucture.Data.csproj" />
+    <ProjectReference Include="..\Tastee.Shared\Tastee.Shared.csproj" />
     <ProjectReference Include="..\URF.Core.Abstractions.Services\URF.Core.Abstractions.Services.csproj" />
     <ProjectReference Include="..\URF.Core.Services\URF.Core.Services.csproj" />
   </ItemGroup>

@@ -2,42 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LinqKit;
-using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tastee.Shared;
-
-using URF.Core.Abstractions;
 using Tastee.Application.Interfaces;
 using Tastee.Infrastucture.Data.Context;
+using Tastee.Domain.Entities;
 
 namespace Tastee.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BrandsController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IBrandService  _brandService;
         private readonly ILogger<BrandsController> _logger;
-
-        private readonly ITasteeService<Brands> _serviceBrands;
 
         public BrandsController(
             ILogger<BrandsController> logger,
-            IUnitOfWork unitOfWork,
-            ITasteeService<Brands> serviceBrands
+            IBrandService brandService
             )
         {
-            _unitOfWork = unitOfWork;
             _logger = logger;
-            _serviceBrands = serviceBrands;
+            _brandService = brandService;
         }
 
         [HttpPost]
         [Route("load-data")]
+        [AllowAnonymous]
         public async Task<IActionResult> LoadData(
             [FromForm] string draw,
             [FromForm] string start,
@@ -52,7 +46,7 @@ namespace Tastee.Controllers
                 int pageIndex = skip / pageSize + 1;
                 int recordsTotal = 0;
 
-                var rs = await Get(pageSize, pageIndex, name);
+                var rs = await _brandService.GetBrandsAsync(pageSize, pageIndex, name);
 
                 //total number of rows counts
                 recordsTotal = rs.TotalRows;
@@ -72,38 +66,38 @@ namespace Tastee.Controllers
             return new JsonResult(
                     new { draw, recordsFiltered = 0, recordsTotal = 0, data = new List<Users>() });
         }
-        // GET: api/Brands
-        [HttpGet]
-        public async Task<PaggingModel<Brands>> Get(int pageSize, int? pageIndex,string name)
-        {
-            ExpressionStarter<Brands> searchCondition = PredicateBuilder.New<Brands>(true);
+        //// GET: api/Brands
+        //[HttpGet]
+        //public async Task<PaggingModel<Brands>> Get(int pageSize, int? pageIndex, string name)
+        //{
+        //    ExpressionStarter<Brands> searchCondition = PredicateBuilder.New<Brands>(true);
 
-            if (name != null && name.Length > 0)
-            {
-                searchCondition = searchCondition.And(x => x.Name.ToLower().Contains(name.ToLower()));
-            }
+        //    if (name != null && name.Length > 0)
+        //    {
+        //        searchCondition = searchCondition.And(x => x.Name.ToLower().Contains(name.ToLower()));
+        //    }
 
-            var listBrands = _serviceBrands.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate);
+        //    var listBrands = _serviceBrands.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate);
 
-            var pagedListUser = await PaginatedList<Brands>.CreateAsync(listBrands, pageIndex ?? 1, pageSize);
+        //    var pagedListUser = await PaginatedList<Brands>.CreateAsync(listBrands, pageIndex ?? 1, pageSize);
 
-            PaggingModel<Brands> returnResult = new PaggingModel<Brands>()
-            {
-                ListData = pagedListUser.Adapt<List<Brands>>(),
-                TotalRows = pagedListUser.TotalRows,
-            };
+        //    PaggingModel<Brands> returnResult = new PaggingModel<Brands>()
+        //    {
+        //        ListData = pagedListUser.Adapt<List<Brands>>(),
+        //        TotalRows = pagedListUser.TotalRows,
+        //    };
 
-            return returnResult;
-        }
+        //    return returnResult;
+        //}
 
         // GET: api/Brands/5
         [HttpGet("{id}", Name = "Get")]
-        public async Task<Brands> Get(string id)
+        public async Task<Brand> Get(string id)
         {
             try
             {
-                var brand = await _serviceBrands.FindAsync(id);
-                return brand;
+                return await _brandService.GetBrandByIdAsync(id);
+                
             }
             catch (Exception ex)
             {
@@ -119,84 +113,31 @@ namespace Tastee.Controllers
 
         // POST: api/Brands
         [HttpPost]
-        public async Task<IActionResult> Post(BrandModel brandModel)
+        public async Task<IActionResult> Post(Brand brandModel)
         {
             if (!ModelState.IsValid)
             {
                 var errorMessage = ModelState.Values
                     .SelectMany(x => x.Errors)
                     .Select(x => x.ErrorMessage);
-
-                return Ok(new RegisterResult { Successful = false, Error = errorMessage });
+                
+                return Ok(new Response { Successful = false, Message = string.Join(",", errorMessage) });
             }
 
-            if (!_serviceBrands.Queryable().Any(x => x.Name == brandModel.Name))
-            {
-                Brands newBrands = brandModel.Adapt<Brands>();
-                newBrands.Id = Guid.NewGuid().ToString();
-                newBrands.Status = BrandsStatus.Pending.ToString();
-                newBrands.CreatedDate = DateTime.Now;
-                newBrands.UpdatedDate = DateTime.Now;
-                _serviceBrands.Insert(newBrands);
-                await _unitOfWork.SaveChangesAsync();
-                return Ok(new RegisterResult { Successful = true });
-            }
+            return Ok(await _brandService.InsertAsync(brandModel));
 
-            return Ok(new RegisterResult { Successful = false, Error = new string[] { "Brand is exists" } });
         }
 
         // PUT: api/Brands/5
         [HttpPost]
         [Route("Update")]
-        public async Task<IActionResult> Update(Brands model)
+        public async Task<IActionResult> Update(Brand model)
         {
             bool isActionSuccess = false;
             try
             {
-                if (model.Id != null && model.Id.Length > 0)
-                {
-
-                    var brand = await _serviceBrands.FindAsync(model.Id);
-                    if (brand != null)
-                    {
-                        brand.Name = model.Name ?? brand.Name;
-                        brand.Address = model.Address ?? brand.Address;
-                        brand.Hotline = model.Hotline ?? brand.Hotline;
-                        brand.Email = model.Email ?? brand.Email;
-                        brand.Phone = model.Logo ?? brand.Phone;
-                        brand.HeadOffice = model.HeadOffice ?? brand.HeadOffice;
-                        brand.Uri = model.Uri ?? brand.Uri;
-                        brand.Logo = model.Logo ?? brand.Logo;
-                        brand.City = model.City ?? brand.City;
-                        brand.Area = model.Area ?? brand.Area;
-                        brand.MinPrice = model.MinPrice ?? brand.MinPrice;
-                        brand.MaxPrice = model.MaxPrice ?? brand.MaxPrice;
-                        brand.Status = model.Status ?? brand.Status;
-                        brand.UpdateBy = model.UpdateBy ?? brand.UpdateBy;
-                        brand.MetaDescription = model.MetaDescription ?? brand.MetaDescription;
-                        brand.SeoTitle = model.SeoTitle ?? brand.SeoTitle;
-                        brand.SeoDescription = model.SeoDescription ?? brand.SeoDescription;
-                        brand.SeoImage = model.SeoImage ?? brand.SeoImage;
-                        brand.Latitude = model.Latitude ?? brand.Latitude;
-                        brand.Longitude = model.Longitude ?? brand.Longitude;
-                        brand.Cuisines = model.Cuisines ?? brand.Cuisines;
-                        brand.Categories = model.Categories ?? brand.Categories;
-                        brand.MerchantId = model.MerchantId ?? brand.MerchantId;
-
-                        _serviceBrands.Update(brand);
-
-                        await _unitOfWork.SaveChangesAsync();
-                        isActionSuccess = true;
-                        return Ok(new { Successful = true });
-                    }
-                    else
-                    {
-                        isActionSuccess = true;
-                        return Ok(new { Successful = false, Error = "brand not found" });
-                    }
-                }
-                isActionSuccess = true;
-                return Ok(new { Successful = false, Error = "Please input id" });
+                var result = await _brandService.UpdateAsync(model);
+                return Ok(result);
             }
             catch (Exception ex)
             {

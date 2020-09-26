@@ -21,7 +21,7 @@ namespace Tastee.Application.Services
         {
             return new OperatorViewModel()
             {
-                Operators = _serviceOperators.Queryable().ToList().Adapt<List<Domain.Models.Operators>>()
+                Operators = _serviceOperators.Queryable().ToList().Adapt<List<Domain.Entities.Operator>>()
             };
         }
     }

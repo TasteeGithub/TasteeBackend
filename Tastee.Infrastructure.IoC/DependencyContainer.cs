@@ -37,6 +37,8 @@ namespace Tastee.Infrastructure.IoC
             services.AddScoped<ITrackableRepository<Brands>, TrackableRepository<Brands>>();
             services.AddScoped<ITasteeService<Brands>, TasteeService<Brands>>();
 
+            services.AddScoped<IBrandService , BrandService>();
+
         }
     }
 }

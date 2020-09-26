@@ -1,6 +1,6 @@
-﻿namespace Tastee.Domain.Models
+﻿namespace Tastee.Domain.Entities
 {
-    public partial class Roles
+    public partial class Role
     {
         public string Id { get; set; }
         public string Name { get; set; }

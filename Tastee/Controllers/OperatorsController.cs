@@ -74,12 +74,12 @@ namespace Tastee.Controllers
                     .SelectMany(x => x.Errors)
                     .Select(x => x.ErrorMessage);
 
-                return Ok(new RegisterResult { Successful = false, Error = errorMessage });
+                return Ok(new Response { Successful = false, Message = string.Join(',', errorMessage) });
             }
 
             if (_serviceOperators.Queryable().Any(e => e.Email == model.Email || e.PhoneNumber == model.PhoneNumber))
             {
-                return Ok(new RegisterResult { Successful = false, Error = new string[] { "User is exists" } });
+                return Ok(new Response { Successful = false, Message =  "User is exists"  });
             }
 
             var passwordHasher = new PasswordHasher<RegisterUserModel>();
@@ -115,9 +115,9 @@ namespace Tastee.Controllers
             catch (Exception ex)
             {
                 _logger.LogError("Error:{0}", ex.ToString());
-                return Ok(new RegisterResult { Successful = false, Error = new string[] { ex.Message } });
+                return Ok(new Response { Successful = false, Message = ex.Message });
             }
-            return Ok(new RegisterResult { Successful = true });
+            return Ok(new Response { Successful = true });
         }
 
         // POST api/<controller>
@@ -390,7 +390,7 @@ namespace Tastee.Controllers
                     .SelectMany(x => x.Errors)
                     .Select(x => x.ErrorMessage);
 
-                return Ok(new RegisterResult { Successful = false, Error = errorMessage });
+                return Ok(new Response { Successful = false, Message = string.Join(',', errorMessage) });
             }
             var user = await _serviceOperators.FindAsync(passwordRequest.Id);
             if (user != null)
@@ -416,7 +416,7 @@ namespace Tastee.Controllers
                     .SelectMany(x => x.Errors)
                     .Select(x => x.ErrorMessage);
 
-                return Ok(new RegisterResult { Successful = false, Error = errorMessage });
+                return Ok(new Response { Successful = false, Message = string.Join(',', errorMessage) });
             }
 
             var user = await _serviceOperators.FindAsync(passwordRequest.Id);
