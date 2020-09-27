@@ -42,9 +42,7 @@ namespace Tastee.Infrastucture.Data.Context
                     .HasMaxLength(200)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Address)
-                    .IsRequired()
-                    .IsUnicode(false);
+                entity.Property(e => e.Address).IsRequired();
 
                 entity.Property(e => e.Area).HasMaxLength(100);
 
@@ -67,8 +65,7 @@ namespace Tastee.Infrastucture.Data.Context
 
                 entity.Property(e => e.Hotline)
                     .IsRequired()
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.Logo)
                     .HasMaxLength(100)

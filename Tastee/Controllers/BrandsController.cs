@@ -15,6 +15,7 @@ using System.Threading;
 using Tastee.Application.Wrappers;
 using Tastee.Feature.Brands.Queries;
 using Tastee.Features.Brands.Queries;
+using Tastee.Features.Brands.Commands;
 
 namespace Tastee.Controllers
 {
@@ -23,15 +24,12 @@ namespace Tastee.Controllers
     [ApiController]
     public class BrandsController : BaseApiController//ControllerBase
     {
-        private readonly IBrandService  _brandService;
         private readonly ILogger<BrandsController> _logger;
         public BrandsController(
-            ILogger<BrandsController> logger,
-            IBrandService brandService // TODO: Sau khi chuyen he sang dung CQRS thi bo di
+            ILogger<BrandsController> logger
             )
         {
             _logger = logger;
-            _brandService = brandService;
         }
 
         [HttpPost]
@@ -53,8 +51,6 @@ namespace Tastee.Controllers
                 GetBrandsQuery brandsQuery = new GetBrandsQuery { PageIndex = pageIndex, PageSize = pageSize, BrandName = name };
                 var rs = await this.Mediator.Send(brandsQuery);
 
-                //var rs = await _brandService.GetBrandsAsync(pageSize, pageIndex, name);
-
                 //total number of rows counts
                 recordsTotal = rs.TotalRows;
 
@@ -73,30 +69,7 @@ namespace Tastee.Controllers
             return new JsonResult(
                     new { draw, recordsFiltered = 0, recordsTotal = 0, data = new List<Users>() });
         }
-        //// GET: api/Brands
-        //[HttpGet]
-        //public async Task<PaggingModel<Brands>> Get(int pageSize, int? pageIndex, string name)
-        //{
-        //    ExpressionStarter<Brands> searchCondition = PredicateBuilder.New<Brands>(true);
-
-        //    if (name != null && name.Length > 0)
-        //    {
-        //        searchCondition = searchCondition.And(x => x.Name.ToLower().Contains(name.ToLower()));
-        //    }
-
-        //    var listBrands = _serviceBrands.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate);
-
-        //    var pagedListUser = await PaginatedList<Brands>.CreateAsync(listBrands, pageIndex ?? 1, pageSize);
-
-        //    PaggingModel<Brands> returnResult = new PaggingModel<Brands>()
-        //    {
-        //        ListData = pagedListUser.Adapt<List<Brands>>(),
-        //        TotalRows = pagedListUser.TotalRows,
-        //    };
-
-        //    return returnResult;
-        //}
-
+        
         // GET: api/Brands/5
         [HttpGet("{id}", Name = "Get")]
         public async Task<IActionResult> Get(string id)
@@ -120,7 +93,7 @@ namespace Tastee.Controllers
 
         // POST: api/Brands
         [HttpPost]
-        public async Task<IActionResult> Post(Brand brandModel)
+        public async Task<IActionResult> Post(CreateBrandCommand brandModel)
         {
             if (!ModelState.IsValid)
             {
@@ -131,28 +104,27 @@ namespace Tastee.Controllers
                 return Ok(new Response { Successful = false, Message = string.Join(",", errorMessage) });
             }
 
-            return Ok(await _brandService.InsertAsync(brandModel));
+            return Ok(await Mediator.Send(brandModel));
 
         }
 
         // PUT: api/Brands/5
         [HttpPost]
         [Route("Update")]
-        public async Task<IActionResult> Update(Brand model)
+        public async Task<IActionResult> Update(UpdateBrandCommand model)
         {
             bool isActionSuccess = false;
             try
             {
-                var result = await _brandService.UpdateAsync(model);
-                return Ok(result);
+                return Ok(await Mediator.Send(model));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Update user, User: {0}", model);
+                _logger.LogError(ex, "Update brand, Brand: {0}", model);
             }
             finally
             {
-                _logger.LogInformation("Update user, User: {0}, Result status: {1}", model, isActionSuccess);
+                _logger.LogInformation("Update Brand, Brand: {0}, Result status: {1}", model, isActionSuccess);
             }
             return Ok(new { Successful = false, Error = "Has error when update" });
         }
