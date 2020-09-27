@@ -5,7 +5,7 @@ using Tastee.Application.Interfaces;
 using Tastee.Application.Wrappers;
 using Tastee.Domain.Entities;
 
-namespace Tastee.Feature.Brands.Queries.GetBrandById
+namespace Tastee.Feature.Brands.Queries
 {
     public class GetBrandByIdQuery : IRequest<Response<Brand>>
     {

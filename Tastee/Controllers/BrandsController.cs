@@ -13,7 +13,8 @@ using Tastee.Domain.Entities;
 using MediatR;
 using System.Threading;
 using Tastee.Application.Wrappers;
-using Tastee.Feature.Brands.Queries.GetBrandById;
+using Tastee.Feature.Brands.Queries;
+using Tastee.Features.Brands.Queries;
 
 namespace Tastee.Controllers
 {
@@ -24,16 +25,13 @@ namespace Tastee.Controllers
     {
         private readonly IBrandService  _brandService;
         private readonly ILogger<BrandsController> _logger;
-        //private readonly IMediator _mediator;
         public BrandsController(
             ILogger<BrandsController> logger,
-            IBrandService brandService
-            //IMediator mediator
+            IBrandService brandService // TODO: Sau khi chuyen he sang dung CQRS thi bo di
             )
         {
             _logger = logger;
             _brandService = brandService;
-            //_mediator = mediator;
         }
 
         [HttpPost]
@@ -52,8 +50,10 @@ namespace Tastee.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageIndex = skip / pageSize + 1;
                 int recordsTotal = 0;
+                GetBrandsQuery brandsQuery = new GetBrandsQuery { PageIndex = pageIndex, PageSize = pageSize, BrandName = name };
+                var rs = await this.Mediator.Send(brandsQuery);
 
-                var rs = await _brandService.GetBrandsAsync(pageSize, pageIndex, name);
+                //var rs = await _brandService.GetBrandsAsync(pageSize, pageIndex, name);
 
                 //total number of rows counts
                 recordsTotal = rs.TotalRows;
@@ -157,38 +157,4 @@ namespace Tastee.Controllers
             return Ok(new { Successful = false, Error = "Has error when update" });
         }
     }
-
-    public class RequestModel : IRequest<Response<string>>
-    {
-        public string Id { get; set; }
-    }
-
-    public class ResponseModel
-    {
-        public string Name { get; set; }
-    }
-
-    public class DetailHandler : IRequestHandler<RequestModel, Response<string>>
-    {
-        //public async Task<string> Handle(RequestModel request, CancellationToken cancellationToken)
-        //{
-        //    return "Nguyen Minh Thu";
-        //}
-
-        public async Task<Response<string>> Handle(RequestModel request, CancellationToken cancellationToken)
-        {
-            return new Response<string> { Succeeded = true, Data = "Hello Thu", Message = "Thanh cong" };
-        }
-
-        //public Task<string> Handle(RequestModel request, CancellationToken cancellationToken)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public async Task<string> Handle(RequestModel request, CancellationToken cancellationToken)
-        //{
-        //    return "Nguyen Minh Thu";
-        //}
-    }
-
 }
