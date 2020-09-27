@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using Tastee.Infrastructure.IoC;
 
@@ -33,6 +35,7 @@ namespace Tastee
         {
             services.AddCors();
             services.AddControllers();
+            services.AddMediatR(Assembly.GetExecutingAssembly());
 
             // configure jwt authentication
             var key = Encoding.ASCII.GetBytes(Configuration["Jwt:Key"]);
@@ -104,6 +107,7 @@ namespace Tastee
             });
 
             RegisterServices(services, Configuration);
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

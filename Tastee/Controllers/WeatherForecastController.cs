@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -17,10 +19,12 @@ namespace TasteeFrontEnd.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IMediator _mediator;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IMediator mediator)
         {
             _logger = logger;
+            _mediator = mediator;
         }
 
         [HttpGet]
@@ -42,7 +46,42 @@ namespace TasteeFrontEnd.Controllers
         {
             return "lsdkflsdfk";
         }
+
+        [HttpGet]
+        [Route("detail")]
+        public async Task<string> Detail()
+        {
+            RequestModel rq = new RequestModel { Id = "123" };
+            return await _mediator.Send(rq);
+        }
+
     }
+
+
+    public class RequestModel : IRequest<string>
+    {
+        public string Id { get; set; }
+    }
+
+    public class ResponseModel
+    {
+        public string Name { get; set; }
+    }
+
+    public class DetailHandler : IRequestHandler<RequestModel, string>
+    {
+        public async Task<string> Handle(RequestModel request, CancellationToken cancellationToken)
+        {
+            return "Nguyen Minh Thu";
+        }
+
+        //public async Task<string> Handle(RequestModel request, CancellationToken cancellationToken)
+        //{
+        //    return "Nguyen Minh Thu";
+        //}
+    }
+
+
     public class WeatherForecast
     {
         public DateTime Date { get; set; }

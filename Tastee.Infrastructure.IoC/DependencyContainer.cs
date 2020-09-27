@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using Tastee.Application.Interfaces;
 using Tastee.Infrastucture.Data.Context;
 using Tastee.Services;
@@ -37,8 +36,7 @@ namespace Tastee.Infrastructure.IoC
             services.AddScoped<ITrackableRepository<Brands>, TrackableRepository<Brands>>();
             services.AddScoped<ITasteeService<Brands>, TasteeService<Brands>>();
 
-            services.AddScoped<IBrandService , BrandService>();
-
+            services.AddScoped<IBrandService, BrandService>();
         }
     }
 }

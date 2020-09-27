@@ -10,23 +10,30 @@ using Tastee.Application.Interfaces;
 using Tastee.Infrastucture.Data.Context;
 using Tastee.Domain.Entities;
 
+using MediatR;
+using System.Threading;
+using Tastee.Application.Wrappers;
+using Tastee.Feature.Brands.Queries.GetBrandById;
+
 namespace Tastee.Controllers
 {
     //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class BrandsController : ControllerBase
+    public class BrandsController : BaseApiController//ControllerBase
     {
         private readonly IBrandService  _brandService;
         private readonly ILogger<BrandsController> _logger;
-
+        //private readonly IMediator _mediator;
         public BrandsController(
             ILogger<BrandsController> logger,
             IBrandService brandService
+            //IMediator mediator
             )
         {
             _logger = logger;
             _brandService = brandService;
+            //_mediator = mediator;
         }
 
         [HttpPost]
@@ -92,12 +99,12 @@ namespace Tastee.Controllers
 
         // GET: api/Brands/5
         [HttpGet("{id}", Name = "Get")]
-        public async Task<Brand> Get(string id)
+        public async Task<IActionResult> Get(string id)
         {
             try
             {
-                return await _brandService.GetBrandByIdAsync(id);
-                
+                GetBrandByIdQuery rq = new GetBrandByIdQuery { Id = id };
+                return Ok(await Mediator.Send(rq));
             }
             catch (Exception ex)
             {
@@ -107,7 +114,7 @@ namespace Tastee.Controllers
             {
                 _logger.LogInformation("Get brand detail, brand Id {0}", id);
             }
-            return null;
+            return Ok( new Response<Brand>("Has error"));
 
         }
 
@@ -150,4 +157,38 @@ namespace Tastee.Controllers
             return Ok(new { Successful = false, Error = "Has error when update" });
         }
     }
+
+    public class RequestModel : IRequest<Response<string>>
+    {
+        public string Id { get; set; }
+    }
+
+    public class ResponseModel
+    {
+        public string Name { get; set; }
+    }
+
+    public class DetailHandler : IRequestHandler<RequestModel, Response<string>>
+    {
+        //public async Task<string> Handle(RequestModel request, CancellationToken cancellationToken)
+        //{
+        //    return "Nguyen Minh Thu";
+        //}
+
+        public async Task<Response<string>> Handle(RequestModel request, CancellationToken cancellationToken)
+        {
+            return new Response<string> { Succeeded = true, Data = "Hello Thu", Message = "Thanh cong" };
+        }
+
+        //public Task<string> Handle(RequestModel request, CancellationToken cancellationToken)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public async Task<string> Handle(RequestModel request, CancellationToken cancellationToken)
+        //{
+        //    return "Nguyen Minh Thu";
+        //}
+    }
+
 }
