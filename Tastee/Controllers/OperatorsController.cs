@@ -6,23 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Tastee.Shared;
+using Tastee.Application.Interfaces;
 using Tastee.Infrastucture.Data.Context;
 using Tastee.Models.DTO;
-
-using Tastee.Services;
+using Tastee.Shared;
 using URF.Core.Abstractions;
 using Constants = Tastee.Shared.Constants;
-using Tastee.Application.Interfaces;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -31,7 +27,7 @@ namespace Tastee.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class OperatorsController: ControllerBase
+    public class OperatorsController : ControllerBase
     {
         private readonly ITasteeService<Operators> _serviceOperators;
         private readonly IUnitOfWork _unitOfWork;
@@ -58,16 +54,10 @@ namespace Tastee.Controllers
             _serviceOperatorRoles = serviceUserRole;
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Post(RegisterModel model)
-        //{
-        //    return Ok(new RegisterResult { Successful = true });
-        //}
         // POST api/<controller>
         [HttpPost]
         public async Task<IActionResult> Post(RegisterUserModel model)
         {
-
             if (!ModelState.IsValid)
             {
                 var errorMessage = ModelState.Values
@@ -79,7 +69,7 @@ namespace Tastee.Controllers
 
             if (_serviceOperators.Queryable().Any(e => e.Email == model.Email || e.PhoneNumber == model.PhoneNumber))
             {
-                return Ok(new Response { Successful = false, Message =  "User is exists"  });
+                return Ok(new Response { Successful = false, Message = "User is exists" });
             }
 
             var passwordHasher = new PasswordHasher<RegisterUserModel>();
@@ -130,13 +120,13 @@ namespace Tastee.Controllers
             try
             {
                 var user = _serviceOperators.Queryable().Where(x => x.Email == login.Email).FirstOrDefault();
-                
+
                 if (user == null) return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
 
                 if (user.Status == AccountStatus.Locked.ToString() || user.Status == AccountStatus.Closed.ToString())
                 {
                     return Ok(new LoginResult { Successful = false, Error = "Username or password are invalid." });
-                }    
+                }
 
                 var dtoUser = user.Adapt<User>();
                 var verifyResult = dtoUser.VerifyPassword(login);
@@ -145,10 +135,10 @@ namespace Tastee.Controllers
                 {
                     user.LastLogin = DateTime.Now;
                     user.LoginFailedCount = user.LoginFailedCount == null ? 1 : user.LoginFailedCount + 1;
-                    if(user.LoginFailedCount == 5)
+                    if (user.LoginFailedCount == 5)
                     {
                         user.Status = AccountStatus.Locked.ToString();
-                    }    
+                    }
                     _serviceOperators.Update(user);
                     await _unitOfWork.SaveChangesAsync();
 
@@ -233,7 +223,7 @@ namespace Tastee.Controllers
             }
             if (fdate != null && tdate != null)
             {
-                tdate = new DateTime(tdate.Value.Year, tdate.Value.Month, tdate.Value.Day,23,59,59,990);
+                tdate = new DateTime(tdate.Value.Year, tdate.Value.Month, tdate.Value.Day, 23, 59, 59, 990);
                 searCondition = searCondition.And(x => x.CreatedDate >= fdate && x.CreatedDate <= tdate);
             }
 
@@ -241,7 +231,7 @@ namespace Tastee.Controllers
 
             pageSize = pageSize == 0 ? Constants.DEFAULT_PAGE_SIZE : pageSize;
             var pagedListUser = await PaginatedList<Operators>.CreateAsync(listUser, pageIndex ?? 1, pageSize);
-            //var pagedListUser = await PaginatedList<Users>.CreateAsync(listUser,pageSize);
+
             PaggingModel<Operators> returnResult = new PaggingModel<Operators>()
             {
                 ListData = pagedListUser.Adapt<List<Operators>>(),
@@ -292,10 +282,10 @@ namespace Tastee.Controllers
                         user.FullName = model.FullName;
                         user.PhoneNumber = model.PhoneNumber;
                         user.Status = model.Status;
-                        if(user.Status == AccountStatus.Active.ToString())
+                        if (user.Status == AccountStatus.Active.ToString())
                         {
                             user.LoginFailedCount = 0;
-                        }    
+                        }
                         _serviceOperators.Update(user);
 
                         if ((model.RoleId?.Length ?? 0) > 0)
@@ -365,7 +355,7 @@ namespace Tastee.Controllers
                 recordsTotal = rs.TotalRows;
 
                 //Paging
-                var data = rs.ListData; //customerData.Skip(skip).Take(pageSize).ToList();
+                var data = rs.ListData;
 
                 //Returning Json Data
                 return new JsonResult(

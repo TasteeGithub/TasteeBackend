@@ -1,8 +1,5 @@
 ﻿using Mapster;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Tastee.Application.Interfaces;
@@ -40,10 +37,12 @@ namespace Tastee.Features.Brands.Commands
     public class UpdateBrandCommandHandler : IRequestHandler<UpdateBrandCommand, Response>
     {
         private readonly IBrandService _brandService;
+
         public UpdateBrandCommandHandler(IBrandService brandService)
         {
             _brandService = brandService;
         }
+
         public async Task<Response> Handle(UpdateBrandCommand request, CancellationToken cancellationToken)
         {
             var brandModel = request.Adapt<Brand>();

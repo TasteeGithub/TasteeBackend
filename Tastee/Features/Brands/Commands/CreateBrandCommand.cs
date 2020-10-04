@@ -1,8 +1,5 @@
 ﻿using Mapster;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Tastee.Application.Interfaces;
@@ -23,8 +20,8 @@ namespace Tastee.Features.Brands.Commands
         public string Logo { get; set; }
         public string City { get; set; }
         public string Area { get; set; }
-        public int? MinPrice { get; set; }
-        public int? MaxPrice { get; set; }
+        public int MinPrice { get; set; }
+        public int MaxPrice { get; set; }
         public string Status { get; set; }
         public string MetaDescription { get; set; }
         public string SeoTitle { get; set; }
@@ -39,10 +36,12 @@ namespace Tastee.Features.Brands.Commands
     public class CreateBrandCommandHandler : IRequestHandler<CreateBrandCommand, Response>
     {
         private readonly IBrandService _brandService;
-        public   CreateBrandCommandHandler(IBrandService brandService)
+
+        public CreateBrandCommandHandler(IBrandService brandService)
         {
             _brandService = brandService;
         }
+
         public async Task<Response> Handle(CreateBrandCommand request, CancellationToken cancellationToken)
         {
             var brandModel = request.Adapt<Brand>();

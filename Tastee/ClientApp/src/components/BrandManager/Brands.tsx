@@ -62,11 +62,6 @@ export default class Brands extends Component<{}, DataState> {
                 },
                 "data": function (d: any) {
                     d.name = $("#name").val();
-                    //d.email = $("#email").val();
-                    //d.phone = $("#phone").val();
-                    //d.fromDate = $("#from").val();
-                    //d.toDate = $("#to").val();
-                    //d.status = $("#status").val();
                 }
             },
             "columns": [
@@ -175,55 +170,10 @@ export default class Brands extends Component<{}, DataState> {
                                 <label htmlFor="name" className="col-sm-3 col-md-1 col-form-label">
                                     Name
                                 </label>
-                                <div className="col-sm-9 col-md-3">
+                                <div className="col-sm-9 col-md-4">
                                     <input id="name" className="form-control" name="name" />
                                 </div>
-
-                                <label htmlFor="from" className="col-sm-3 col-md-1 col-form-label">
-                                    From
-                                </label>
-                                <div className="col-sm-9 col-md-3">
-                                    <input id="from" className="form-control" value={this.state.fromDate} name="from" type="date" onChange={this.handleDateChage} />
-                                </div>
-
-                                <label htmlFor="to" className="col-sm-3 col-md-1 col-form-label">
-                                    To
-                                </label>
-                                <div className="col-sm-9 col-md-3">
-                                    <input id="to" className="form-control" value={this.state.toDate} name="to" onChange={this.handleDateChage} type="date" />
-                                </div>
-
-                            </div>
-                            <div className="form-group row">
-                                <label htmlFor="email" className="col-sm-3 col-md-1 col-form-label">
-                                    Email
-                                </label>
-                                <div className="col-sm-9 col-md-3">
-                                    <input id="email" className="form-control" name="email" />
-                                </div>
-
-                                <label htmlFor="phone" className="col-sm-3 col-md-1 col-form-label">
-                                    Phone
-                                </label>
-                                <div className="col-sm-9 col-md-3">
-                                    <input id="phone" className="form-control" name="phone" />
-                                </div>
-
-                                <label htmlFor="status" className="col-sm-3 col-md-1 col-form-label">
-                                    Status
-                                </label>
-                                <div className="col-sm-9 col-md-3">
-                                    <select className="form-control" name="status" id="status" onChange={this.handleSearch} >
-                                        <option value="">All</option>
-                                        <option value="Active">Active</option>
-                                        <option value="Inactive">Inactive</option>
-                                        <option value="Locked">Locked</option>
-                                        <option value="Closed">Closed</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="form-group row">
-                                <div className="col-sm-12 text-right">
+                                <div className="col-sm-12 col-md-7">
                                     <button type="submit" className="btn btn-primary mr-2"><i className="ik ik-search" />Search</button>
                                     <button type="reset" className="btn btn-success mr-2"><i className="ik ik-refresh-cw" /> Refresh</button>
                                     <button type="button" className="btn btn-info mr-2" onClick={this.createAccount}><i className="ik ik-plus" />
