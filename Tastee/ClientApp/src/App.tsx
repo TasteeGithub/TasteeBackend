@@ -21,6 +21,7 @@ import EditUser from './components/UserManager/EditUser';
 import Brands from './components/BrandManager/Brands';
 import CreateBrand from './components/BrandManager/CreateBrand';
 import FrontEnd from './components/FrontEnd';
+import EditBrand from './components/BrandManager/EditBrand';
 
 type AppProps = AuthenticatedState & typeof actionCreator;
 
@@ -49,6 +50,7 @@ const App: React.FunctionComponent<AppProps> = (props: AppProps) => {
 
                 <PrivateRoute component={Brands} path='/brands' />
                 <PrivateRoute path="/create-brand" component={CreateBrand} />
+                <PrivateRoute path="/edit-brand/:id?" component={EditBrand} />
 
             </Switch>
         </Router>

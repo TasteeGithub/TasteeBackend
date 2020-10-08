@@ -68,8 +68,8 @@ namespace Tastee.Controllers
         }
 
         // GET: api/Brands/5
-        [HttpGet("{id}", Name = "Get")]
-        public async Task<IActionResult> Get(string id)
+        [HttpGet("detail/{id}")]
+        public async Task<IActionResult> GetBrandDetail(string id)
         {
             try
             {
@@ -105,7 +105,7 @@ namespace Tastee.Controllers
 
         // PUT: api/Brands/5
         [HttpPost]
-        [Route("Update")]
+        [Route("update")]
         public async Task<IActionResult> Update(UpdateBrandCommand model)
         {
             bool isActionSuccess = false;
