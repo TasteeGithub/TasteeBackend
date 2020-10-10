@@ -86,7 +86,7 @@ namespace Tastee.Application.Interfaces
                     brand.Address = model.Address ?? brand.Address;
                     brand.Hotline = model.Hotline ?? brand.Hotline;
                     brand.Email = model.Email ?? brand.Email;
-                    brand.Phone = model.Logo ?? brand.Phone;
+                    brand.Phone = model.Phone ?? brand.Phone;
                     brand.HeadOffice = model.HeadOffice ?? brand.HeadOffice;
                     brand.Uri = model.Uri ?? brand.Uri;
                     brand.Logo = model.Logo ?? brand.Logo;

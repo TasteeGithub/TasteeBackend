@@ -29,7 +29,7 @@ const App: React.FunctionComponent<AppProps> = (props: AppProps) => {
     return (
         <Router>
             <Switch>
-                <GuestRoute exact path="/" component={FrontEnd} />
+                <PrivateRoute exact path="/" component={Dashboard} />
                 <PrivateRoute path="/dashboard" component={Dashboard} />
                 <LoginRoute path="/login" component={Login} />
                 <PrivateRoute path="/change-password" component={ChangePassword} />

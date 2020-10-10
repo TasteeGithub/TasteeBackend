@@ -454,8 +454,8 @@ class CreateBrand extends React.PureComponent<{}, IState> {
                                                 <div className="form-group">
                                                     <label htmlFor="inputStatus">Status</label>
                                                     <select className="form-control" id="inputStatus" onChange={this.handleSelectChange}>
-                                                        <option>Chờ kích hoạt</option>
-                                                        <option>Đã kích hoạt</option>
+                                                        <option value = "0">Chờ kích hoạt</option>
+                                                        <option value="1">Đã kích hoạt</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -505,7 +505,6 @@ class CreateBrand extends React.PureComponent<{}, IState> {
                             </div>
                             <div className="card-footer text-right">
                                 <button type="submit" className="btn btn-primary mr-2"><i className="ik ik-save" />Save</button>
-                                    <button className="btn btn-light">Cancel</button>
                               </div>
                         </form>
                     </div>
