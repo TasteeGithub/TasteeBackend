@@ -14,6 +14,7 @@ export interface IValues {
     headOffice: string,
     uri: string,
     logo: string,
+    restaurantImages: string,
     city: string,
     area: string,
     minPrice: number,
@@ -119,7 +120,20 @@ const EditBrand: React.FunctionComponent<RouteComponentProps> = () => {
                 break;
         }
     }
+    const GetImagename = (nameList: string): any => {
+        
+        if (nameList !== undefined) {
+            var imgs = nameList.split(',');
+            return (
+                <div>{
+                    imgs.map(x =>
+                        (<img width={"100"} src={"/Images/" + x} />)
+                    )}
+                </div>
+            );
+        }
 
+    }
     const handleTextAreaChange = async(e: React.FormEvent<HTMLTextAreaElement>) => {
         await setValues({ ...values, metaDescription: e.currentTarget.value });
     }
@@ -225,18 +239,18 @@ const EditBrand: React.FunctionComponent<RouteComponentProps> = () => {
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="inputRestaurantImage">Input Restaurant Image</label>
-                                                <input type="text" className="form-control" id="inputRestaurantImage" />
+                                                    {
+                                                        GetImagename(values.restaurantImages)
+                                                    }
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-md-6">
                                         <div className="form-group">
                                             <label htmlFor="inputLogo">Logo</label>
-
-                                            {
-                                                //<input className="form-control" value={values.logo} onChange={handleImageChange} type="file" id="inputLogo" placeholder="logo" />
-                                            }
-                                            <br/><label>{ values.logo }</label>
+                                            <div>
+                                                <img src={"/Images/" + values.logo} width={300} id="inputLogo" />
+                                            </div>
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="inputCity">City</label>

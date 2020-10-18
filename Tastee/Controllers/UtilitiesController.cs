@@ -23,6 +23,7 @@ namespace Tastee.Controllers
                 if (files.Count > 0)
                 {
                     StringBuilder newFiles = new StringBuilder();
+                    List<string> listFile = new List<string>();
                     foreach (var file in files)
                     {
                         if (file.Length > 0)
@@ -37,9 +38,10 @@ namespace Tastee.Controllers
                             {
                                 file.CopyTo(stream);
                             }
-                            newFiles.AppendJoin(",",newFileName);
+                            listFile.Add(newFileName);
                         }
                     }
+                    newFiles.AppendJoin(",",listFile.ToArray());
                     return Ok(newFiles.ToString());
                 }
                 else

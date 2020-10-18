@@ -278,7 +278,7 @@ class CreateBrand extends React.PureComponent<{}, IState> {
         let file = e.currentTarget.files == null ? null : e.currentTarget.files[0];
 
         if (file != null) {
-            if (e.currentTarget.id == "inputRestaurantImage") {
+            if (e.currentTarget.id.startsWith("inputRestaurantImage")) {
                 reader.onloadend = () => {
                     var resImage = this.state.restaurantImagesFile;
                     resImage.push({
@@ -303,6 +303,34 @@ class CreateBrand extends React.PureComponent<{}, IState> {
                         }
                     });
                 }
+            console.log(this.state);
+
+            reader.readAsDataURL(file);
+        }
+    }
+
+    handleRestaurantImageChange = (e: React.FormEvent<HTMLInputElement>) => {
+        e.preventDefault();
+
+        let reader = new FileReader();
+
+        let file = e.currentTarget.files == null ? null : e.currentTarget.files[0];
+
+        if (file != null) {
+            if (e.currentTarget.id.startsWith("inputRestaurantImage")) {
+                reader.onloadend = () => {
+                    var resImage = this.state.restaurantImagesFile;
+                    resImage.push({
+                        fileContent: file,
+                        fileName: file?.name,
+                        filePreviewUrl: reader.result?.toString()
+                    });
+                    this.setState({
+                        ...this.state,
+                        restaurantImagesFile: resImage
+                    });
+                }
+            }
             console.log(this.state);
 
             reader.readAsDataURL(file);
@@ -365,17 +393,15 @@ class CreateBrand extends React.PureComponent<{}, IState> {
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="inputRestaurantImage">Input Restaurant Image</label>
-                                                <input type="file" className="form-control" id="inputRestaurantImage" name="inputRestaurantImage" onChange={this.handleImageChange} />
-                                                <input type="file" className="form-control" id="inputRestaurantImage" name="inputRestaurantImage" onChange={this.handleImageChange} />
-                                                <input type="file" className="form-control" id="inputRestaurantImage" name="inputRestaurantImage" onChange={this.handleImageChange} />
-                                                <input type="file" className="form-control" id="inputRestaurantImage" name="inputRestaurantImage" onChange={this.handleImageChange} />
+                                                <input type="file" className="form-control" id="inputRestaurantImage1" name="inputRestaurantImage1" onChange={this.handleImageChange} />
+                                                <input type="file" className="form-control" id="inputRestaurantImage2" name="inputRestaurantImage2" onChange={this.handleImageChange} />
+                                                <input type="file" className="form-control" id="inputRestaurantImage3" name="inputRestaurantImage3" onChange={this.handleImageChange} />
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-md-6">
                                         <div className="form-group">
                                             <label htmlFor="inputLogo">Logo</label>
-                                            <input className="form-control" type="text" id="inputTextLogo" onBlur={e => alert("sdfdf")} />
                                             <input className="form-control" onChange={this.handleImageChange} type="file" id="inputLogo" placeholder="logo" />
                                             {$imagePrivew}
                                         </div>

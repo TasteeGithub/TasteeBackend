@@ -78,7 +78,12 @@ export default class Brands extends Component<{}, DataState> {
                         return "<a href='/edit-brand/" + row.id + "'>" + data + " </a>"
                     }
                 },
-                { data: "logo" },
+                {
+                    data: "logo",
+                    render: function (data: any, type: any, row: any) {
+                        return '<img width="100px" src="/Images/' + data + '" />'
+                    }
+                },
                 {
                     data: "status",
                     render: function (data: any, type: any, row: any) {
