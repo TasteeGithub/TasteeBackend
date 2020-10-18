@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Tastee.Application.Interfaces;
@@ -18,6 +19,7 @@ namespace Tastee.Features.Brands.Commands
         public string HeadOffice { get; set; }
         public string Uri { get; set; }
         public string Logo { get; set; }
+        public string RestaurantImages { get; set; }
         public string City { get; set; }
         public string Area { get; set; }
         public int MinPrice { get; set; }
@@ -31,15 +33,18 @@ namespace Tastee.Features.Brands.Commands
         public double? Longitude { get; set; }
         public string Cuisines { get; set; }
         public string Categories { get; set; }
+
     }
 
     public class CreateBrandCommandHandler : IRequestHandler<CreateBrandCommand, Response>
     {
         private readonly IBrandService _brandService;
+        private readonly IFileService _fileService;
 
-        public CreateBrandCommandHandler(IBrandService brandService)
+        public CreateBrandCommandHandler(IBrandService brandService, IFileService fileService)
         {
             _brandService = brandService;
+            _fileService = fileService;
         }
 
         public async Task<Response> Handle(CreateBrandCommand request, CancellationToken cancellationToken)

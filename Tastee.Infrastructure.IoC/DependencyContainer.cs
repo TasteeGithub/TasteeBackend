@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Tastee.Application.Interfaces;
+using Tastee.Application.Services;
 using Tastee.Infrastucture.Data.Context;
 using Tastee.Services;
 using URF.Core.Abstractions;
@@ -22,21 +23,22 @@ namespace Tastee.Infrastructure.IoC
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<ITrackableRepository<Operators>, TrackableRepository<Operators>>();
-            services.AddScoped<ITasteeService<Operators>, TasteeService<Operators>>();
+            services.AddScoped<IGenericService<Operators>, GenericService<Operators>>();
 
             services.AddScoped<ITrackableRepository<Roles>, TrackableRepository<Roles>>();
-            services.AddScoped<ITasteeService<Roles>, TasteeService<Roles>>();
+            services.AddScoped<IGenericService<Roles>, GenericService<Roles>>();
 
             services.AddScoped<ITrackableRepository<OperatorRoles>, TrackableRepository<OperatorRoles>>();
-            services.AddScoped<ITasteeService<OperatorRoles>, TasteeService<OperatorRoles>>();
+            services.AddScoped<IGenericService<OperatorRoles>, GenericService<OperatorRoles>>();
 
             services.AddScoped<ITrackableRepository<Users>, TrackableRepository<Users>>();
-            services.AddScoped<ITasteeService<Users>, TasteeService<Users>>();
+            services.AddScoped<IGenericService<Users>, GenericService<Users>>();
 
             services.AddScoped<ITrackableRepository<Brands>, TrackableRepository<Brands>>();
-            services.AddScoped<ITasteeService<Brands>, TasteeService<Brands>>();
+            services.AddScoped<IGenericService<Brands>, GenericService<Brands>>();
 
             services.AddScoped<IBrandService, BrandService>();
+            services.AddScoped<IFileService, FileService>();
         }
     }
 }

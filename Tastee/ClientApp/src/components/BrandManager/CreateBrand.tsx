@@ -1,6 +1,8 @@
 ﻿import * as React from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router';
+import { string } from 'prop-types';
+import { locationsAreEqual } from 'history';
 const $ = require('jquery');
 
 interface BrandInfo {
@@ -12,10 +14,11 @@ interface BrandInfo {
     headOffice: string,
     uri: string,
     logo: string,
+    restaurantImages: string,
     city: string,
     area: string,
     minPrice: number,
-    maxPrice: number ,
+    maxPrice: number,
     status: string,
     metaDescription: string,
     seoTitle: string,
@@ -27,16 +30,24 @@ interface BrandInfo {
     categories: string
 };
 
+interface Image {
+    fileContent: any,
+    fileName: string | undefined,
+    filePreviewUrl: string | undefined
+};
+
 interface IState {
-    imgagePreviewUrl: string | undefined,
-    logoFile: any,
+    logo: Image,
+    restaurantImagesFile: Image[],
     isFinished: boolean,
 }
 
 class CreateBrand extends React.PureComponent<{}, IState> {
     constructor(props: any) {
         super(props);
-        this.state = { imgagePreviewUrl: "", logoFile: null, isFinished: false};
+        this.state = {
+            logo: { fileContent: null, filePreviewUrl: "", fileName: "" }, restaurantImagesFile: [], isFinished: false
+        };
     }
     inputBirth: any;
     $inputBirth: any;
@@ -69,6 +80,7 @@ class CreateBrand extends React.PureComponent<{}, IState> {
         headOffice: "",
         uri: "",
         logo: "",
+        restaurantImages: "",
         city: "",
         area: "",
         minPrice: 0,
@@ -96,20 +108,6 @@ class CreateBrand extends React.PureComponent<{}, IState> {
         else
             return;
 
-        //if (this.state.avatarFile?.name != null) {
-        //    let formData = new FormData();
-        //    formData.append("myFile", this.state.avatarFile, this.state.avatarFile.name);
-        //    let rs = await axios.post("/api/operators/uploadfile", formData);
-
-        //    if (rs.status == 200) {
-        //        this.accountInfo.avatar = rs.data.newFileName;
-        //    }
-        //    else {
-        //        alert(rs.status);
-        //        return;
-        //    }
-        //}
-
         let brandModel = {
             name: this.brandInfo.name,
             address: this.brandInfo.address,
@@ -118,7 +116,8 @@ class CreateBrand extends React.PureComponent<{}, IState> {
             phone: this.brandInfo.phone,
             headOffice: this.brandInfo.headOffice,
             uri: this.brandInfo.uri,
-            logo: this.state.logoFile,
+            logo: this.brandInfo.logo,
+            restaurantImages: this.brandInfo.restaurantImages,
             city: this.brandInfo.city,
             area: this.brandInfo.area,
             minPrice: this.brandInfo.minPrice,
@@ -133,7 +132,39 @@ class CreateBrand extends React.PureComponent<{}, IState> {
             cuisines: this.brandInfo.cuisines,
             categories: this.brandInfo.categories
         }
-        alert(brandModel.minPrice);
+
+        if (this.state.logo.fileName != null) {
+            let formData = new FormData();
+            formData.append("myFile", this.state.logo.fileContent, this.state.logo.fileName);
+            //brandModel.logo = formData;
+
+            let rs = await axios.post("/api/Utilities/upload-image", formData);
+            console.log(rs);
+            if (rs.status == 200) {
+                brandModel.logo = rs.data;
+            }
+            else {
+                alert(rs.status);
+                return;
+            }
+        };
+        if (this.state.restaurantImagesFile != null && this.state.restaurantImagesFile.length > 0) {
+            let formData = new FormData();
+            this.state.restaurantImagesFile.map((img: Image) => {
+                formData.append("MyFile", img.fileContent, img.fileName);
+            });
+            let rs = await axios.post("/api/Utilities/upload-image", formData);
+
+            if (rs.status == 200) {
+                brandModel.restaurantImages = rs.data;
+            }
+            else {
+                alert(rs.status);
+                return;
+            }
+
+            //brandModel.restaurantImages = formData;
+        }
         axios.post("/api/brands", brandModel)
             .then((rs) => {
                 if (rs.data.successful)
@@ -146,9 +177,10 @@ class CreateBrand extends React.PureComponent<{}, IState> {
             })
             .catch((e) => {
                 if (e.response) {
-                    var error = JSON.parse(e.response.request.response).errors;
-                    console.log(error);
-                    alert(error);
+                    console.log(e.response);
+                    //var error = JSON.parse(e.response).errors;
+                    //console.log(error);
+                    //alert(error);
                 }
                 else if (e.request) {
                     alert(e + ",rs");
@@ -214,7 +246,7 @@ class CreateBrand extends React.PureComponent<{}, IState> {
                 this.brandInfo.headOffice = e.currentTarget.value;
                 break;
             case "inputMinPrice":
-                this.brandInfo.minPrice = parseInt(e.currentTarget.value,10)  ;
+                this.brandInfo.minPrice = parseInt(e.currentTarget.value, 10);
                 break;
             case "inputMaxPrice":
                 this.brandInfo.maxPrice = parseInt(e.currentTarget.value);
@@ -246,25 +278,46 @@ class CreateBrand extends React.PureComponent<{}, IState> {
         let file = e.currentTarget.files == null ? null : e.currentTarget.files[0];
 
         if (file != null) {
-            reader.onloadend = () => {
-                this.setState({
-                    imgagePreviewUrl: reader.result?.toString(),
-                    logoFile: file?.name ,
-                    isFinished: this.state.isFinished,
-                });
+            if (e.currentTarget.id == "inputRestaurantImage") {
+                reader.onloadend = () => {
+                    var resImage = this.state.restaurantImagesFile;
+                    resImage.push({
+                        fileContent: file,
+                        fileName: file?.name,
+                        filePreviewUrl: reader.result?.toString()
+                    });
+                    this.setState({
+                        ...this.state,
+                        restaurantImagesFile: resImage
+                    });
+                }
             }
+            else
+                reader.onloadend = () => {
+                    this.setState({
+                        ...this.state,
+                        logo: {
+                            fileContent: file,
+                            fileName: file?.name,
+                            filePreviewUrl: reader.result?.toString()
+                        }
+                    });
+                }
+            console.log(this.state);
+
             reader.readAsDataURL(file);
         }
     }
-
     render() {
         if (this.state.isFinished) return <Redirect to="/brands" />;
-        let imagePreviewUrl = this.state.imgagePreviewUrl;
+        let imagePreviewUrl = this.state.logo.filePreviewUrl;
         let $imagePrivew = null;
         if (imagePreviewUrl) {
             $imagePrivew = (<div style={{ paddingTop: "20px" }}><img style={{ maxWidth: "400px" }} src={imagePreviewUrl} /></div>);
         }
-
+        else {
+            $imagePrivew = (<div style={{ paddingTop: "20px" }}><img style={{ maxWidth: "400px" }} src="/img/DefaultImage.png" /></div>);
+        }
         return (
             <div className="row">
                 <div className="col-md-12">
@@ -278,47 +331,51 @@ class CreateBrand extends React.PureComponent<{}, IState> {
                                             <div className="form-group">
                                                 <label htmlFor="inputUri">Uri</label>
                                                 <input type="text" required className="form-control" id="inputUri" placeholder="Uri"
-                                                    onChange={this.handleChange}/>
+                                                    onChange={this.handleChange} />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="inputBrandName">Brand's name</label>
                                                 <input type="text" required className="form-control" id="inputBrandName" placeholder="Brand's name"
-                                                    onChange={this.handleChange}/>
+                                                    onChange={this.handleChange} />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="inputAddress">Address</label>
                                                 <input type="text" className="form-control" id="inputAddress" placeholder="Address"
-                                                    onChange={this.handleChange}/>
+                                                    onChange={this.handleChange} />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="inputHotline">Hotline</label>
                                                 <input type="text" className="form-control" id="inputHotline" placeholder="Hotline"
-                                                    onChange={this.handleChange}/>
+                                                    onChange={this.handleChange} />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="inputEmail">Email</label>
                                                 <input type="email" required className="form-control" id="inputEmail" placeholder="Email"
-                                                    onChange={this.handleChange}/>
+                                                    onChange={this.handleChange} />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="inputPhone">Phone</label>
                                                 <input type="text" required className="form-control" id="inputPhone" placeholder="Phone"
-                                                    onChange={this.handleChange}/>
+                                                    onChange={this.handleChange} />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="inputHeadOffice">Head Office</label>
                                                 <input type="text" className="form-control" id="inputHeadOffice" placeholder="Head Office"
-                                                    onChange={this.handleChange}/>
+                                                    onChange={this.handleChange} />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="inputRestaurantImage">Input Restaurant Image</label>
-                                                <input type="text" className="form-control" id="inputRestaurantImage" />
+                                                <input type="file" className="form-control" id="inputRestaurantImage" name="inputRestaurantImage" onChange={this.handleImageChange} />
+                                                <input type="file" className="form-control" id="inputRestaurantImage" name="inputRestaurantImage" onChange={this.handleImageChange} />
+                                                <input type="file" className="form-control" id="inputRestaurantImage" name="inputRestaurantImage" onChange={this.handleImageChange} />
+                                                <input type="file" className="form-control" id="inputRestaurantImage" name="inputRestaurantImage" onChange={this.handleImageChange} />
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-md-6">
                                         <div className="form-group">
                                             <label htmlFor="inputLogo">Logo</label>
+                                            <input className="form-control" type="text" id="inputTextLogo" onBlur={e => alert("sdfdf")} />
                                             <input className="form-control" onChange={this.handleImageChange} type="file" id="inputLogo" placeholder="logo" />
                                             {$imagePrivew}
                                         </div>
@@ -368,7 +425,7 @@ class CreateBrand extends React.PureComponent<{}, IState> {
                                                         <option selected={true} >23:45</option>
                                                     </select>
                                                 </div>
-                                                
+
                                             </div>
                                         </div>
                                         <div className="row">
@@ -407,24 +464,24 @@ class CreateBrand extends React.PureComponent<{}, IState> {
                                             <div className="col-md-6">
                                                 <div className="form-group">
                                                     <label htmlFor="inputMinPrice">Min Price (VNĐ)</label>
-                                                    <input type="number" className="form-control" id="inputMinPrice" onChange={this.handleChange}/>
+                                                    <input type="number" className="form-control" id="inputMinPrice" onChange={this.handleChange} />
                                                 </div>
                                             </div>
                                             <div className="col-md-6">
                                                 <div className="form-group">
                                                     <label htmlFor="inputMaxPrice">Max Price (VNĐ)</label>
-                                                    <input type="number" className="form-control" id="inputMaxPrice" onChange={this.handleChange}/>
+                                                    <input type="number" className="form-control" id="inputMaxPrice" onChange={this.handleChange} />
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className="form-group">
                                             <label htmlFor="inputMetaDescription">Meta description</label>
-                                            <textarea rows={5} className="form-control" id="inputMetaDescription" placeholder="Meta Description" onChange={this.handleTextAreaChange}/>
+                                            <textarea rows={5} className="form-control" id="inputMetaDescription" placeholder="Meta Description" onChange={this.handleTextAreaChange} />
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div className="row">
                                     <div className="col-md-6">
                                         <h5 className="card-title"><strong>SEO</strong></h5>
@@ -433,11 +490,11 @@ class CreateBrand extends React.PureComponent<{}, IState> {
                                                 <div className="forms-sample">
                                                     <div className="form-group">
                                                         <label htmlFor="inputSeoTitle">SEO Title</label>
-                                                        <input type="text" className="form-control" id="inputSeoTitle" placeholder="SEO Title" onChange={this.handleChange}/>
+                                                        <input type="text" className="form-control" id="inputSeoTitle" placeholder="SEO Title" onChange={this.handleChange} />
                                                     </div>
                                                     <div className="form-group">
                                                         <label htmlFor="inputSeoDescription">SEO Description</label>
-                                                        <input type="text" className="form-control" id="inputSeoDescription" onChange={this.handleChange}/>
+                                                        <input type="text" className="form-control" id="inputSeoDescription" onChange={this.handleChange} />
                                                     </div>
                                                     <div className="form-group">
                                                         <label htmlFor="inputSeoImage">SEO Image (GIF: Max 5MB,JPG,PNG,JPEG: Max 150KB)</label>
@@ -454,7 +511,7 @@ class CreateBrand extends React.PureComponent<{}, IState> {
                                                 <div className="form-group">
                                                     <label htmlFor="inputStatus">Status</label>
                                                     <select className="form-control" id="inputStatus" onChange={this.handleSelectChange}>
-                                                        <option value = "0">Chờ kích hoạt</option>
+                                                        <option value="0">Chờ kích hoạt</option>
                                                         <option value="1">Đã kích hoạt</option>
                                                     </select>
                                                 </div>
@@ -464,13 +521,13 @@ class CreateBrand extends React.PureComponent<{}, IState> {
                                             <div className="col-md-6">
                                                 <div className="form-group">
                                                     <label htmlFor="inputLatitube">Latitube</label>
-                                                    <input type="number" className="form-control" id="inputLatitube" onChange={this.handleChange}/>
+                                                    <input type="number" className="form-control" id="inputLatitube" onChange={this.handleChange} />
                                                 </div>
                                             </div>
                                             <div className="col-md-6">
                                                 <div className="form-group">
                                                     <label htmlFor="inputLongtitube">Longtitube</label>
-                                                    <input type="number" className="form-control" id="inputLongtitube" onChange={this.handleChange}/>
+                                                    <input type="number" className="form-control" id="inputLongtitube" onChange={this.handleChange} />
                                                 </div>
                                             </div>
                                         </div>
@@ -505,7 +562,7 @@ class CreateBrand extends React.PureComponent<{}, IState> {
                             </div>
                             <div className="card-footer text-right">
                                 <button type="submit" className="btn btn-primary mr-2"><i className="ik ik-save" />Save</button>
-                              </div>
+                            </div>
                         </form>
                     </div>
                 </div>

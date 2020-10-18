@@ -5,9 +5,9 @@ using URF.Core.Services;
 
 namespace Tastee.Services
 {
-    public class TasteeService<T> : Service<T>, ITasteeService<T> where T : class, ITrackable
+    public class GenericService<T> : Service<T>, IGenericService<T> where T : class, ITrackable
     {
-        public TasteeService(ITrackableRepository<T> repository) : base(repository)
+        public GenericService(ITrackableRepository<T> repository) : base(repository)
         {
         }
     }

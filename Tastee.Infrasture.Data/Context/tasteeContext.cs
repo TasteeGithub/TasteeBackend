@@ -82,6 +82,8 @@ namespace Tastee.Infrastucture.Data.Context
                     .HasMaxLength(10)
                     .IsUnicode(false);
 
+                entity.Property(e => e.RestaurantImages).HasMaxLength(200);
+
                 entity.Property(e => e.SeoImage)
                     .HasMaxLength(100)
                     .IsUnicode(false);

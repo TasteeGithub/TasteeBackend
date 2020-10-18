@@ -17,12 +17,12 @@ namespace Tastee.Application.Interfaces
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<BrandService> _logger;
 
-        private readonly ITasteeService<Brands> _serviceBrands;
+        private readonly IGenericService<Brands> _serviceBrands;
 
         public BrandService(
            ILogger<BrandService> logger,
            IUnitOfWork unitOfWork,
-           ITasteeService<Brands> serviceBrands
+           IGenericService<Brands> serviceBrands
            )
         {
             _unitOfWork = unitOfWork;
@@ -69,9 +69,8 @@ namespace Tastee.Application.Interfaces
                 newBrands.UpdatedDate = DateTime.Now;
                 _serviceBrands.Insert(newBrands);
                 await _unitOfWork.SaveChangesAsync();
-                return new Response { Successful = true };
+                return new Response { Successful = true, Message = "Add brand successed" };
             }
-
             return new Response { Successful = false, Message = "Brand is exists" };
         }
 
@@ -90,6 +89,7 @@ namespace Tastee.Application.Interfaces
                     brand.HeadOffice = model.HeadOffice ?? brand.HeadOffice;
                     brand.Uri = model.Uri ?? brand.Uri;
                     brand.Logo = model.Logo ?? brand.Logo;
+                    brand.RestaurantImages = model.RestaurantImages ?? brand.RestaurantImages;
                     brand.City = model.City ?? brand.City;
                     brand.Area = model.Area ?? brand.Area;
                     brand.MinPrice = model.MinPrice ?? brand.MinPrice;

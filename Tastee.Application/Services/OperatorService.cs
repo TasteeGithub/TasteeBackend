@@ -12,8 +12,8 @@ namespace Tastee.Application.Services
 {
     public class OperatorService : IOperatorService
     {
-        private readonly ITasteeService<Operators> _serviceOperators;
-        public OperatorService(ITasteeService<Operators> serviceOperators)
+        private readonly IGenericService<Operators> _serviceOperators;
+        public OperatorService(IGenericService<Operators> serviceOperators)
         {
             _serviceOperators = serviceOperators;
         }
