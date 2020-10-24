@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Tastee.Application.Wrappers;
 using Tastee.Domain.Entities;
@@ -99,7 +100,7 @@ namespace Tastee.Controllers
 
                 return Ok(new Response { Successful = false, Message = string.Join(",", errorMessage) });
             }
-
+            brandModel.UpdateBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
             return Ok(await Mediator.Send(brandModel));
         }
 
@@ -111,6 +112,8 @@ namespace Tastee.Controllers
             bool isActionSuccess = false;
             try
             {
+                model.UpdateBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+                
                 return Ok(await Mediator.Send(model));
             }
             catch (Exception ex)

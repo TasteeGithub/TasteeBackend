@@ -5,6 +5,6 @@ namespace Tastee.Application.Interfaces
 {
     public interface IFileService
     {
-        string[] Upload(IFormFileCollection files);
+        string Upload(IFormFile file, string targetFolder);
     }
 }

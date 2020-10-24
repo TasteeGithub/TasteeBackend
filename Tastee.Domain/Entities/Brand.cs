@@ -2,9 +2,8 @@
 
 namespace Tastee.Domain.Entities
 {
-    public partial class Brand 
+    public partial class Brand  : BaseEntity
     {
-        public string Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
         public string Hotline { get; set; }

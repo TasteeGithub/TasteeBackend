@@ -1,16 +1,28 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net.Http.Headers;
 using System.Text;
+using Tastee.Application.Interfaces;
 
 namespace Tastee.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UtilitiesController : Controller
     {
+        private readonly IFileService _fileService;
+        private readonly ILogger<BrandsController> _logger;
+        public UtilitiesController(
+            ILogger<BrandsController> logger,
+            IFileService fileService)
+        {
+            _fileService = fileService;
+            _logger = logger;
+        }
         [HttpPost]
         [Route("upload-image")]
         public IActionResult UploadImage()
@@ -18,8 +30,8 @@ namespace Tastee.Controllers
             try
             {
                 var files = Request.Form.Files;
-                var folderName = Path.Combine("ClientApp", "public", "Images");
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                var folderName = Path.Combine("ClientApp", "public", "Images"); // TODO : Config ở ngoài
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName); // TODO : Config ở ngoài
                 if (files.Count > 0)
                 {
                     StringBuilder newFiles = new StringBuilder();
@@ -28,20 +40,12 @@ namespace Tastee.Controllers
                     {
                         if (file.Length > 0)
                         {
-                            var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim().ToString();
-
-                            FileInfo fileInfo = new FileInfo(fileName);
-                            string newFileName = Path.GetRandomFileName().Replace(".", string.Empty) + fileInfo.Extension.Replace("\"", string.Empty);
-
-                            var fullPath = Path.Combine(pathToSave, newFileName);
-                            using (var stream = new FileStream(fullPath, FileMode.Create))
-                            {
-                                file.CopyTo(stream);
-                            }
+                            string newFileName = _fileService.Upload(file, pathToSave);
                             listFile.Add(newFileName);
                         }
                     }
                     newFiles.AppendJoin(",",listFile.ToArray());
+                    
                     return Ok(newFiles.ToString());
                 }
                 else

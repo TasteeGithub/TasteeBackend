@@ -39,6 +39,7 @@ interface Image {
 interface IState {
     logo: Image,
     restaurantImagesFile: Image[],
+    seoImage: Image,
     isFinished: boolean,
 }
 
@@ -46,7 +47,7 @@ class CreateBrand extends React.PureComponent<{}, IState> {
     constructor(props: any) {
         super(props);
         this.state = {
-            logo: { fileContent: null, filePreviewUrl: "", fileName: "" }, restaurantImagesFile: [], isFinished: false
+            logo: { fileContent: null, filePreviewUrl: "", fileName: "" }, restaurantImagesFile: [], seoImage : { fileContent: null, filePreviewUrl: "", fileName: ""}, isFinished: false
         };
     }
     inputBirth: any;
@@ -165,6 +166,22 @@ class CreateBrand extends React.PureComponent<{}, IState> {
 
             //brandModel.restaurantImages = formData;
         }
+
+        if (this.state.seoImage.fileName != null) {
+            let formData = new FormData();
+            formData.append("seoFile", this.state.seoImage.fileContent, this.state.seoImage.fileName);
+
+            let rs = await axios.post("/api/Utilities/upload-image", formData);
+            console.log(rs);
+            if (rs.status == 200) {
+                brandModel.seoImage = rs.data;
+            }
+            else {
+                alert(rs.status);
+                return;
+            }
+        };
+
         axios.post("/api/brands", brandModel)
             .then((rs) => {
                 if (rs.data.successful)
@@ -278,31 +295,31 @@ class CreateBrand extends React.PureComponent<{}, IState> {
         let file = e.currentTarget.files == null ? null : e.currentTarget.files[0];
 
         if (file != null) {
-            if (e.currentTarget.id.startsWith("inputRestaurantImage")) {
-                reader.onloadend = () => {
-                    var resImage = this.state.restaurantImagesFile;
-                    resImage.push({
-                        fileContent: file,
-                        fileName: file?.name,
-                        filePreviewUrl: reader.result?.toString()
-                    });
-                    this.setState({
-                        ...this.state,
-                        restaurantImagesFile: resImage
-                    });
+            
+                if (e.currentTarget.id == "inputLogo") {
+                    reader.onloadend = () => {
+                        this.setState({
+                            ...this.state,
+                            logo: {
+                                fileContent: file,
+                                fileName: file?.name,
+                                filePreviewUrl: reader.result?.toString()
+                            }
+                        });
+                    }
                 }
-            }
-            else
-                reader.onloadend = () => {
+                else if (e.currentTarget.id == "inputSeoImage") {
+                    reader.onloadend = () => {
                     this.setState({
                         ...this.state,
-                        logo: {
+                        seoImage : {
                             fileContent: file,
                             fileName: file?.name,
                             filePreviewUrl: reader.result?.toString()
                         }
                     });
                 }
+            }
             console.log(this.state);
 
             reader.readAsDataURL(file);
@@ -346,6 +363,15 @@ class CreateBrand extends React.PureComponent<{}, IState> {
         else {
             $imagePrivew = (<div style={{ paddingTop: "20px" }}><img style={{ maxWidth: "400px" }} src="/img/DefaultImage.png" /></div>);
         }
+
+        let $seoImagePrivew = null;
+        if (this.state.seoImage.filePreviewUrl) {
+            $seoImagePrivew = (<div style={{ paddingTop: "20px" }}><img style={{ maxWidth: "400px" }} src={this.state.seoImage.filePreviewUrl} /></div>);
+        }
+        else {
+            $seoImagePrivew = (<div style={{ paddingTop: "20px" }}><img style={{ maxWidth: "400px" }} src="/img/DefaultImage.png" /></div>);
+        }
+
         return (
             <div className="row">
                 <div className="col-md-12">
@@ -393,16 +419,16 @@ class CreateBrand extends React.PureComponent<{}, IState> {
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="inputRestaurantImage">Input Restaurant Image</label>
-                                                <input type="file" className="form-control" id="inputRestaurantImage1" name="inputRestaurantImage1" onChange={this.handleImageChange} />
-                                                <input type="file" className="form-control" id="inputRestaurantImage2" name="inputRestaurantImage2" onChange={this.handleImageChange} />
-                                                <input type="file" className="form-control" id="inputRestaurantImage3" name="inputRestaurantImage3" onChange={this.handleImageChange} />
+                                                <input type="file" accept=".png,.jpg,.jpeg,.gif,.bmp" className="form-control" id="inputRestaurantImage1" name="inputRestaurantImage1" onChange={this.handleRestaurantImageChange} />
+                                                <input type="file" accept=".png,.jpg,.jpeg,.gif,.bmp" className="form-control" id="inputRestaurantImage2" name="inputRestaurantImage2" onChange={this.handleRestaurantImageChange} />
+                                                <input type="file" accept=".png,.jpg,.jpeg,.gif,.bmp" className="form-control" id="inputRestaurantImage3" name="inputRestaurantImage3" onChange={this.handleRestaurantImageChange} />
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-md-6">
                                         <div className="form-group">
                                             <label htmlFor="inputLogo">Logo</label>
-                                            <input className="form-control" onChange={this.handleImageChange} type="file" id="inputLogo" placeholder="logo" />
+                                            <input className="form-control" onChange={this.handleImageChange} type="file" accept=".png,.jpg,.jpeg,.gif,.bmp" id="inputLogo" placeholder="logo" />
                                             {$imagePrivew}
                                         </div>
                                         <div className="form-group">
@@ -524,7 +550,10 @@ class CreateBrand extends React.PureComponent<{}, IState> {
                                                     </div>
                                                     <div className="form-group">
                                                         <label htmlFor="inputSeoImage">SEO Image (GIF: Max 5MB,JPG,PNG,JPEG: Max 150KB)</label>
-                                                        <input type="text" className="form-control" id="inputSeoImage" />
+                                                        {//<input type="text" className="form-control" id="inputSeoImage" />
+                                                        }
+                                                        <input className="form-control" onChange={this.handleImageChange} type="file" accept=".png,.jpg,.jpeg,.gif,.bmp" id="inputSeoImage" placeholder="Seo Image" />
+                                                        {$seoImagePrivew}
                                                     </div>
                                                 </div>
                                             </div>

@@ -368,7 +368,9 @@ const EditBrand: React.FunctionComponent<RouteComponentProps> = () => {
                                                     </div>
                                                     <div className="form-group">
                                                         <label htmlFor="inputSeoImage">SEO Image (GIF: Max 5MB,JPG,PNG,JPEG: Max 150KB)</label>
-                                                        <input type="text" value={values.seoImage} className="form-control" id="inputSeoImage" />
+                                                        <div>
+                                                            <img src={"/Images/" + values.seoImage} width={300} id="inputSeoImage" />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

@@ -32,6 +32,7 @@ namespace Tastee.Features.Brands.Commands
         public double? Longitude { get; set; }
         public string Cuisines { get; set; }
         public string Categories { get; set; }
+        public string UpdateBy { get; set; }
     }
 
     public class UpdateBrandCommandHandler : IRequestHandler<UpdateBrandCommand, Response>
