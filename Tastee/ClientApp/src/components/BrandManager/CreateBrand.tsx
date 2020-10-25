@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Redirect } from 'react-router';
 import { string } from 'prop-types';
 import { locationsAreEqual } from 'history';
+import CityArea from './CityArea';
 const $ = require('jquery');
 
 interface BrandInfo {
@@ -50,8 +51,8 @@ class CreateBrand extends React.PureComponent<{}, IState> {
             logo: { fileContent: null, filePreviewUrl: "", fileName: "" }, restaurantImagesFile: [], seoImage : { fileContent: null, filePreviewUrl: "", fileName: ""}, isFinished: false
         };
     }
-    inputBirth: any;
-    $inputBirth: any;
+    //inputBirth: any;
+    //$inputBirth: any;
     componentDidMount = () => {
         //this.$inputBirth = this.inputBirth;
 
@@ -431,22 +432,7 @@ class CreateBrand extends React.PureComponent<{}, IState> {
                                             <input className="form-control" onChange={this.handleImageChange} type="file" accept=".png,.jpg,.jpeg,.gif,.bmp" id="inputLogo" placeholder="logo" />
                                             {$imagePrivew}
                                         </div>
-                                        <div className="form-group">
-                                            <label htmlFor="inputCity">City</label>
-                                            <select className="form-control" id="inputCity" onChange={this.handleSelectChange}>
-                                                <option value="HCM" selected={true}>Hồ Chí Minh</option>
-                                                <option value="HN">Hà Nội</option>
-                                                <option value="DN">Đà Nẵng</option>
-                                            </select>
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="inputArea">Area</label>
-                                            <select className="form-control" id="inputArea" onChange={this.handleSelectChange}>
-                                                <option value="1" selected={true}>District 1</option>
-                                                <option value="2">District 2</option>
-                                                <option value="3">District 3</option>
-                                            </select>
-                                        </div>
+                                        <CityArea/>
                                         <div className="row">
                                             <div className="col-md-6">
                                                 <div className="form-group">

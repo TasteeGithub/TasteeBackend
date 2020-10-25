@@ -16,7 +16,7 @@ using Tastee.Shared;
 
 namespace Tastee.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BrandsController : BaseApiController
@@ -36,8 +36,8 @@ namespace Tastee.Controllers
         public async Task<IActionResult> LoadData(
             [FromForm] string draw,
             [FromForm] string start,
-            [FromForm] string length
-            , [FromForm] string name
+            [FromForm] string length,
+            [FromForm] string name
             )
         {
             try

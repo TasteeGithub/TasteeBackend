@@ -329,6 +329,7 @@
     <None Remove="ClientApp\build\static\js\2.669ff5d4.chunk.js.map" />
     <None Remove="ClientApp\build\static\js\runtime-main.ce84cb65.js" />
     <None Remove="ClientApp\build\static\js\runtime-main.ce84cb65.js.map" />
+    <None Remove="ClientApp\src\components\BrandManager\CityArea.tsx" />
     <None Remove="ClientApp\src\components\BrandManager\CreateBrand.tsx" />
     <None Remove="ClientApp\src\components\OperatorManager\Accounts.tsx" />
     <None Remove="ClientApp\src\components\OperatorManager\ChangePassword.tsx" />
@@ -359,6 +360,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\components\BrandManager\CityArea.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\BrandManager\CreateBrand.tsx">
       <SubType>Code</SubType>
     </TypeScriptCompile>

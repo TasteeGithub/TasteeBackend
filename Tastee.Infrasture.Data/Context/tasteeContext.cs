@@ -15,7 +15,9 @@ namespace Tastee.Infrastucture.Data.Context
         {
         }
 
+        public virtual DbSet<Areas> Areas { get; set; }
         public virtual DbSet<Brands> Brands { get; set; }
+        public virtual DbSet<Cities> Cities { get; set; }
         public virtual DbSet<Nlogs> Nlogs { get; set; }
         public virtual DbSet<OperatorRoles> OperatorRoles { get; set; }
         public virtual DbSet<Operators> Operators { get; set; }
@@ -33,6 +35,15 @@ namespace Tastee.Infrastucture.Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Areas>(entity =>
+            {
+                entity.ToTable("Areas", "tas77143_tastee");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(200);
+            });
+
             modelBuilder.Entity<Brands>(entity =>
             {
                 entity.ToTable("Brands", "tas77143_tastee");
@@ -102,6 +113,15 @@ namespace Tastee.Infrastucture.Data.Context
                 entity.Property(e => e.Uri)
                     .IsRequired()
                     .HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<Cities>(entity =>
+            {
+                entity.ToTable("Cities", "tas77143_tastee");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(200);
             });
 
             modelBuilder.Entity<Nlogs>(entity =>
