@@ -381,6 +381,8 @@
 
   <ItemGroup>
     <Folder Include="ClientApp\public\dist\css\" />
+    <Folder Include="Features\Areas\Queries\" />
+    <Folder Include="Features\Operators\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

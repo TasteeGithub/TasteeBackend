@@ -536,8 +536,6 @@ class CreateBrand extends React.PureComponent<{}, IState> {
                                                     </div>
                                                     <div className="form-group">
                                                         <label htmlFor="inputSeoImage">SEO Image (GIF: Max 5MB,JPG,PNG,JPEG: Max 150KB)</label>
-                                                        {//<input type="text" className="form-control" id="inputSeoImage" />
-                                                        }
                                                         <input className="form-control" onChange={this.handleImageChange} type="file" accept=".png,.jpg,.jpeg,.gif,.bmp" id="inputSeoImage" placeholder="Seo Image" />
                                                         {$seoImagePrivew}
                                                     </div>

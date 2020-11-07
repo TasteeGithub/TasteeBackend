@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using URF.Core.EF.Trackable;
 
-namespace Tastee.Infrastucture.Data.Context
+namespace Tastee.Domain.Entities
 {
-    public partial class Areas : Entity
+    public partial class Area
     {
         public int Id { get; set; }
         public string Name { get; set; }
