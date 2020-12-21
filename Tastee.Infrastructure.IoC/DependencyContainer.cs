@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Tastee.Application.Interfaces;
@@ -44,6 +45,9 @@ namespace Tastee.Infrastructure.IoC
             services.AddScoped<ICityService, CityService>();
 
             services.AddScoped<IFileService, FileService>();
+
+            services.AddMediatR(System.AppDomain.CurrentDomain.GetAssemblies());
+
         }
     }
 }

@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="LinqKit" Version="1.1.17" />
     <PackageReference Include="Mapster" Version="6.5.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="3.1.8" />
   </ItemGroup>
 
@@ -16,6 +17,11 @@
     <ProjectReference Include="..\Tastee.Shared\Tastee.Shared.csproj" />
     <ProjectReference Include="..\URF.Core.Abstractions.Services\URF.Core.Abstractions.Services.csproj" />
     <ProjectReference Include="..\URF.Core.Services\URF.Core.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Areas\Queries\" />
+    <Folder Include="Features\Operators\" />
   </ItemGroup>
 
 </Project>

@@ -17,7 +17,7 @@ using Tastee.Shared;
 
 namespace Tastee.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CitiesController : BaseApiController

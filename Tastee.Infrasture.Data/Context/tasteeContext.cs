@@ -210,7 +210,7 @@ namespace Tastee.Infrastucture.Data.Context
 
             modelBuilder.Entity<Users>(entity =>
             {
-                entity.HasNoKey();
+                //entity.HasNoKey();
 
                 entity.ToTable("Users", "tas77143_tastee");
 

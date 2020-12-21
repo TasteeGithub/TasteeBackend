@@ -51,6 +51,7 @@ namespace Tastee.Controllers
             _serviceUsers = serviceUsers;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Post(RegisterUserModel model)
         {

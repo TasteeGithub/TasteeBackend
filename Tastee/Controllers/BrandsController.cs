@@ -32,7 +32,6 @@ namespace Tastee.Controllers
 
         [HttpPost]
         [Route("load-data")]
-        [AllowAnonymous]
         public async Task<IActionResult> LoadData(
             [FromForm] string draw,
             [FromForm] string start,
