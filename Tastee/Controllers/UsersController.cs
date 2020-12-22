@@ -81,6 +81,10 @@ namespace Tastee.Controllers
                 FullName = model.FullName,
                 PhoneNumber = model.PhoneNumber,
                 Status = model.Status,
+                Address = model.Address,
+                Avatar = model.Avatar,
+                Birthday = model.Birthday,
+                Gender = model.Gender
             };
 
             _serviceUsers.Insert(newUsers);
@@ -298,6 +302,11 @@ namespace Tastee.Controllers
                         user.FullName = model.FullName;
                         user.PhoneNumber = model.PhoneNumber;
                         user.Status = model.Status;
+                        user.Gender = model.Gender;
+                        user.Address = model.Address;
+                        user.Avatar = model.Avatar;
+                        user.Birthday = model.Birthday;
+
                         if(user.Status == AccountStatus.Active.ToString())
                         {
                             user.LoginFailedCount = 0;
