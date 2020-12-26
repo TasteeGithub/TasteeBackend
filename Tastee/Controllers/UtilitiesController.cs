@@ -30,8 +30,8 @@ namespace Tastee.Controllers
             try
             {
                 var files = Request.Form.Files;
-                var folderName = Path.Combine("ClientApp", "public", "Images"); // TODO : Config ở ngoài
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName); // TODO : Config ở ngoài
+                var folderName = Path.Combine("ClientApp", "build", "Images"); // TODO : Config ở ngoài
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
                 if (files.Count > 0)
                 {
                     StringBuilder newFiles = new StringBuilder();
