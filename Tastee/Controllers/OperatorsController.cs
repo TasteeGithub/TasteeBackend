@@ -161,7 +161,7 @@ namespace Tastee.Controllers
                 var roleIdList = _serviceOperatorRoles.Queryable().Where(x => x.UserId == user.Id).ToList();
                 foreach (var item in roleIdList)
                 {
-                    string? roleName = _serviceRoles.Queryable().Where(x => x.Id == item.RoleId).FirstOrDefault()?.Name;
+                    var roleName = _serviceRoles.Queryable().Where(x => x.Id == item.RoleId).FirstOrDefault()?.Name;
                     if(roleName != null)
                         claims.Add(new Claim("role", roleName));
                 }
