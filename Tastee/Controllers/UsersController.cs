@@ -251,7 +251,7 @@ namespace Tastee.Controllers
 
             pageSize = pageSize == 0 ? Constants.DEFAULT_PAGE_SIZE : pageSize;
             var pagedListUser = await PaginatedList<Users>.CreateAsync(listUser, pageIndex ?? 1, pageSize);
-            //var pagedListUser = await PaginatedList<Users>.CreateAsync(listUser,pageSize);
+
             PaggingModel<Users> returnResult = new PaggingModel<Users>()
             {
                 ListData = pagedListUser.Adapt<List<Users>>(),

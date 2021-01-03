@@ -91,6 +91,8 @@ namespace Tastee
                             new List<string>()
                         }
                     });
+                    c.IncludeXmlComments(string.Format(@"{0}\Tastee.xml", System.AppDomain.CurrentDomain.BaseDirectory));
+
                 });
             }
 

@@ -7,31 +7,29 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Tastee.Application.Wrappers;
+using Tastee.Controllers;
 using Tastee.Domain.Entities;
-using Tastee.Feature.Brands.Queries;
-using Tastee.Features.Brands.Commands;
-using Tastee.Features.Brands.Queries;
+using Tastee.Feature.Banners.Queries;
+using Tastee.Features.Banners.Commands;
+using Tastee.Features.Banners.Queries;
 using Tastee.Shared;
 
-namespace Tastee.Controllers
-{
-    /// <summary>
-    /// Quản lý brand
-    /// </summary>
-    [Authorize]
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
+namespace Tastee.UI.Controllers
+{   [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class BrandsController : BaseApiController
+    public class BannerController : BaseApiController
     {
-        private readonly ILogger<BrandsController> _logger;
-
-        public BrandsController(ILogger<BrandsController> logger)
+        private readonly ILogger<BannerController> _logger;
+        public BannerController(ILogger<BannerController> logger)
         {
-            _logger = logger;
+            _logger = logger;    
         }
 
         /// <summary>
-        /// Load dữ liệu có phân trang
+        /// Load dữ liệu có phân trang cho table .net
         /// </summary>
         /// <param name="draw"></param>
         /// <param name="start">Page index</param>
@@ -53,8 +51,8 @@ namespace Tastee.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageIndex = skip / pageSize + 1;
                 int recordsTotal = 0;
-                GetBrandsQuery brandsQuery = new GetBrandsQuery { PageIndex = pageIndex, PageSize = pageSize, BrandName = name };
-                var rs = await Mediator.Send(brandsQuery);
+                GetBannersQuery bannersQuery = new GetBannersQuery { PageIndex = pageIndex, PageSize = pageSize, BannerName = name };
+                var rs = await Mediator.Send(bannersQuery);
 
                 //total number of rows counts
                 recordsTotal = rs.TotalRows;
@@ -72,32 +70,32 @@ namespace Tastee.Controllers
             }
 
             return new JsonResult(
-                    new { draw, recordsFiltered = 0, recordsTotal = 0, data = new List<Brand>() });
+                    new { draw, recordsFiltered = 0, recordsTotal = 0, data = new List<Banner>() });
         }
 
-        // GET: api/Brands/5
+        // GET: api/Banners/5
         [HttpGet("detail/{id}")]
-        public async Task<IActionResult> GetBrandDetail(string id)
+        public async Task<IActionResult> GetBannerDetail(string id)
         {
             try
             {
-                GetBrandByIdQuery rq = new GetBrandByIdQuery { Id = id };
+                GetBannerByIdQuery rq = new GetBannerByIdQuery { Id = id };
                 return Ok(await Mediator.Send(rq));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Get brand detail, brand id: {0}", id);
+                _logger.LogError(ex, "Get banner detail, banner id: {0}", id);
             }
             finally
             {
-                _logger.LogInformation("Get brand detail, brand Id {0}", id);
+                _logger.LogInformation("Get banner detail, banner Id {0}", id);
             }
-            return Ok(new Response<Brand>("Has error"));
+            return Ok(new Response<Banner>("Has error"));
         }
 
-        // POST: api/Brands
+        // POST api/<BannerController>
         [HttpPost]
-        public async Task<IActionResult> Post(CreateBrandCommand brandModel)
+        public async Task<IActionResult> Post(CreateBannerCommand bannerModel)
         {
             if (!ModelState.IsValid)
             {
@@ -107,14 +105,14 @@ namespace Tastee.Controllers
 
                 return Ok(new Response { Successful = false, Message = string.Join(",", errorMessage) });
             }
-            brandModel.UpdateBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-            return Ok(await Mediator.Send(brandModel));
+            bannerModel.CreatedBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+            return Ok(await Mediator.Send(bannerModel));
+
         }
 
-        // PUT: api/Brands/5
         [HttpPost]
         [Route("update")]
-        public async Task<IActionResult> Update(UpdateBrandCommand model)
+        public async Task<IActionResult> Update(UpdateBannerCommand model)
         {
             bool isActionSuccess = false;
             try
@@ -125,13 +123,13 @@ namespace Tastee.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Update brand, Brand: {0}", model);
+                _logger.LogError(ex, "Update banner, Banner: {0}", model);
             }
             finally
             {
-                _logger.LogInformation("Update Brand, Brand: {0}, Result status: {1}", model, isActionSuccess);
+                _logger.LogInformation("Update Banner, Banner: {0}, Result status: {1}", model, isActionSuccess);
             }
-            return Ok(new { Successful = false, Error = "Has error when update" });
+            return Ok(new { Successful = false, Error = "Has error when update banner" });
         }
     }
 }

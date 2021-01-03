@@ -14,11 +14,13 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "nativeDebugging": false
+      "nativeDebugging": false,
+      "launchUrl" : "docs"
     },
     "Tastee": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl" : "docs",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
