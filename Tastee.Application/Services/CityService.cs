@@ -1,14 +1,10 @@
-﻿using LinqKit;
-using Mapster;
+﻿using Mapster;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Tastee.Domain.Entities;
 using Tastee.Infrastucture.Data.Context;
-using Tastee.Shared;
 using URF.Core.Abstractions;
 
 namespace Tastee.Application.Interfaces

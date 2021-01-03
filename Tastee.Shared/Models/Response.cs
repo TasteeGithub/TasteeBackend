@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Tastee.Shared
+﻿namespace Tastee.Shared
 {
     public class Response
     {

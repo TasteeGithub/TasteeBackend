@@ -22,7 +22,7 @@ namespace Tastee.Feature.Brands.Queries
 
             public async Task<Response<Brand>> Handle(GetBrandByIdQuery request, CancellationToken cancellationToken)
             {
-                var brand = await _brandService.GetBrandByIdAsync(request.Id);
+                var brand = await _brandService.GetByIdAsync(request.Id);
                 return new Response<Brand>(brand);
             }
         }

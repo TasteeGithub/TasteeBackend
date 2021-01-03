@@ -2,15 +2,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -21,6 +17,7 @@ namespace Tastee
     public class Startup
     {
         private readonly bool _enableSwagger = false;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -71,13 +68,13 @@ namespace Tastee
                     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                     {
                         Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-                        Name= "Authorization",
+                        Name = "Authorization",
                         In = ParameterLocation.Header,
                         Type = SecuritySchemeType.ApiKey,
-                        BearerFormat="JWT",
-                        Scheme="Bearer"
+                        BearerFormat = "JWT",
+                        Scheme = "Bearer"
                     });
-                    c.AddSecurityRequirement(new OpenApiSecurityRequirement 
+                    c.AddSecurityRequirement(new OpenApiSecurityRequirement
                     {
                         {
                             new OpenApiSecurityScheme
@@ -94,10 +91,11 @@ namespace Tastee
                             new List<string>()
                         }
                     });
-                });
+                    c.IncludeXmlComments(string.Format(@"{0}\Tastee.xml", System.AppDomain.CurrentDomain.BaseDirectory));
 
+                });
             }
-            //services.InsideConfigServices(Configuration);
+
             services.AddControllersWithViews();
 
             // In production, the React files will be served from this directory
@@ -107,7 +105,6 @@ namespace Tastee
             });
 
             RegisterServices(services, Configuration);
-            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -127,6 +124,7 @@ namespace Tastee
             if (_enableSwagger)
             {
                 #region Swagger
+
                 // Enable middleware to serve generated Swagger as a JSON endpoint.
                 app.UseSwagger();
 
@@ -135,10 +133,11 @@ namespace Tastee
                 app.UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tastee Api");
-                //To serve the Swagger UI at the app's root (http://localhost:<port>/), set the RoutePrefix property to an empty string:
+                    //To serve the Swagger UI at the app's root (http://localhost:<port>/), set the RoutePrefix property to an empty string:
                     c.RoutePrefix = "docs";
                 });
-                #endregion
+
+                #endregion Swagger
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -147,12 +146,14 @@ namespace Tastee
             app.UseRouting();
 
             #region Cors policy
+
             // global cors policy
             app.UseCors(x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
-            #endregion
+
+            #endregion Cors policy
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -177,7 +178,7 @@ namespace Tastee
 
         private static void RegisterServices(IServiceCollection services, IConfiguration configuration)
         {
-            DependencyContainer.RegisterServices(services,configuration);
+            DependencyContainer.RegisterServices(services, configuration);
         }
     }
 }

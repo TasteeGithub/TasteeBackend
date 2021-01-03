@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Tastee.Domain.Entities
+﻿namespace Tastee.Domain.Entities
 {
     public partial class Area
     {

@@ -30,7 +30,7 @@ namespace Tastee.Application.Interfaces
             _serviceBrands = serviceBrands;
         }
 
-        public async Task<Brand> GetBrandByIdAsync(string id)
+        public async Task<Brand> GetByIdAsync(string id)
         {
             var brand = await _serviceBrands.FindAsync(id);
             return brand.Adapt<Brand>();
@@ -58,13 +58,13 @@ namespace Tastee.Application.Interfaces
             return returnResult;
         }
 
-        public async Task<Response> InsertAsync(Brand brand)
+        public async Task<Response> InsertAsync(Brand model)
         {
-            if (!_serviceBrands.Queryable().Any(x => x.Name == brand.Name))
+            if (!_serviceBrands.Queryable().Any(x => x.Name == model.Name))
             {
-                Brands newBrands = brand.Adapt<Brands>();
+                Brands newBrands = model.Adapt<Brands>();
                 newBrands.Id = Guid.NewGuid().ToString();
-                newBrands.Status = BrandsStatus.Pending.ToString();
+                newBrands.Status = BrandStatus.Pending.ToString();
                 newBrands.CreatedDate = DateTime.Now;
                 newBrands.UpdatedDate = DateTime.Now;
                 _serviceBrands.Insert(newBrands);

@@ -16,6 +16,7 @@ namespace Tastee.Infrastucture.Data.Context
         }
 
         public virtual DbSet<Areas> Areas { get; set; }
+        public virtual DbSet<Banners> Banners { get; set; }
         public virtual DbSet<Brands> Brands { get; set; }
         public virtual DbSet<Cities> Cities { get; set; }
         public virtual DbSet<Nlogs> Nlogs { get; set; }
@@ -42,6 +43,49 @@ namespace Tastee.Infrastucture.Data.Context
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<Banners>(entity =>
+            {
+                entity.ToTable("Banners", "tas77143_tastee");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BrandId)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("smalldatetime");
+
+                entity.Property(e => e.EndDate).HasColumnType("smalldatetime");
+
+                entity.Property(e => e.Image)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Link).IsRequired();
+
+                entity.Property(e => e.Name).IsRequired();
+
+                entity.Property(e => e.StartDate).HasColumnType("smalldatetime");
+
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UpdateBy).HasMaxLength(50);
+
+                entity.Property(e => e.UpdateDate).HasColumnType("smalldatetime");
             });
 
             modelBuilder.Entity<Brands>(entity =>
@@ -210,9 +254,11 @@ namespace Tastee.Infrastucture.Data.Context
 
             modelBuilder.Entity<Users>(entity =>
             {
-                //entity.HasNoKey();
-
                 entity.ToTable("Users", "tas77143_tastee");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Address).HasMaxLength(200);
 
@@ -235,11 +281,6 @@ namespace Tastee.Infrastucture.Data.Context
 
                 entity.Property(e => e.Gender)
                     .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Id)
-                    .IsRequired()
-                    .HasMaxLength(50)
                     .IsUnicode(false);
 
                 entity.Property(e => e.LastLogin).HasColumnType("smalldatetime");

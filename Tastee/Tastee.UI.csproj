@@ -7,7 +7,15 @@
     <IsPackable>false</IsPackable>
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
-    <UserSecretsId>aa326e0a-fd62-435f-a94f-1de6bd5d0276</UserSecretsId>
+    <UserSecretsId>2cf58997-6f46-4839-ba6f-2eb9589f7030</UserSecretsId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile></DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>Tastee.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -55,6 +63,7 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\AccountsController.cs" />
+    <Compile Remove="Controllers\WeatherForecastController.cs" />
   </ItemGroup>
 
   <ItemGroup>

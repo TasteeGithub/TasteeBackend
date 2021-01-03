@@ -2,22 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Tastee.Application.Wrappers;
-using Tastee.Domain.Entities;
-using Tastee.Feature.Brands.Queries;
-using Tastee.Features.Brands.Commands;
-using Tastee.Features.Brands.Queries;
 using Tastee.Features.Cities.Queries;
-using Tastee.Infrastucture.Data.Context;
-using Tastee.Shared;
 
 namespace Tastee.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CitiesController : BaseApiController
