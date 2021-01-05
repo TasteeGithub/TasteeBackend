@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TasteeWebApi</name>
+    </assembly>
+    <members>
+        <member name="M:Tastee.UI.Controllers.BannerController.LoadData(System.String,System.String,System.String,System.String)">
+            <summary>
+            Load dữ liệu có phân trang cho table .net
+            </summary>
+            <param name="draw"></param>
+            <param name="start">Page index</param>
+            <param name="length">Page Size</param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.Controllers.UsersController.LoadData(System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
+            <summary>
+            Dùng phần trang trong table.net
+            </summary>
+            <param name="draw"></param>
+            <param name="start"></param>
+            <param name="length"></param>
+            <param name="name"></param>
+            <param name="email"></param>
+            <param name="phone"></param>
+            <param name="fromDate"></param>
+            <param name="toDate"></param>
+            <param name="status"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.Models.DTO.User.SetPassword(System.String)">
+             <summary>
+            
+             </summary>
+             <param name="password"></param>
+             <returns>HashPassword</returns>
+        </member>
+    </members>
+</doc>
