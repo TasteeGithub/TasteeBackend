@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using Tastee.Application.Interfaces;
 
-namespace Tastee.Controllers
+namespace Tastee.WebApi.Controllers
 {
     [Authorize]
     [ApiController]

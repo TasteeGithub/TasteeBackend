@@ -7,7 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace TasteeFrontEnd.Controllers
+namespace Tastee.WebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]

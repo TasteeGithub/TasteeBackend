@@ -22,7 +22,7 @@ using Constants = Tastee.Shared.Constants;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace Tastee.Controllers
+namespace Tastee.WebApi.Controllers
 {
     [Authorize]
     [ApiController]
@@ -162,7 +162,7 @@ namespace Tastee.Controllers
                 foreach (var item in roleIdList)
                 {
                     var roleName = _serviceRoles.Queryable().Where(x => x.Id == item.RoleId).FirstOrDefault()?.Name;
-                    if(roleName != null)
+                    if (roleName != null)
                         claims.Add(new Claim("role", roleName));
                 }
 

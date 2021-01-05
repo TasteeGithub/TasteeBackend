@@ -7,7 +7,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Tastee.Application.Wrappers;
-using Tastee.Controllers;
 using Tastee.Domain.Entities;
 using Tastee.Feature.Banners.Queries;
 using Tastee.Features.Banners.Commands;
@@ -16,7 +15,7 @@ using Tastee.Shared;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace Tastee.UI.Controllers
+namespace Tastee.WebApi.Controllers
 {   [Authorize]
     [Route("api/[controller]")]
     [ApiController]

@@ -14,7 +14,7 @@ using Tastee.Features.Brands.Queries;
 using Tastee.Infrastucture.Data.Context;
 using Tastee.Shared;
 
-namespace Tastee.Controllers
+namespace Tastee.WebApi.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]

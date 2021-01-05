@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Tastee.Controllers
+namespace Tastee.WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

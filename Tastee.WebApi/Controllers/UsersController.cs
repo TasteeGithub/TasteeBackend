@@ -24,7 +24,7 @@ using Constants = Tastee.Shared.Constants;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace Tastee.Controllers
+namespace Tastee.WebApi.Controllers
 {
     [Authorize]
     [ApiController]

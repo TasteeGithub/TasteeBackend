@@ -5,7 +5,7 @@ using System;
 using System.Threading.Tasks;
 using Tastee.Features.Cities.Queries;
 
-namespace Tastee.Controllers
+namespace Tastee.WebApi.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]

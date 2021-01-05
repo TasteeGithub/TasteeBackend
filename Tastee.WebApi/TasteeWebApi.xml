@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>TasteeWebApi</name>
+        <name>Tastee.WebApi</name>
     </assembly>
     <members>
-        <member name="M:Tastee.UI.Controllers.BannerController.LoadData(System.String,System.String,System.String,System.String)">
+        <member name="M:Tastee.WebApi.Controllers.BannerController.LoadData(System.String,System.String,System.String,System.String)">
             <summary>
             Load dữ liệu có phân trang cho table .net
             </summary>
@@ -14,7 +14,7 @@
             <param name="name"></param>
             <returns></returns>
         </member>
-        <member name="M:Tastee.Controllers.UsersController.LoadData(System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
+        <member name="M:Tastee.WebApi.Controllers.UsersController.LoadData(System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
             <summary>
             Dùng phần trang trong table.net
             </summary>

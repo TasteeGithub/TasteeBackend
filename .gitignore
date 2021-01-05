@@ -33,3 +33,5 @@
 /Tastee.UnitTest/obj
 /Tastee/ClientApp/public/Images
 /Data
+/Tastee.WebApi/bin
+/Tastee.WebApi/obj
