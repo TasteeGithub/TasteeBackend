@@ -41,16 +41,17 @@ namespace Tastee.Infrastructure.IoC
 
             services.AddScoped<ITrackableRepository<Cities>, TrackableRepository<Cities>>();
             services.AddScoped<IGenericService<Cities>, GenericService<Cities>>();
+            services.AddScoped<ICityService, CityService>();
 
             services.AddScoped<ITrackableRepository<Banners>, TrackableRepository<Banners>>();
             services.AddScoped<IGenericService<Banners>, GenericService<Banners>>();
             services.AddScoped<IBannerService, BannerService>();
 
-            services.AddScoped<ICityService, CityService>();
+            services.AddScoped<ITrackableRepository<Areas>, TrackableRepository<Areas>>();
+            services.AddScoped<IGenericService<Areas>, GenericService<Areas>>();
+            services.AddScoped<IAreaService, AreaService>();
 
             services.AddScoped<IFileService, FileService>();
-
-            
 
             services.AddMediatR(System.AppDomain.CurrentDomain.GetAssemblies());
 

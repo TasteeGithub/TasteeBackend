@@ -3,26 +3,24 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Tastee.Application.Interfaces;
 using Tastee.Domain.Entities;
 using Tastee.Infrastucture.Data.Context;
 using URF.Core.Abstractions;
 
-namespace Tastee.Application.Interfaces
+namespace Tastee.Application.Services
 {
     public class CityService : ICityService
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CityService> _logger;
 
         private readonly IGenericService<Cities> _serviceCities;
 
         public CityService(
            ILogger<CityService> logger,
-           IUnitOfWork unitOfWork,
            IGenericService<Cities> serviceCities
            )
         {
-            _unitOfWork = unitOfWork;
             _logger = logger;
             _serviceCities = serviceCities;
         }
