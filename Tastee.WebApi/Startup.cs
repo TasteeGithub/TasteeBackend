@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using Tastee.Infrastructure.IoC;
@@ -17,6 +19,7 @@ namespace TasteeWebApi
     public class Startup
     {
         private readonly bool _enableSwagger = false;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -124,7 +127,7 @@ namespace TasteeWebApi
                     //To serve the Swagger UI at the app's root (http://localhost:<port>/), set the RoutePrefix property to an empty string:
                     c.RoutePrefix = "docs";
                 });
-                
+
                 #endregion Swagger
             }
 
@@ -141,6 +144,7 @@ namespace TasteeWebApi
                 .AllowAnyHeader());
 
             #endregion Cors policy
+
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -148,7 +152,23 @@ namespace TasteeWebApi
             {
                 endpoints.MapControllers();
             });
+
+            // Browse images (static file)
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), Configuration["Path:UploadImagePath"])),
+                RequestPath = Configuration["Path:BrowserImagePath"]
+            });
+
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                        Path.Combine(Directory.GetCurrentDirectory(), Configuration["Path:UploadImagePath"])),
+                RequestPath = Configuration["Path:BrowserImagePath"]
+            });
         }
+
         private static void RegisterServices(IServiceCollection services, IConfiguration configuration)
         {
             DependencyContainer.RegisterServices(services, configuration);

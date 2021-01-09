@@ -100,42 +100,6 @@ namespace Tastee.WebApi.Controllers
             return Ok(new Response { Successful = true });
         }
 
-        [HttpPost, DisableRequestSizeLimit]
-        [Route("uploadfile")]
-        public IActionResult UploadFile()
-        {
-            try
-            {
-                var file = Request.Form.Files[0];
-                var folderName = Path.Combine("ClientApp", "public", "Images", "Avatar");
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                if (file.Length > 0)
-                {
-                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim().ToString();
-
-                    FileInfo fileInfo = new FileInfo(fileName);
-                    string newFileName = System.IO.Path.GetRandomFileName() + fileInfo.Extension;
-
-                    var fullPath = Path.Combine(pathToSave, newFileName);
-
-                    using (var stream = new FileStream(fullPath, FileMode.Create))
-                    {
-                        file.CopyTo(stream);
-                    }
-
-                    return Ok(new { newFileName });
-                }
-                else
-                {
-                    return BadRequest();
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex}");
-            }
-        }
-
         // POST api/<controller>
         [AllowAnonymous]
         [HttpPost]

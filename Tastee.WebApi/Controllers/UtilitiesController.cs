@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -16,13 +17,21 @@ namespace Tastee.WebApi.Controllers
     {
         private readonly IFileService _fileService;
         private readonly ILogger<BrandsController> _logger;
+        private readonly IConfiguration _configuration;
         public UtilitiesController(
             ILogger<BrandsController> logger,
-            IFileService fileService)
+            IFileService fileService,
+            IConfiguration configuration
+            )
         {
             _fileService = fileService;
             _logger = logger;
+            _configuration = configuration;
         }
+        /// <summary>
+        /// Upload hinh
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [Route("upload-image")]
         public IActionResult UploadImage()
@@ -30,8 +39,7 @@ namespace Tastee.WebApi.Controllers
             try
             {
                 var files = Request.Form.Files;
-                var folderName = Path.Combine("ClientApp", "build", "Images"); // TODO : Config ở ngoài
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), _configuration["Path:UploadImagePath"]);
                 if (files.Count > 0)
                 {
                     StringBuilder newFiles = new StringBuilder();
