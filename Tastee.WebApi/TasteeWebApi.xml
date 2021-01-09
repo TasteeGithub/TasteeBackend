@@ -29,6 +29,12 @@
             <param name="status"></param>
             <returns></returns>
         </member>
+        <member name="M:Tastee.WebApi.Controllers.UtilitiesController.UploadImage">
+            <summary>
+            Upload hinh
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Tastee.Models.DTO.User.SetPassword(System.String)">
              <summary>
             
