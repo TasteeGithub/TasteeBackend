@@ -5,12 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Tastee.Application.Interfaces;
 using Tastee.Domain.Entities;
 using Tastee.Infrastucture.Data.Context;
 using Tastee.Shared;
 using URF.Core.Abstractions;
 
-namespace Tastee.Application.Interfaces
+namespace Tastee.Application.Services
 {
     public class BrandService : IBrandService
     {

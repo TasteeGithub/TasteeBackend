@@ -23,13 +23,16 @@ namespace TasteeWebApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            var appSettings = Configuration.GetSection("Appsettings");
-            _enableSwagger = bool.Parse(appSettings.GetValue<string>("EnableSwagger") ?? "false");
+            //var appSettings = Configuration.GetSection("Appsettings");
+            _enableSwagger = Configuration.GetValue<bool>("Appsettings:EnableSwagger");// bool.Parse(appSettings.GetValue<string>("EnableSwagger") ?? "false");
         }
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();

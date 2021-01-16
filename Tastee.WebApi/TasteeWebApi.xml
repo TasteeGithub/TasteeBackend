@@ -42,5 +42,11 @@
              <param name="password"></param>
              <returns>HashPassword</returns>
         </member>
+        <member name="M:TasteeWebApi.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            This method gets called by the runtime. Use this method to add services to the container.
+            </summary>
+            <param name="services"></param>
+        </member>
     </members>
 </doc>
