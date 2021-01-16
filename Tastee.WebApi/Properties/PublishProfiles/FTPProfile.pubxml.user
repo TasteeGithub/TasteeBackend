@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAPeEx9YPY4km7LgciaINJCgAAAAACAAAAAAAQZgAAAAEAACAAAAAtjndFEABrmIXD3v9hc/M8LV5911YLeh10bTHuH3p65gAAAAAOgAAAAAIAACAAAABNoZNgdcWRy7+yIxuDngPxHW2epZJ02M1zKuXFF2XHxjAAAAAUqhp18uCSOG+Fddw3RsgCqyhBWYddcm8vUryTX7ZB66AJY5k3HAaaXC6dPM+KVnZAAAAAh2UQaE81bo5AXoT8NGzscbJk19Bd/l2YzujgQBCQSOhYWk29jGwpQyhKxtjoJxw6/lC6ghdxXb8HoAjopggvvA==</EncryptedPassword>
+    <_PublishTargetUrl>ftp://s2d36.cloudnetwork.vn/httpdocs/</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="appsettings.Development.json">
+      <publishTime>01/07/2021 00:22:55</publishTime>
+    </File>
+    <File Include="appsettings.json">
+      <publishTime>01/09/2021 13:21:50</publishTime>
+    </File>
+    <File Include="Content/Images/fuupwse5hjq.png">
+      <publishTime>01/09/2021 12:39:58</publishTime>
+    </File>
+    <File Include="EntityFramework.dll">
+      <publishTime>09/14/2019 17:01:18</publishTime>
+    </File>
+    <File Include="EntityFramework.SqlServer.dll">
+      <publishTime>09/14/2019 17:01:34</publishTime>
+    </File>
+    <File Include="LinqKit.dll">
+      <publishTime>11/26/2019 17:18:18</publishTime>
+    </File>
+    <File Include="Mapster.dll">
+      <publishTime>08/19/2020 22:02:06</publishTime>
+    </File>
+    <File Include="MediatR.dll">
+      <publishTime>10/08/2020 15:28:06</publishTime>
+    </File>
+    <File Include="MediatR.Extensions.Microsoft.DependencyInjection.dll">
+      <publishTime>10/08/2020 17:35:22</publishTime>
+    </File>
+    <File Include="Microsoft.AspNetCore.Authentication.JwtBearer.dll">
+      <publishTime>04/16/2020 17:59:26</publishTime>
+    </File>
+    <File Include="Microsoft.AspNetCore.Http.Features.dll">
+      <publishTime>08/21/2020 21:26:04</publishTime>
+    </File>
+    <File Include="Microsoft.Bcl.AsyncInterfaces.dll">
+      <publishTime>04/14/2020 22:39:12</publishTime>
+    </File>
+    <File Include="Microsoft.Bcl.HashCode.dll">
+      <publishTime>11/15/2019 08:38:50</publishTime>
+    </File>
+    <File Include="Microsoft.Data.SqlClient.dll">
+      <publishTime>05/15/2020 23:07:32</publishTime>
+    </File>
+    <File Include="Microsoft.EntityFrameworkCore.Abstractions.dll">
+      <publishTime>08/21/2020 00:57:42</publishTime>
+    </File>
+    <File Include="Microsoft.EntityFrameworkCore.dll">
+      <publishTime>08/21/2020 00:58:10</publishTime>
+    </File>
+    <File Include="Microsoft.EntityFrameworkCore.Relational.dll">
+      <publishTime>08/21/2020 00:58:16</publishTime>
+    </File>
+    <File Include="Microsoft.EntityFrameworkCore.SqlServer.dll">
+      <publishTime>08/21/2020 00:58:20</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.Caching.Abstractions.dll">
+      <publishTime>08/20/2020 23:49:04</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.Caching.Memory.dll">
+      <publishTime>08/20/2020 23:49:30</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.Configuration.Abstractions.dll">
+      <publishTime>08/20/2020 23:49:38</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.Configuration.Binder.dll">
+      <publishTime>08/20/2020 23:50:00</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.Configuration.dll">
+      <publishTime>08/20/2020 23:49:38</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.DependencyInjection.Abstractions.dll">
+      <publishTime>08/20/2020 23:49:48</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.DependencyInjection.dll">
+      <publishTime>08/20/2020 23:49:38</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.Logging.Abstractions.dll">
+      <publishTime>08/20/2020 23:51:02</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.Logging.dll">
+      <publishTime>08/20/2020 23:51:08</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.Options.dll">
+      <publishTime>08/20/2020 23:49:28</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.Primitives.dll">
+      <publishTime>08/20/2020 23:49:56</publishTime>
+    </File>
+    <File Include="Microsoft.Identity.Client.dll">
+      <publishTime>04/29/2019 22:04:14</publishTime>
+    </File>
+    <File Include="Microsoft.IdentityModel.JsonWebTokens.dll">
+      <publishTime>06/24/2019 19:50:38</publishTime>
+    </File>
+    <File Include="Microsoft.IdentityModel.Logging.dll">
+      <publishTime>06/24/2019 19:53:26</publishTime>
+    </File>
+    <File Include="Microsoft.IdentityModel.Protocols.dll">
+      <publishTime>06/24/2019 19:54:24</publishTime>
+    </File>
+    <File Include="Microsoft.IdentityModel.Protocols.OpenIdConnect.dll">
+      <publishTime>06/24/2019 19:59:32</publishTime>
+    </File>
+    <File Include="Microsoft.IdentityModel.Tokens.dll">
+      <publishTime>06/24/2019 19:56:06</publishTime>
+    </File>
+    <File Include="Microsoft.OpenApi.dll">
+      <publishTime>08/29/2020 20:14:12</publishTime>
+    </File>
+    <File Include="Newtonsoft.Json.dll">
+      <publishTime>11/09/2019 00:56:44</publishTime>
+    </File>
+    <File Include="nlog.config">
+      <publishTime>01/07/2021 00:22:55</publishTime>
+    </File>
+    <File Include="NLog.dll">
+      <publishTime>12/06/2020 19:11:14</publishTime>
+    </File>
+    <File Include="NLog.Extensions.Logging.dll">
+      <publishTime>12/29/2020 01:45:32</publishTime>
+    </File>
+    <File Include="NLog.Web.AspNetCore.dll">
+      <publishTime>12/30/2020 20:06:04</publishTime>
+    </File>
+    <File Include="runtimes/unix/lib/netcoreapp2.0/System.Runtime.Caching.dll">
+      <publishTime>05/15/2018 13:29:40</publishTime>
+    </File>
+    <File Include="runtimes/unix/lib/netcoreapp2.1/Microsoft.Data.SqlClient.dll">
+      <publishTime>05/15/2020 23:07:24</publishTime>
+    </File>
+    <File Include="runtimes/unix/lib/netcoreapp2.1/System.Data.SqlClient.dll">
+      <publishTime>09/13/2019 02:41:04</publishTime>
+    </File>
+    <File Include="runtimes/win-arm64/native/sni.dll">
+      <publishTime>07/12/2017 11:24:24</publishTime>
+    </File>
+    <File Include="runtimes/win-x64/native/sni.dll">
+      <publishTime>07/12/2017 11:24:22</publishTime>
+    </File>
+    <File Include="runtimes/win-x86/native/sni.dll">
+      <publishTime>07/12/2017 11:24:22</publishTime>
+    </File>
+    <File Include="runtimes/win/lib/netcoreapp2.0/System.Runtime.Caching.dll">
+      <publishTime>05/15/2018 13:29:40</publishTime>
+    </File>
+    <File Include="runtimes/win/lib/netcoreapp2.1/Microsoft.Data.SqlClient.dll">
+      <publishTime>05/15/2020 23:07:26</publishTime>
+    </File>
+    <File Include="runtimes/win/lib/netcoreapp2.1/System.Data.SqlClient.dll">
+      <publishTime>09/13/2019 02:41:08</publishTime>
+    </File>
+    <File Include="runtimes/win/lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll">
+      <publishTime>09/13/2019 02:39:20</publishTime>
+    </File>
+    <File Include="sni.dll">
+      <publishTime>07/12/2017 11:24:22</publishTime>
+    </File>
+    <File Include="Swashbuckle.AspNetCore.Swagger.dll">
+      <publishTime>09/23/2020 12:47:20</publishTime>
+    </File>
+    <File Include="Swashbuckle.AspNetCore.SwaggerGen.dll">
+      <publishTime>09/23/2020 12:47:22</publishTime>
+    </File>
+    <File Include="Swashbuckle.AspNetCore.SwaggerUI.dll">
+      <publishTime>09/23/2020 12:47:24</publishTime>
+    </File>
+    <File Include="System.CodeDom.dll">
+      <publishTime>09/13/2019 02:27:54</publishTime>
+    </File>
+    <File Include="System.Collections.Immutable.dll">
+      <publishTime>04/14/2020 22:38:40</publishTime>
+    </File>
+    <File Include="System.Configuration.ConfigurationManager.dll">
+      <publishTime>09/13/2019 02:28:00</publishTime>
+    </File>
+    <File Include="System.Data.SqlClient.dll">
+      <publishTime>09/13/2019 02:29:22</publishTime>
+    </File>
+    <File Include="System.Diagnostics.DiagnosticSource.dll">
+      <publishTime>04/14/2020 22:48:06</publishTime>
+    </File>
+    <File Include="System.IdentityModel.Tokens.Jwt.dll">
+      <publishTime>06/24/2019 19:49:50</publishTime>
+    </File>
+    <File Include="System.IO.Pipelines.dll">
+      <publishTime>04/14/2020 22:49:22</publishTime>
+    </File>
+    <File Include="System.Runtime.Caching.dll">
+      <publishTime>05/15/2018 13:29:40</publishTime>
+    </File>
+    <File Include="System.Security.Cryptography.ProtectedData.dll">
+      <publishTime>09/13/2019 02:28:28</publishTime>
+    </File>
+    <File Include="Tastee.Application.dll">
+      <publishTime>01/16/2021 16:01:25</publishTime>
+    </File>
+    <File Include="Tastee.Application.pdb">
+      <publishTime>01/16/2021 16:01:25</publishTime>
+    </File>
+    <File Include="Tastee.Domain.dll">
+      <publishTime>01/16/2021 16:01:16</publishTime>
+    </File>
+    <File Include="Tastee.Domain.pdb">
+      <publishTime>01/16/2021 16:01:16</publishTime>
+    </File>
+    <File Include="Tastee.Infrastructure.IoC.dll">
+      <publishTime>01/16/2021 16:01:28</publishTime>
+    </File>
+    <File Include="Tastee.Infrastructure.IoC.pdb">
+      <publishTime>01/16/2021 16:01:28</publishTime>
+    </File>
+    <File Include="Tastee.Infrastucture.Data.dll">
+      <publishTime>01/07/2021 00:28:09</publishTime>
+    </File>
+    <File Include="Tastee.Infrastucture.Data.pdb">
+      <publishTime>01/07/2021 00:28:09</publishTime>
+    </File>
+    <File Include="Tastee.Shared.dll">
+      <publishTime>01/16/2021 16:01:18</publishTime>
+    </File>
+    <File Include="Tastee.Shared.pdb">
+      <publishTime>01/16/2021 16:01:18</publishTime>
+    </File>
+    <File Include="Tastee.WebApi.deps.json">
+      <publishTime>01/16/2021 16:01:30</publishTime>
+    </File>
+    <File Include="Tastee.WebApi.dll">
+      <publishTime>01/16/2021 16:01:30</publishTime>
+    </File>
+    <File Include="Tastee.WebApi.exe">
+      <publishTime>01/16/2021 16:01:30</publishTime>
+    </File>
+    <File Include="Tastee.WebApi.pdb">
+      <publishTime>01/16/2021 16:01:30</publishTime>
+    </File>
+    <File Include="Tastee.WebApi.runtimeconfig.json">
+      <publishTime>01/06/2021 08:03:19</publishTime>
+    </File>
+    <File Include="TasteeWebApi.xml">
+      <publishTime>01/16/2021 16:01:08</publishTime>
+    </File>
+    <File Include="TrackableEntities.Common.Core.dll">
+      <publishTime>10/14/2019 15:16:46</publishTime>
+    </File>
+    <File Include="TrackableEntities.EF.Core.dll">
+      <publishTime>10/14/2019 15:16:48</publishTime>
+    </File>
+    <File Include="URF.Core.Abstractions.dll">
+      <publishTime>01/02/2021 11:19:25</publishTime>
+    </File>
+    <File Include="URF.Core.Abstractions.pdb">
+      <publishTime>01/02/2021 11:19:25</publishTime>
+    </File>
+    <File Include="URF.Core.Abstractions.Services.dll">
+      <publishTime>01/06/2021 07:01:29</publishTime>
+    </File>
+    <File Include="URF.Core.Abstractions.Services.pdb">
+      <publishTime>01/06/2021 07:01:29</publishTime>
+    </File>
+    <File Include="URF.Core.Abstractions.Trackable.dll">
+      <publishTime>01/02/2021 11:19:26</publishTime>
+    </File>
+    <File Include="URF.Core.Abstractions.Trackable.pdb">
+      <publishTime>01/02/2021 11:19:26</publishTime>
+    </File>
+    <File Include="URF.Core.EF.dll">
+      <publishTime>01/02/2021 11:19:26</publishTime>
+    </File>
+    <File Include="URF.Core.EF.pdb">
+      <publishTime>01/02/2021 11:19:26</publishTime>
+    </File>
+    <File Include="URF.Core.EF.Trackable.dll">
+      <publishTime>01/02/2021 11:19:27</publishTime>
+    </File>
+    <File Include="URF.Core.EF.Trackable.pdb">
+      <publishTime>01/02/2021 11:19:27</publishTime>
+    </File>
+    <File Include="URF.Core.Services.dll">
+      <publishTime>01/06/2021 07:01:30</publishTime>
+    </File>
+    <File Include="URF.Core.Services.pdb">
+      <publishTime>01/06/2021 07:01:30</publishTime>
+    </File>
+    <File Include="web.config">
+      <publishTime>01/16/2021 16:01:35</publishTime>
+    </File>
+  </ItemGroup>
+</Project>
