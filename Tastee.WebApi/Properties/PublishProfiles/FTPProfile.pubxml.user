@@ -7,7 +7,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAPeEx9YPY4km7LgciaINJCgAAAAACAAAAAAAQZgAAAAEAACAAAAAtjndFEABrmIXD3v9hc/M8LV5911YLeh10bTHuH3p65gAAAAAOgAAAAAIAACAAAABNoZNgdcWRy7+yIxuDngPxHW2epZJ02M1zKuXFF2XHxjAAAAAUqhp18uCSOG+Fddw3RsgCqyhBWYddcm8vUryTX7ZB66AJY5k3HAaaXC6dPM+KVnZAAAAAh2UQaE81bo5AXoT8NGzscbJk19Bd/l2YzujgQBCQSOhYWk29jGwpQyhKxtjoJxw6/lC6ghdxXb8HoAjopggvvA==</EncryptedPassword>
-    <_PublishTargetUrl>ftp://s2d36.cloudnetwork.vn/httpdocs/</_PublishTargetUrl>
+    <_PublishTargetUrl>ftp://s2d36.cloudnetwork.vn/test.tastee.vn/</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="appsettings.Development.json">
@@ -203,22 +203,22 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/13/2019 02:28:28</publishTime>
     </File>
     <File Include="Tastee.Application.dll">
-      <publishTime>01/16/2021 16:01:25</publishTime>
+      <publishTime>01/16/2021 12:05:18</publishTime>
     </File>
     <File Include="Tastee.Application.pdb">
-      <publishTime>01/16/2021 16:01:25</publishTime>
+      <publishTime>01/16/2021 12:05:18</publishTime>
     </File>
     <File Include="Tastee.Domain.dll">
-      <publishTime>01/16/2021 16:01:16</publishTime>
+      <publishTime>01/16/2021 12:05:11</publishTime>
     </File>
     <File Include="Tastee.Domain.pdb">
-      <publishTime>01/16/2021 16:01:16</publishTime>
+      <publishTime>01/16/2021 12:05:11</publishTime>
     </File>
     <File Include="Tastee.Infrastructure.IoC.dll">
-      <publishTime>01/16/2021 16:01:28</publishTime>
+      <publishTime>01/16/2021 12:05:31</publishTime>
     </File>
     <File Include="Tastee.Infrastructure.IoC.pdb">
-      <publishTime>01/16/2021 16:01:28</publishTime>
+      <publishTime>01/16/2021 12:05:31</publishTime>
     </File>
     <File Include="Tastee.Infrastucture.Data.dll">
       <publishTime>01/07/2021 00:28:09</publishTime>
@@ -227,28 +227,28 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/07/2021 00:28:09</publishTime>
     </File>
     <File Include="Tastee.Shared.dll">
-      <publishTime>01/16/2021 16:01:18</publishTime>
+      <publishTime>01/16/2021 12:05:13</publishTime>
     </File>
     <File Include="Tastee.Shared.pdb">
-      <publishTime>01/16/2021 16:01:18</publishTime>
+      <publishTime>01/16/2021 12:05:13</publishTime>
     </File>
     <File Include="Tastee.WebApi.deps.json">
-      <publishTime>01/16/2021 16:01:30</publishTime>
+      <publishTime>01/16/2021 13:13:02</publishTime>
     </File>
     <File Include="Tastee.WebApi.dll">
-      <publishTime>01/16/2021 16:01:30</publishTime>
+      <publishTime>01/16/2021 13:13:09</publishTime>
     </File>
     <File Include="Tastee.WebApi.exe">
-      <publishTime>01/16/2021 16:01:30</publishTime>
+      <publishTime>01/16/2021 13:13:09</publishTime>
     </File>
     <File Include="Tastee.WebApi.pdb">
-      <publishTime>01/16/2021 16:01:30</publishTime>
+      <publishTime>01/16/2021 13:13:09</publishTime>
     </File>
     <File Include="Tastee.WebApi.runtimeconfig.json">
       <publishTime>01/06/2021 08:03:19</publishTime>
     </File>
     <File Include="TasteeWebApi.xml">
-      <publishTime>01/16/2021 16:01:08</publishTime>
+      <publishTime>01/16/2021 13:12:52</publishTime>
     </File>
     <File Include="TrackableEntities.Common.Core.dll">
       <publishTime>10/14/2019 15:16:46</publishTime>
@@ -293,7 +293,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/06/2021 07:01:30</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>01/16/2021 16:01:35</publishTime>
+      <publishTime>01/16/2021 13:13:13</publishTime>
     </File>
   </ItemGroup>
 </Project>
