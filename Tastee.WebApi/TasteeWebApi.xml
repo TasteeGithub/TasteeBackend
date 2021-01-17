@@ -4,7 +4,7 @@
         <name>Tastee.WebApi</name>
     </assembly>
     <members>
-        <member name="M:Tastee.WebApi.Controllers.BannerController.LoadData(System.String,System.String,System.String,System.String)">
+        <member name="M:Tastee.WebApi.Controllers.BannerController.LoadData(System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
             <summary>
             Load dữ liệu có phân trang cho table .net
             </summary>
@@ -12,6 +12,9 @@
             <param name="start">Page index</param>
             <param name="length">Page Size</param>
             <param name="name"></param>
+            <param name="fromDate"></param>
+            <param name="toDate"></param>
+            <param name="status"></param>
             <returns></returns>
         </member>
         <member name="M:Tastee.WebApi.Controllers.UsersController.LoadData(System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">

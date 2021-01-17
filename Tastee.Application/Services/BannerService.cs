@@ -37,14 +37,29 @@ namespace Tastee.Application.Services
             return banner.Adapt<Banner>();
         }
 
-        public async Task<PaggingModel<Banner>> GetBannersAsync(int pageSize, int? pageIndex, string name)
+        public async Task<PaggingModel<Banner>> GetBannersAsync(int pageSize, int? pageIndex, string name, DateTime? fromDate, DateTime? toDate, string status)
         {
             ExpressionStarter<Banners> searchCondition = PredicateBuilder.New<Banners>(true);
 
-            if (name != null && name.Length > 0)
+            if ((name ?? string.Empty).Length > 0)
             {
                 searchCondition = searchCondition.And(x => x.Name.ToLower().Contains(name.ToLower()));
             }
+
+            if (fromDate != null)
+            {
+                searchCondition = searchCondition.And(x => x.CreatedDate >= fromDate);
+            }
+
+            if (toDate != null)
+            {
+                searchCondition = searchCondition.And(x => x.CreatedDate <= toDate);
+            }
+
+            if ((status ?? string.Empty).Length > 0)
+            {
+                searchCondition = searchCondition.And(x => x.Status  == status );
+            }    
 
             var listBanners = _serviceBanners.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate);
 

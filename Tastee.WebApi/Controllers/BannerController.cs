@@ -34,6 +34,9 @@ namespace Tastee.WebApi.Controllers
         /// <param name="start">Page index</param>
         /// <param name="length">Page Size</param>
         /// <param name="name"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <param name="status"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("load-data")]
@@ -41,7 +44,10 @@ namespace Tastee.WebApi.Controllers
             [FromForm] string draw,
             [FromForm] string start,
             [FromForm] string length,
-            [FromForm] string name
+            [FromForm] string name,
+            [FromForm] DateTime? fromDate,
+            [FromForm] DateTime? toDate,
+            [FromForm] string status
             )
         {
             try
@@ -50,7 +56,7 @@ namespace Tastee.WebApi.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageIndex = skip / pageSize + 1;
                 int recordsTotal = 0;
-                GetBannersQuery bannersQuery = new GetBannersQuery { PageIndex = pageIndex, PageSize = pageSize, BannerName = name };
+                GetBannersQuery bannersQuery = new GetBannersQuery { PageIndex = pageIndex, PageSize = pageSize, BannerName = name, FromDate=fromDate, ToDate = toDate, Status = status };
                 var rs = await Mediator.Send(bannersQuery);
 
                 //total number of rows counts
@@ -106,7 +112,6 @@ namespace Tastee.WebApi.Controllers
             }
             bannerModel.CreatedBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
             return Ok(await Mediator.Send(bannerModel));
-
         }
 
         [HttpPost]
