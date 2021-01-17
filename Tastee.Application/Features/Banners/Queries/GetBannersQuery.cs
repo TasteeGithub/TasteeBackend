@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Tastee.Application.Interfaces;
@@ -13,6 +14,10 @@ namespace Tastee.Features.Banners.Queries
         public int PageIndex { get; set; }
         public string BannerName { get; set; }
 
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
+        public string Status { get; set; }
+
         public class GetBannersQueryHandler : IRequestHandler<GetBannersQuery, PaggingModel<Banner>>
         {
             private readonly IBannerService _bannerService;
@@ -24,7 +29,7 @@ namespace Tastee.Features.Banners.Queries
 
             public async Task<PaggingModel<Banner>> Handle(GetBannersQuery request, CancellationToken cancellationToken)
             {
-                return await _bannerService.GetBannersAsync(request.PageSize, request.PageIndex, request.BannerName);
+                return await _bannerService.GetBannersAsync(request.PageSize, request.PageIndex, request.BannerName,request.FromDate,request.ToDate,request.Status);
             }
         }
     }

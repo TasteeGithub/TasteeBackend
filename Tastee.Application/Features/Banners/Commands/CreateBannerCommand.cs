@@ -16,7 +16,7 @@ namespace Tastee.Features.Banners.Commands
         public string Image { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Status { get; set; }
+        //public string Status { get; set; } // Lúc tạo thì mặc định là pending
         public string Note { get; set; }
         public string CreatedBy { get; set; }
         public string BrandId { get; set; }
