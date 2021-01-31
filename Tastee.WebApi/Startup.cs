@@ -110,10 +110,10 @@ namespace TasteeWebApi
                 .AddAsyncCheck("forecast_time_check_slow", () => HealthCheckHelpers.RouteTimingHealthCheck("/weatherforecast/slow"))
                 ;
             
-            services.AddDbContext<tasteeContext>(options =>
-            {
-                options.UseSqlServer(@"Connection_string_here");
-            });
+            //services.AddDbContext<tasteeContext>(options =>
+            //{
+            //    options.UseSqlServer(@"Connection_string_here");
+            //});
 
 
 

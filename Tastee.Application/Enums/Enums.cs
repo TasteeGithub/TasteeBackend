@@ -62,4 +62,28 @@
         /// </summary>
         Locked
     }
+
+    public enum ProductSliderStatus
+    {
+        /// <summary>
+        /// Chờ kích hoạt
+        /// </summary>
+        Pending,
+
+        /// <summary>
+        /// Đang hoạt động
+        /// </summary>
+        Active,
+
+        /// <summary>
+        /// Tạm ngừng
+        /// </summary>
+        InActive,
+
+        /// <summary>
+        /// Ngừng hoạt động/ khóa
+        /// </summary>
+        Locked
+    }
+
 }
