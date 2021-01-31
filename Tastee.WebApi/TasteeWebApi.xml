@@ -17,6 +17,19 @@
             <param name="status"></param>
             <returns></returns>
         </member>
+        <member name="M:Tastee.WebApi.Controllers.ProductSliderController.LoadData(System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
+            <summary>
+            Load dữ liệu có phân trang
+            </summary>
+            <param name="draw"></param>
+            <param name="start">Page index</param>
+            <param name="length">Page Size</param>
+            <param name="brandId"></param>
+            <param name="fromDate"></param>
+            <param name="toDate"></param>
+            <param name="status"></param>
+            <returns></returns>
+        </member>
         <member name="M:Tastee.WebApi.Controllers.UsersController.LoadData(System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
             <summary>
             Dùng phần trang trong table.net

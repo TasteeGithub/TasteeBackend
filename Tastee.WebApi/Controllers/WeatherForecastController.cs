@@ -40,47 +40,13 @@ namespace Tastee.WebApi.Controllers
             .ToArray();
         }
 
-        [HttpGet]
-        [Route("test")]
-        public string Test()
+        [HttpGet("slow")]
+        public async Task<string> Slow()
         {
-            return "lsdkflsdfk";
+            await Task.Delay(3000);
+            return "slow";
         }
-
-        [HttpGet]
-        [Route("detail")]
-        public async Task<string> Detail()
-        {
-            RequestModel rq = new RequestModel { Id = "123" };
-            return await _mediator.Send(rq);
-        }
-
     }
-
-
-    public class RequestModel : IRequest<string>
-    {
-        public string Id { get; set; }
-    }
-
-    public class ResponseModel
-    {
-        public string Name { get; set; }
-    }
-
-    public class DetailHandler : IRequestHandler<RequestModel, string>
-    {
-        public async Task<string> Handle(RequestModel request, CancellationToken cancellationToken)
-        {
-            return "Nguyen Minh Thu";
-        }
-
-        //public async Task<string> Handle(RequestModel request, CancellationToken cancellationToken)
-        //{
-        //    return "Nguyen Minh Thu";
-        //}
-    }
-
 
     public class WeatherForecast
     {

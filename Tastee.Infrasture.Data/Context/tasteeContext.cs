@@ -22,6 +22,7 @@ namespace Tastee.Infrastucture.Data.Context
         public virtual DbSet<Nlogs> Nlogs { get; set; }
         public virtual DbSet<OperatorRoles> OperatorRoles { get; set; }
         public virtual DbSet<Operators> Operators { get; set; }
+        public virtual DbSet<ProductSliders> ProductSliders { get; set; }
         public virtual DbSet<Roles> Roles { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
@@ -234,6 +235,45 @@ namespace Tastee.Infrastucture.Data.Context
                 entity.Property(e => e.Status)
                     .HasMaxLength(10)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<ProductSliders>(entity =>
+            {
+                entity.ToTable("ProductSliders", "tas77143_tastee");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BrandId)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CreatedDate).HasColumnType("smalldatetime");
+
+                entity.Property(e => e.EndDate).HasColumnType("smalldatetime");
+
+                entity.Property(e => e.Image)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.StartDate).HasColumnType("smalldatetime");
+
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UpdateBy).HasMaxLength(50);
+
+                entity.Property(e => e.UpdateDate).HasColumnType("smalldatetime");
             });
 
             modelBuilder.Entity<Roles>(entity =>

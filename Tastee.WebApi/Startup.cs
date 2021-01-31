@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -13,6 +15,8 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using Tastee.Infrastructure.IoC;
+using Tastee.Infrastucture.Data.Context;
+using Tastee.WebApi.HealthChecks;
 
 namespace TasteeWebApi
 {
@@ -23,8 +27,8 @@ namespace TasteeWebApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            //var appSettings = Configuration.GetSection("Appsettings");
-            _enableSwagger = Configuration.GetValue<bool>("Appsettings:EnableSwagger");// bool.Parse(appSettings.GetValue<string>("EnableSwagger") ?? "false");
+            var appSettings = Configuration.GetSection("Appsettings");
+            _enableSwagger = bool.Parse(appSettings.GetValue<string>("EnableSwagger") ?? "false");
         }
 
         public IConfiguration Configuration { get; }
@@ -98,12 +102,38 @@ namespace TasteeWebApi
                     c.IncludeXmlComments(string.Format(@"{0}\TasteeWebApi.xml", System.AppDomain.CurrentDomain.BaseDirectory));
                 });
             }
+
+            services.AddHealthChecks()
+                .AddAsyncCheck("google_ping_check", () => HealthCheckHelpers.GenerateHealthCheckResultFromPIngRequest("google.com"))
+                .AddAsyncCheck("microsoft_ping_check", () => HealthCheckHelpers.GenerateHealthCheckResultFromPIngRequest("microsoft.com"))
+                .AddAsyncCheck("forecast_time_check", () => HealthCheckHelpers.RouteTimingHealthCheck("/weatherforecast"))
+                .AddAsyncCheck("forecast_time_check_slow", () => HealthCheckHelpers.RouteTimingHealthCheck("/weatherforecast/slow"))
+                ;
+            
+            //services.AddDbContext<tasteeContext>(options =>
+            //{
+            //    options.UseSqlServer(@"Connection_string_here");
+            //});
+
+
+
             RegisterServices(services, Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.Use( async(context,next) =>
+            {
+                HealthCheckHelpers.BaseUrl = $"{ context.Request.Scheme }://{context.Request.Host}";
+                await next();
+            });
+            app.UseHealthChecks("/health",
+                new HealthCheckOptions
+                {
+                    ResponseWriter = HealthCheckHelpers.WriteResponses
+                });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -153,6 +183,18 @@ namespace TasteeWebApi
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/health/database", new HealthCheckOptions
+                {
+                    Predicate = (check) => check.Tags.Contains("database"),
+                    ResponseWriter = HealthCheckHelpers.WriteResponses
+                });
+
+                endpoints.MapHealthChecks("/health/websites", new HealthCheckOptions
+                {
+                    Predicate = (check) => check.Tags.Contains("websites"),
+                    ResponseWriter = HealthCheckHelpers.WriteResponses
+                });
+
                 endpoints.MapControllers();
             });
 
