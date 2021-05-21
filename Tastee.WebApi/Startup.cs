@@ -172,9 +172,12 @@ namespace TasteeWebApi
 
             // global cors policy
             app.UseCors(x => x
-                .AllowAnyOrigin()
+                //.AllowAnyOrigin()
                 .AllowAnyMethod()
-                .AllowAnyHeader());
+                .AllowAnyHeader()
+                .AllowCredentials()
+                .SetIsOriginAllowed(_=> true)
+                );
 
             #endregion Cors policy
 
