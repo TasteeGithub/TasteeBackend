@@ -17,6 +17,9 @@ namespace Tastee.Infrastructure.IoC
     {
         public static void RegisterServices(IServiceCollection services, IConfiguration Configuration)
         {
+            services.AddScoped<IFileService, FileService>();
+            services.AddMediatR(System.AppDomain.CurrentDomain.GetAssemblies());
+
             services.AddDbContext<tasteeContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("TasteeConnection")));
 
@@ -55,9 +58,9 @@ namespace Tastee.Infrastructure.IoC
             services.AddScoped<IGenericService<Areas>, GenericService<Areas>>();
             services.AddScoped<IAreaService, AreaService>();
 
-            services.AddScoped<IFileService, FileService>();
-
-            services.AddMediatR(System.AppDomain.CurrentDomain.GetAssemblies());
+            services.AddScoped<ITrackableRepository<Menus>, TrackableRepository<Menus>>();
+            services.AddScoped<IGenericService<Menus>, GenericService<Menus>>();
+            services.AddScoped<IMenuService, MenuService>();
 
         }
     }

@@ -1,9 +1,9 @@
 ﻿using System;
-using URF.Core.EF.Trackable;
+using System.Collections.Generic;
 
 namespace Tastee.Infrastucture.Data.Context
 {
-    public partial class Users : Entity
+    public partial class Users
     {
         public string Id { get; set; }
         public string Email { get; set; }

@@ -22,16 +22,16 @@ namespace Tastee.WebApi.HealthChecks
                 var pingResult = await thePing.SendPingAsync(hostName);
 
                 var description = $"A ping of the {hostName} website";
-                var healthCheckData = new Dictionary<string, object>();
-                healthCheckData.Add("RoundTripMS", pingResult.RoundtripTime);
-                healthCheckData.Add("ActualIPAddress", pingResult.Address.ToString());
-                if(pingResult.Status == IPStatus.Success)
+                var healthCheckData = new Dictionary<string, object>
+                {
+                    { "RoundTripMS", pingResult.RoundtripTime },
+                    { "ActualIPAddress", pingResult.Address.ToString() }
+                };
+                if (pingResult.Status == IPStatus.Success)
                 {
                     return HealthCheckResult.Healthy(description, healthCheckData);
                 }
-
                 return HealthCheckResult.Unhealthy(description, null, healthCheckData);
-
             }
         }
 

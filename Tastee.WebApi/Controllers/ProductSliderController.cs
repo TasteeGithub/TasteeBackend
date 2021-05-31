@@ -98,30 +98,36 @@ namespace Tastee.WebApi.Controllers
             return Ok(new Response<ProductSlider>("Has error"));
         }
 
+        /// <summary>
+        /// Thêm Product slider
+        /// </summary>
+        /// <param name="productSliderModel"></param>
+        /// <returns></returns>
         // POST api/<ProductSliderController>
         [HttpPost]
-        public async Task<IActionResult> Post(CreateProductSliderCommand ProductSliderModel)
+        public async Task<IActionResult> Post(CreateProductSliderCommand productSliderModel)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                var errorMessage = ModelState.Values
+                productSliderModel.CreatedBy = CurrentUser;
+                return Ok(await Mediator.Send(productSliderModel));
+
+            }
+            var errorMessage = ModelState.Values
                     .SelectMany(x => x.Errors)
                     .Select(x => x.ErrorMessage);
 
-                return Ok(new Response { Successful = false, Message = string.Join(",", errorMessage) });
-            }
-            ProductSliderModel.CreatedBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-            return Ok(await Mediator.Send(ProductSliderModel));
+            return Ok(new Response { Successful = false, Message = string.Join(",", errorMessage) });
+
         }
 
         [HttpPost]
         [Route("update")]
         public async Task<IActionResult> Update(UpdateProductSliderCommand model)
         {
-            bool isActionSuccess = false;
             try
             {
-                model.UpdateBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+                model.UpdateBy = CurrentUser;
 
                 return Ok(await Mediator.Send(model));
             }
@@ -131,7 +137,7 @@ namespace Tastee.WebApi.Controllers
             }
             finally
             {
-                _logger.LogInformation("Update ProductSlider, ProductSlider: {0}, Result status: {1}", model, isActionSuccess);
+                _logger.LogInformation("Update ProductSlider, ProductSlider: {0}", model);
             }
             return Ok(new { Successful = false, Error = "Has error when update ProductSlider" });
         }

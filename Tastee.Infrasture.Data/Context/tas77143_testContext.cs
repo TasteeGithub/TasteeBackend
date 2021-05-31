@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Tastee.Infrastucture.Data.Context
 {
-    public partial class tasteeContext : DbContext
+    public partial class tas77143_testContext : DbContext
     {
-        public tasteeContext()
+        public tas77143_testContext()
         {
         }
 
-        public tasteeContext(DbContextOptions<tasteeContext> options)
+        public tas77143_testContext(DbContextOptions<tas77143_testContext> options)
             : base(options)
         {
         }
@@ -33,7 +33,7 @@ namespace Tastee.Infrastucture.Data.Context
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=MINHTHU-PC;Initial Catalog=tastee;Persist Security Info=True;User ID=tas77143_tastee;Password=K5EOcP3MPgUpc");
+                optionsBuilder.UseSqlServer("Data Source=DESKTOP-64N06HT;Initial Catalog=tas77143_test;Persist Security Info=True;User ID=tas77143_test;Password=Son3ZMV7hEWfPmO2nUJm");
             }
         }
 
@@ -201,6 +201,15 @@ namespace Tastee.Infrastucture.Data.Context
             modelBuilder.Entity<Menus>(entity =>
             {
                 entity.ToTable("Menus", "tas77143_tastee");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BrandId)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(50);
 

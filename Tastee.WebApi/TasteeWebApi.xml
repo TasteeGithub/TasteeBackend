@@ -17,6 +17,30 @@
             <param name="status"></param>
             <returns></returns>
         </member>
+        <member name="P:Tastee.WebApi.Controllers.BaseApiController.Mediator">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Tastee.WebApi.Controllers.BaseApiController.CurrentUser">
+            <summary>
+            User hiện tại đang đăng nhập
+            </summary>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.MenuController.Post(Tastee.Application.Features.Menus.Commands.CreateMenuCommand)">
+            <summary>
+            Thêm mới Menu
+            </summary>
+            <param name="createMenuCommand"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.MenuController.Update(Tastee.Application.Features.Menus.Commands.UpdateMenuCommand)">
+            <summary>
+            Cập nhật menu
+            </summary>
+            <param name="updateMenuCommand"></param>
+            <returns></returns>
+        </member>
         <member name="M:Tastee.WebApi.Controllers.ProductSliderController.LoadData(System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
             <summary>
             Load dữ liệu có phân trang
@@ -28,6 +52,13 @@
             <param name="fromDate"></param>
             <param name="toDate"></param>
             <param name="status"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.ProductSliderController.Post(Tastee.Features.ProductSliders.Commands.CreateProductSliderCommand)">
+            <summary>
+            Thêm Product slider
+            </summary>
+            <param name="productSliderModel"></param>
             <returns></returns>
         </member>
         <member name="M:Tastee.WebApi.Controllers.UsersController.LoadData(System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">

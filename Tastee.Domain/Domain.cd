@@ -15,7 +15,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Tastee.Domain.Entities.Brand" Collapsed="true">
-    <Position X="7.5" Y="2.25" Width="1.5" />
+    <Position X="7.5" Y="3.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BCAAAQQEAGAAACAIAAAKAA0hAAAAEAACCgAAJQJAAAA=</HashCode>
       <FileName>Entities\Brand.cs</FileName>
@@ -40,6 +40,20 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAACEAAQAAAAAAAAIAAACAAAAAAAABAA=</HashCode>
       <FileName>Entities\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tastee.Domain.Entities.Menu" Collapsed="true">
+    <Position X="11" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAEAAEAAAAAAAAAAAAAAQAAAAAAAAAAgAAAAIQAAE=</HashCode>
+      <FileName>Entities\Menu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tastee.Infrastucture.Data.Context.MenuItem" Collapsed="true">
+    <Position X="9.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAEAAEEQggAAAAAAAIAAQAAAAABBAAAgAAAAIAAAE=</HashCode>
+      <FileName>Entities\MenuItem.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

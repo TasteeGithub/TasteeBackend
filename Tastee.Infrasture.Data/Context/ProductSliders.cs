@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using URF.Core.EF.Trackable;
 
 namespace Tastee.Infrastucture.Data.Context
 {
-    public partial class ProductSliders : Entity
+    public partial class ProductSliders
     {
         public string Id { get; set; }
         public string BrandId { get; set; }

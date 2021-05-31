@@ -110,7 +110,7 @@ namespace Tastee.WebApi.Controllers
 
                 return Ok(new Response { Successful = false, Message = string.Join(",", errorMessage) });
             }
-            bannerModel.CreatedBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+            bannerModel.CreatedBy = CurrentUser;
             return Ok(await Mediator.Send(bannerModel));
         }
 
@@ -118,10 +118,9 @@ namespace Tastee.WebApi.Controllers
         [Route("update")]
         public async Task<IActionResult> Update(UpdateBannerCommand model)
         {
-            bool isActionSuccess = false;
             try
             {
-                model.UpdateBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+                model.UpdateBy = CurrentUser;
 
                 return Ok(await Mediator.Send(model));
             }
@@ -131,7 +130,7 @@ namespace Tastee.WebApi.Controllers
             }
             finally
             {
-                _logger.LogInformation("Update Banner, Banner: {0}, Result status: {1}", model, isActionSuccess);
+                _logger.LogInformation("Update Banner, Banner: {0}", model);
             }
             return Ok(new { Successful = false, Error = "Has error when update banner" });
         }

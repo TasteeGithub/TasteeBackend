@@ -1,9 +1,9 @@
 ﻿using System;
-using URF.Core.EF.Trackable;
+using System.Collections.Generic;
 
 namespace Tastee.Infrastucture.Data.Context
 {
-    public partial class Banners : Entity
+    public partial class Banners
     {
         public string Id { get; set; }
         public string Name { get; set; }

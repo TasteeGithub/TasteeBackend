@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using URF.Core.EF.Trackable;
 
 namespace Tastee.Infrastucture.Data.Context
 {
-    public partial class Brands : Entity
+    public partial class Brands
     {
         public string Id { get; set; }
         public string Name { get; set; }
@@ -15,7 +14,6 @@ namespace Tastee.Infrastucture.Data.Context
         public string HeadOffice { get; set; }
         public string Uri { get; set; }
         public string Logo { get; set; }
-        public string RestaurantImages { get; set; }
         public string City { get; set; }
         public string Area { get; set; }
         public int? MinPrice { get; set; }
@@ -33,5 +31,6 @@ namespace Tastee.Infrastucture.Data.Context
         public string Cuisines { get; set; }
         public string Categories { get; set; }
         public string MerchantId { get; set; }
+        public string RestaurantImages { get; set; }
     }
 }
