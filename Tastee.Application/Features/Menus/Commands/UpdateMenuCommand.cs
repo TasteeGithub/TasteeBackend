@@ -14,12 +14,12 @@ namespace Tastee.Application.Features.Menus.Commands
 {
     public class UpdateMenuCommand : IRequest<Response>
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public string BrandId { get; set; }
         public int Status { get; set; }
         public int Order { get; set; }
-        public string UpdateBy { get; set; }
+        public string UpdatedBy { get; set; }
 
         public class UpdateMenuCommandHandler : IRequestHandler<UpdateMenuCommand, Response>
         {

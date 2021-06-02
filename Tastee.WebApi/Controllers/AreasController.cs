@@ -58,7 +58,7 @@ namespace Tastee.WebApi.Controllers
             }
             finally
             {
-                _logger.LogInformation("Get area detail, area Id {0}", id);
+                _logger.LogInformation("Get area detail, area Id: {0}", id);
             }
             return Ok(new Response<Area>("Has error"));
         }
@@ -75,7 +75,7 @@ namespace Tastee.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Get Areas by city Id");
+                _logger.LogError(ex, "Get Areas by city Id: {0}", cityId);
             }
             return BadRequest();
         }

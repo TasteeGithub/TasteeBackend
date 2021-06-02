@@ -64,7 +64,7 @@ namespace Tastee.WebApi.Controllers
             }
 
             return new JsonResult(
-                    new { draw, recordsFiltered = 0, recordsTotal = 0, data = new List<Users>() });
+                    new { draw, recordsFiltered = 0, recordsTotal = 0, data = new List<Banner>() });
         }
 
         // GET: api/Brands/5
@@ -116,11 +116,11 @@ namespace Tastee.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Update brand, Brand: {0}", model);
+                _logger.LogError(ex, "Update brand, Brand: {0}", ObjectToJson(model));
             }
             finally
             {
-                _logger.LogInformation("Update Brand, Brand: {0}", model);
+                _logger.LogInformation("Update Brand, Brand: {0}", ObjectToJson(model));
             }
             return Ok(new { Successful = false, Error = "Has error when update" });
         }

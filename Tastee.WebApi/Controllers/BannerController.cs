@@ -126,11 +126,11 @@ namespace Tastee.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Update banner, Banner: {0}", model);
+                _logger.LogError(ex, "Update banner, Banner: {0}", ObjectToJson(model));
             }
             finally
             {
-                _logger.LogInformation("Update Banner, Banner: {0}", model);
+                _logger.LogInformation("Update Banner, Banner: {0}", ObjectToJson(model));
             }
             return Ok(new { Successful = false, Error = "Has error when update banner" });
         }

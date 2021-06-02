@@ -63,6 +63,7 @@ namespace Tastee.WebApi.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "UploadImage");
                 return StatusCode(500, $"Internal server error: {ex}");
             }
         }

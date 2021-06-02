@@ -24,15 +24,9 @@ namespace Tastee.Application.Services
             _serviceAreas = serviceAreas;
         }
 
-        public async Task<List<Area>> GetAreasAsync()
-        {
-            return _serviceAreas.Queryable().Where(x => !x.IsDisabled).ToList().Adapt<List<Area>>();
-        }
+        public async Task<List<Area>> GetAreasAsync() => _serviceAreas.Queryable().Where(x => !x.IsDisabled).ToList().Adapt<List<Area>>();
 
-        public async Task<List<Area>> GetAreasByCityIdAsync(int cityId)
-        {
-            return _serviceAreas.Queryable().Where(x => x.CityId == cityId).ToList().Adapt<List<Area>>();
-        }
+        public async Task<List<Area>> GetAreasByCityIdAsync(int cityId) => _serviceAreas.Queryable().Where(x => x.CityId == cityId).ToList().Adapt<List<Area>>();
 
         public async Task<Area> GetByIdAsync(int id)
         {

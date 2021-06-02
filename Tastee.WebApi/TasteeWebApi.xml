@@ -17,15 +17,27 @@
             <param name="status"></param>
             <returns></returns>
         </member>
-        <member name="P:Tastee.WebApi.Controllers.BaseApiController.Mediator">
+        <member name="T:Tastee.WebApi.Controllers.BaseApiController">
             <summary>
-            
+            Controller chứa một số phương thức chung cho các controller
             </summary>
+        </member>
+        <member name="P:Tastee.WebApi.Controllers.BaseApiController.Mediator">
+             <summary>
+            
+             </summary>
         </member>
         <member name="P:Tastee.WebApi.Controllers.BaseApiController.CurrentUser">
             <summary>
             User hiện tại đang đăng nhập
             </summary>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.BaseApiController.ObjectToJson(System.Object)">
+            <summary>
+            Chuyển object thành chuỗi json
+            </summary>
+            <param name="obj">đối tượng cần chuyển sang json</param>
+            <returns>Chuỗi json</returns>
         </member>
         <member name="M:Tastee.WebApi.Controllers.MenuController.Post(Tastee.Application.Features.Menus.Commands.CreateMenuCommand)">
             <summary>
@@ -39,6 +51,13 @@
             Cập nhật menu
             </summary>
             <param name="updateMenuCommand"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.MenuController.GetMenuDetail(System.String)">
+            <summary>
+            Lấy thông tin chi tiết menu
+            </summary>
+            <param name="id">Id của menu</param>
             <returns></returns>
         </member>
         <member name="M:Tastee.WebApi.Controllers.ProductSliderController.LoadData(System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">

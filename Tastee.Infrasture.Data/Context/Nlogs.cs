@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Tastee.Infrastucture.Data.Context
 {
-    public partial class Nlogs
+    public partial class Nlogs : URF.Core.EF.Trackable.Entity
     {
         public int Id { get; set; }
         public string Application { get; set; }

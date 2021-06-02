@@ -94,7 +94,7 @@ namespace Tastee.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error:{0}", ex.ToString());
+                _logger.LogError(ex, "Error:{0}", ex.ToString());
                 return Ok(new Response { Successful = false, Message = ex.Message });
             }
             return Ok(new Response { Successful = true });

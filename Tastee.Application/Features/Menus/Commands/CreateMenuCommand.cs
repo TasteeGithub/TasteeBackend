@@ -10,6 +10,7 @@ namespace Tastee.Application.Features.Menus.Commands
 {
     public class CreateMenuCommand : IRequest<Response>
     {
+        //public string Id { get; set; }
         public string Name { get; set; }
         public string BrandId { get; set; }
         public int Status { get; set; }
