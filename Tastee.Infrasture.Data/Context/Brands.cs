@@ -15,6 +15,7 @@ namespace Tastee.Infrastucture.Data.Context
         public string HeadOffice { get; set; }
         public string Uri { get; set; }
         public string Logo { get; set; }
+        public string RestaurantImages { get; set; }
         public string City { get; set; }
         public string Area { get; set; }
         public int? MinPrice { get; set; }
@@ -32,6 +33,5 @@ namespace Tastee.Infrastucture.Data.Context
         public string Cuisines { get; set; }
         public string Categories { get; set; }
         public string MerchantId { get; set; }
-        public string RestaurantImages { get; set; }
     }
 }

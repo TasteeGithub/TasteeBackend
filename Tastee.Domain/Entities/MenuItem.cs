@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using Tastee.Domain.Entities;
 
-namespace Tastee.Infrastucture.Data.Context
+namespace Tastee.Domain.Entities
 {
     public partial class MenuItem : BaseEntity
     {
         public string Name { get; set; }
-        public int? MenuId { get; set; }
+        public string MenuId { get; set; }
         public string Image { get; set; }
         public string Description { get; set; }
         public string ShortDescription { get; set; }

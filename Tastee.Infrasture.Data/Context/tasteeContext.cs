@@ -33,7 +33,7 @@ namespace Tastee.Infrastucture.Data.Context
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=MINHTHU-PC;Initial Catalog=tastee;Persist Security Info=True;User ID=tas77143_tastee;Password=K5EOcP3MPgUpc");
+                optionsBuilder.UseSqlServer("Data Source=MINHTHUPC;Initial Catalog=tastee;Persist Security Info=True;User ID=tas77143_tastee;Password=K5EOcP3MPgUpc");
             }
         }
 
@@ -175,11 +175,26 @@ namespace Tastee.Infrastucture.Data.Context
             {
                 entity.ToTable("MenuItems", "tas77143_tastee");
 
-                entity.Property(e => e.CreatedBy).HasMaxLength(50);
+                entity.Property(e => e.Id)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Description).IsRequired();
 
                 entity.Property(e => e.Image).HasMaxLength(50);
+
+                entity.Property(e => e.MenuId)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -201,6 +216,15 @@ namespace Tastee.Infrastucture.Data.Context
             modelBuilder.Entity<Menus>(entity =>
             {
                 entity.ToTable("Menus", "tas77143_tastee");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BrandId)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(50);
 

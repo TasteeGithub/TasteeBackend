@@ -60,6 +60,27 @@
             <param name="id">Id của menu</param>
             <returns></returns>
         </member>
+        <member name="M:Tastee.WebApi.Controllers.MenuItemController.Post(Tastee.Application.Features.MenuItems.Commands.CreateMenuItemCommand)">
+            <summary>
+            Thêm mới MenuItem
+            </summary>
+            <param name="createMenuItemCommand"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.MenuItemController.Update(Tastee.Application.Features.MenuItems.Commands.UpdateMenuItemCommand)">
+            <summary>
+            Cập nhật menuItem
+            </summary>
+            <param name="updateMenuItemCommand"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.MenuItemController.GetMenuItemDetail(System.String)">
+            <summary>
+            Lấy thông tin chi tiết Menu Item
+            </summary>
+            <param name="id">Id của Menu Item</param>
+            <returns></returns>
+        </member>
         <member name="M:Tastee.WebApi.Controllers.ProductSliderController.LoadData(System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
             <summary>
             Load dữ liệu có phân trang

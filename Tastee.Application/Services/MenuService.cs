@@ -16,19 +16,19 @@ namespace Tastee.Application.Services
     public class MenuService : IMenuService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<MenuService> _logger;
 
         private readonly IGenericService<Menus> _serviceMenus;
-
+        private readonly IGenericService<Brands> _serviceBrands;
         public MenuService(
            ILogger<MenuService> logger,
            IUnitOfWork unitOfWork,
-           IGenericService<Menus> serviceMenus
+           IGenericService<Menus> serviceMenus,
+            IGenericService<Brands> serviceBrands
            )
         {
             _unitOfWork = unitOfWork;
-            _logger = logger;
             _serviceMenus = serviceMenus;
+            _serviceBrands = serviceBrands;
         }
 
         public async Task<Menu> GetByIdAsync(string id)
@@ -66,17 +66,22 @@ namespace Tastee.Application.Services
 
         public async Task<Response> InsertAsync(Menu model)
         {
-            if (!_serviceMenus.Queryable().Any(x => x.BrandId == model.BrandId && x.Name == model.Name))
+            if (_serviceBrands.Queryable().Any(x => x.Id == model.BrandId))
             {
-                Menus newMenus = model.Adapt<Menus>();
-                newMenus.Id = Guid.NewGuid().ToString();
-                //newMenus.Status = MenuStatus.Pending.ToString();
-                //newMenus.CreatedDate = DateTime.Now;
-                _serviceMenus.Insert(newMenus);
-                await _unitOfWork.SaveChangesAsync();
-                return new Response { Successful = true, Message = "Add Menu successed" };
+                if (!_serviceMenus.Queryable().Any(x => x.BrandId == model.BrandId && x.Name == model.Name))
+                {
+                    Menus newMenus = model.Adapt<Menus>();
+                    newMenus.Id = Guid.NewGuid().ToString();
+                    _serviceMenus.Insert(newMenus);
+                    await _unitOfWork.SaveChangesAsync();
+                    return new Response { Successful = true, Message = "Add Menu successed" };
+                }
+                return new Response { Successful = false, Message = "Menu is exists" };
             }
-            return new Response { Successful = false, Message = "Menu is exists" };
+            else
+            {
+                return new Response { Successful = false, Message = "BrandId is not exists" };
+            }
         }
 
         public async Task<Response> UpdateAsync(Menu model)

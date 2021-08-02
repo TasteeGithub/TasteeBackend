@@ -20,8 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\MenuItems\Commands\" />
-    <Folder Include="Features\MenuItems\Queries\" />
     <Folder Include="Features\Operators\" />
   </ItemGroup>
 
