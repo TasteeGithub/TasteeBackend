@@ -55,6 +55,10 @@ namespace Tastee.Infrastructure.IoC
             services.AddScoped<IGenericService<Areas>, GenericService<Areas>>();
             services.AddScoped<IAreaService, AreaService>();
 
+            services.AddScoped<ITrackableRepository<Menus>, TrackableRepository<Menus>>();
+            services.AddScoped<IGenericService<Menus>, GenericService<Menus>>();
+            services.AddScoped<IMenuService, MenuService>();
+
             services.AddScoped<IFileService, FileService>();
 
             services.AddMediatR(System.AppDomain.CurrentDomain.GetAssemblies());

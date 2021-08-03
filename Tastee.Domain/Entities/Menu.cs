@@ -1,9 +1,10 @@
 ﻿using System;
-using URF.Core.EF.Trackable;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Tastee.Infrastucture.Data.Context
+namespace Tastee.Domain.Entities
 {
-    public partial class Menus: Entity
+    public partial class Menu : BaseEntity
     {
         public string Id { get; set; }
         public string Name { get; set; }

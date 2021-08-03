@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -223,6 +223,78 @@ namespace Tastee.Infrastucture.Data.Context
                     .IsUnicode(false);
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(50);
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<MenuItems>(entity =>
+            {
+                entity.ToTable("MenuItems", "tas77143_tastee");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Description).IsRequired();
+
+                entity.Property(e => e.Image).HasMaxLength(50);
+
+                entity.Property(e => e.MenuId)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.Order).HasComment("Thứ tự xuất hiện");
+
+                entity.Property(e => e.Price).HasColumnType("money");
+
+                entity.Property(e => e.ShortDescription).HasMaxLength(500);
+
+                entity.Property(e => e.Status).HasComment("Còn/hết");
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Menus>(entity =>
+            {
+                entity.ToTable("Menus", "tas77143_tastee");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BrandId)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.CreatedDate)
                     .HasColumnType("datetime")
