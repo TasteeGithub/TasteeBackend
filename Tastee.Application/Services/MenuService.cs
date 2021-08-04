@@ -72,7 +72,6 @@ namespace Tastee.Application.Services
             {
                 Menus newMenus = model.Adapt<Menus>();
                 newMenus.Id = Guid.NewGuid().ToString();
-                newMenus.Status = model.Status;
                 newMenus.CreatedDate = DateTime.Now;
                 newMenus.CreatedBy = model.CreatedBy;
                 _serviceMenus.Insert(newMenus);
@@ -91,6 +90,7 @@ namespace Tastee.Application.Services
                 {
                     menu.Name = model.Name;
                     menu.Status = model.Status;
+                    menu.Order = model.Order;
                     menu.UpdatedBy = model.UpdatedBy;
                     menu.UpdatedDate = DateTime.Now;
                     _serviceMenus.Update(menu);

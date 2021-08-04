@@ -30,6 +30,7 @@ namespace Tastee.Application.Features.Menus.Queries
             {
                 return await _menuService.GetMenusAsync(request.PageSize, request.PageIndex, request.MenuName, request.Status);
             }
+
         }
     }
 }
