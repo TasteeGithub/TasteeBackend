@@ -8,6 +8,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Tastee.Application.Features.Menus.Commands;
+using Tastee.Application.Features.Menus.Items.Commands;
+using Tastee.Application.Features.Menus.Items.Queries;
 using Tastee.Application.Features.Menus.Queries;
 using Tastee.Application.Wrappers;
 using Tastee.Domain.Entities;
@@ -36,6 +38,7 @@ namespace Tastee.WebApi.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        #region Menus
         // GET: api/Menus/5
         /// <summary>
         /// Get menu detail
@@ -111,7 +114,7 @@ namespace Tastee.WebApi.Controllers
         /// <summary>
         /// Create menu
         /// </summary>
-        /// <param name="bannerModel"></param>
+        /// <param name="menuModel"></param>
         /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Post(CreateMenuCommand menuModel)
@@ -155,5 +158,128 @@ namespace Tastee.WebApi.Controllers
             }
             return Ok(new { Successful = false, Error = "Has error when update menu" });
         }
+        #endregion
+
+        #region Items
+        /// <summary>
+        /// Get menu item detail
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("Items/detail/{id}")]
+        public async Task<IActionResult> GetMenuItemDetail(string id)
+        {
+            try
+            {
+                GetMenuItemByIdQuery rq = new GetMenuItemByIdQuery { Id = id };
+                return Ok(await Mediator.Send(rq));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Get MenuItem detail, id: {0}", id);
+            }
+            finally
+            {
+                _logger.LogInformation("Get MenuItem detail, Id {0}", id);
+            }
+            return Ok(new Response<Menu>("Has error"));
+        }
+
+        /// <summary>
+        /// Load list menu items
+        /// </summary>
+        /// <param name="draw"></param>
+        /// <param name="start"></param>
+        /// <param name="length"></param>
+        /// <param name="name"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("Items/load-data")]
+        public async Task<IActionResult> ItemsLoadData(
+            [FromForm] string draw,
+            [FromForm] string start,
+            [FromForm] string length,
+            [FromForm] string name,
+            [FromForm] int? status
+            )
+        {
+            try
+            {
+                int pageSize = length != null ? Convert.ToInt32(length) : Constants.DEFAULT_PAGE_SIZE;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int pageIndex = skip / pageSize + 1;
+                int recordsTotal = 0;
+                GetMenuItemsQuery menusQuery = new GetMenuItemsQuery { PageIndex = pageIndex, PageSize = pageSize, ItemName = name, Status = status };
+                var rs = await Mediator.Send(menusQuery);
+
+                //total number of rows counts
+                recordsTotal = rs.TotalRows;
+
+                //Paging
+                var data = rs.ListData;
+
+                //Returning Json Data
+                return new JsonResult(
+                    new { draw, recordsFiltered = recordsTotal, recordsTotal, data });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "LoadData");
+            }
+
+            return new JsonResult(
+                    new { draw, recordsFiltered = 0, recordsTotal = 0, data = new List<MenuItem>() });
+        }
+
+        /// <summary>
+        /// Create menu item
+        /// </summary>
+        /// <param name="itemModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("Items")]
+        public async Task<IActionResult> ItemPost(CreateMenuItemCommand itemModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errorMessage = ModelState.Values
+                    .SelectMany(x => x.Errors)
+                    .Select(x => x.ErrorMessage);
+
+                return Ok(new Response { Successful = false, Message = string.Join(",", errorMessage) });
+            }
+            itemModel.CreatedBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+            return Ok(await Mediator.Send(itemModel));
+        }
+
+
+        /// <summary>
+        /// Update menu item
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("Items/update")]
+        public async Task<IActionResult> ItemsUpdate(UpdateMenuItemCommand model)
+        {
+            bool isActionSuccess = false;
+            try
+            {
+                model.UpdatedBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+
+                return Ok(await Mediator.Send(model));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Update MenuItem, MenuItem: {0}", model);
+            }
+            finally
+            {
+                _logger.LogInformation("Update MenuItem, MenuItem: {0}, Result status: {1}", model, isActionSuccess);
+            }
+            return Ok(new { Successful = false, Error = "Has error when update MenuItem" });
+        }
+        #endregion
     }
 }

@@ -57,6 +57,8 @@ namespace Tastee.Infrastructure.IoC
 
             services.AddScoped<ITrackableRepository<Menus>, TrackableRepository<Menus>>();
             services.AddScoped<IGenericService<Menus>, GenericService<Menus>>();
+            services.AddScoped<ITrackableRepository<MenuItems>, TrackableRepository<MenuItems>>();
+            services.AddScoped<IGenericService<MenuItems>, GenericService<MenuItems>>();
             services.AddScoped<IMenuService, MenuService>();
 
             services.AddScoped<IFileService, FileService>();

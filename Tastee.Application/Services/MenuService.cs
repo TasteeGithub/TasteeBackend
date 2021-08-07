@@ -17,26 +17,31 @@ namespace Tastee.Application.Services
 {
     public class MenuService : IMenuService
     {
-        private readonly ILogger<BannerService> _logger;
+        private readonly ILogger<MenuService> _logger;
         private readonly IUnitOfWork _unitOfWork;
 
         private readonly IGenericService<Menus> _serviceMenus;
+        private readonly IGenericService<MenuItems> _serviceMenuItems;
 
         public MenuService(
-           ILogger<BannerService> logger,
+           ILogger<MenuService> logger,
            IUnitOfWork unitOfWork,
-           IGenericService<Menus> serviceMenus)
+           IGenericService<Menus> serviceMenus,
+           IGenericService<MenuItems> serviceMenuItems)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
 
             _serviceMenus = serviceMenus;
+            _serviceMenuItems = serviceMenuItems;
         }
 
+
+        #region Menus
         public async Task<Menu> GetByIdAsync(string id)
         {
-            var banner = await _serviceMenus.FindAsync(id);
-            return banner.Adapt<Menu>();
+            var menu = await _serviceMenus.FindAsync(id);
+            return menu.Adapt<Menu>();
         }
 
         public async Task<PaggingModel<Menu>> GetMenusAsync(int pageSize, int? pageIndex, string name, int? status)
@@ -105,6 +110,87 @@ namespace Tastee.Application.Services
             }
             return new Response { Successful = false, Message = "Please input id" };
         }
+        #endregion
 
+        #region Items
+        public async Task<MenuItem> GetItemByIdAsync(string id)
+        {
+            var menuItem = await _serviceMenuItems.FindAsync(id);
+            return menuItem.Adapt<MenuItem>();
+        }
+
+        public async Task<PaggingModel<MenuItem>> GetMenuItemsAsync(int pageSize, int? pageIndex, string name, int? status)
+        {
+            ExpressionStarter<MenuItems> searchCondition = PredicateBuilder.New<MenuItems>(true);
+
+            if ((name ?? string.Empty).Length > 0)
+            {
+                searchCondition = searchCondition.And(x => x.Name.ToLower().Contains(name.ToLower()));
+            }
+
+            if (status != null)
+            {
+                searchCondition = searchCondition.And(x => x.Status == status.Value);
+            }
+
+            var listmenuItems = _serviceMenuItems.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate);
+
+            var pagedListUser = await PaginatedList<MenuItems>.CreateAsync(listmenuItems, pageIndex ?? 1, pageSize);
+
+            PaggingModel<MenuItem> returnResult = new PaggingModel<MenuItem>()
+            {
+                ListData = pagedListUser.Adapt<List<MenuItem>>(),
+                TotalRows = pagedListUser.TotalRows,
+            };
+
+            return returnResult;
+        }
+
+        public async Task<Response> InsertItemAsync(MenuItem model)
+        {
+            if (!_serviceMenus.Queryable().Any(x => x.Name == model.Name))
+            {
+                MenuItems newmenuItems = model.Adapt<MenuItems>();
+                newmenuItems.Id = Guid.NewGuid().ToString();
+                newmenuItems.CreatedDate = DateTime.Now;
+                newmenuItems.CreatedBy = model.CreatedBy;
+                _serviceMenuItems.Insert(newmenuItems);
+                await _unitOfWork.SaveChangesAsync();
+                return new Response { Successful = true, Message = "Add menu item successed" };
+            }
+            return new Response { Successful = false, Message = "Menu item is exists" };
+        }
+
+        public async Task<Response> UpdateItemAsync(MenuItem model)
+        {
+            if (model.Id != null && model.Id.Length > 0)
+            {
+                var menuItem = await _serviceMenuItems.FindAsync(model.Id);
+                if (menuItem != null)
+                {
+                    menuItem.Name = model.Name;
+                    menuItem.Status = model.Status;
+                    menuItem.Order = model.Order;
+                    menuItem.MenuId = model.MenuId;
+                    menuItem.Image = model.Image;
+                    menuItem.Description = model.Description;
+                    menuItem.ShortDescription = model.ShortDescription;
+                    menuItem.Price = model.Price;
+                    menuItem.LikeNumber = model.LikeNumber;
+                    menuItem.UpdatedBy = model.UpdatedBy;
+                    menuItem.UpdatedDate = DateTime.Now;
+                    _serviceMenuItems.Update(menuItem);
+                    await _unitOfWork.SaveChangesAsync();
+
+                    return new Response { Successful = true, Message = "Update menu item success" };
+                }
+                else
+                {
+                    return new Response { Successful = false, Message = "Menu item not found" };
+                }
+            }
+            return new Response { Successful = false, Message = "Please input id" };
+        }
+        #endregion
     }
 }
