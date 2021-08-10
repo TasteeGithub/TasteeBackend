@@ -45,9 +45,9 @@
             <param name="status"></param>
             <returns></returns>
         </member>
-        <member name="M:Tastee.WebApi.Controllers.UtilitiesController.UploadImage">
+        <member name="M:Tastee.WebApi.Controllers.UtilitiesController.UploadImage(Tastee.Domain.Models.UploadRequestDto)">
             <summary>
-            Upload hinh
+            Upload image/file
             </summary>
             <returns></returns>
         </member>

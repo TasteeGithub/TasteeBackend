@@ -1,10 +1,13 @@
 ﻿
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
+using Tastee.Domain.Models;
+using Tastee.Shared;
 
 namespace Tastee.Application.Interfaces
 {
     public interface IFileService
     {
-        string Upload(IFormFile file, string targetFolder);
+        Task<AWSUploadResult<string>> UploadImageToS3BucketAsync(IFormFile file, UploadFileType fileType);
     }
 }

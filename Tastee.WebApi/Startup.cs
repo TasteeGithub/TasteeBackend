@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿using Amazon.Runtime;
+using Amazon.S3;
+using Amazon.S3.Transfer;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -14,6 +17,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using Tastee.Application.Interfaces;
+using Tastee.Application.Services;
 using Tastee.Infrastructure.IoC;
 using Tastee.Infrastucture.Data.Context;
 using Tastee.WebApi.HealthChecks;
@@ -42,6 +47,12 @@ namespace TasteeWebApi
             services.AddCors();
             services.AddControllers();
             services.AddMediatR(Assembly.GetExecutingAssembly());
+            var awsOption = Configuration.GetAWSOptions();
+            awsOption.Credentials = new BasicAWSCredentials(Configuration["AWS:AccessKey"], Configuration["AWS:SecretKey"]);
+            services.AddDefaultAWSOptions(awsOption);
+            services.AddAWSService<IAmazonS3>();
+            services.AddTransient<IFileService, FileService>();
+            services.AddTransient<TransferUtility>();
             // configure jwt authentication
             var key = Encoding.ASCII.GetBytes(Configuration["Jwt:Key"]);
             services.AddAuthentication(x =>
@@ -199,19 +210,19 @@ namespace TasteeWebApi
             });
 
             // Browse images (static file)
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), Configuration["Path:UploadImagePath"])),
-                RequestPath = Configuration["Path:BrowserImagePath"]
-            });
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //        Path.Combine(Directory.GetCurrentDirectory(), Configuration["Path:UploadImagePath"])),
+            //    RequestPath = Configuration["Path:BrowserImagePath"]
+            //});
 
-            app.UseDirectoryBrowser(new DirectoryBrowserOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                        Path.Combine(Directory.GetCurrentDirectory(), Configuration["Path:UploadImagePath"])),
-                RequestPath = Configuration["Path:BrowserImagePath"]
-            });
+            //app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //            Path.Combine(Directory.GetCurrentDirectory(), Configuration["Path:UploadImagePath"])),
+            //    RequestPath = Configuration["Path:BrowserImagePath"]
+            //});
         }
 
         private static void RegisterServices(IServiceCollection services, IConfiguration configuration)

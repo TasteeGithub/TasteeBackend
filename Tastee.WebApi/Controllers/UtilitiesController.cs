@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -6,7 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Tastee.Application.Interfaces;
+using Tastee.Domain.Models;
+using Tastee.Shared;
 
 namespace Tastee.WebApi.Controllers
 {
@@ -18,6 +22,7 @@ namespace Tastee.WebApi.Controllers
         private readonly IFileService _fileService;
         private readonly ILogger<BrandsController> _logger;
         private readonly IConfiguration _configuration;
+
         public UtilitiesController(
             ILogger<BrandsController> logger,
             IFileService fileService,
@@ -29,37 +34,42 @@ namespace Tastee.WebApi.Controllers
             _configuration = configuration;
         }
         /// <summary>
-        /// Upload hinh
+        /// Upload image/file
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        [Route("upload-image")]
-        public IActionResult UploadImage()
+        [Route("upload")]
+        public async Task<ActionResult> UploadImage([FromForm] UploadRequestDto requestDto)
         {
             try
             {
-                var files = Request.Form.Files;
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), _configuration["Path:UploadImagePath"]);
-                if (files.Count > 0)
+                //    var files = Request.Form.Files;
+                //    if (files.Count > 0)
+                //    {
+                //        StringBuilder newFiles = new StringBuilder();
+                //        List<string> listFile = new List<string>();
+                //        foreach (var file in files)
+                //        {
+                //            if (file.Length > 0)
+                //            {
+                //                string newFileName = _fileService.Upload(file, pathToSave);
+                //                listFile.Add(newFileName);
+                //            }
+                //        }
+                //        newFiles.AppendJoin(",", listFile.ToArray());
+                //        return Ok(newFiles.ToString());
+                //    }
+                //    else
+                //    {
+                //        return BadRequest();
+                //    }
+
+                var result = await _fileService.UploadImageToS3BucketAsync(requestDto.File, requestDto.IsImage ? UploadFileType.Image : UploadFileType.File);
+                if (result.StatusCode == StatusCodes.Status200OK)
                 {
-                    StringBuilder newFiles = new StringBuilder();
-                    List<string> listFile = new List<string>();
-                    foreach (var file in files)
-                    {
-                        if (file.Length > 0)
-                        {
-                            string newFileName = _fileService.Upload(file, pathToSave);
-                            listFile.Add(newFileName);
-                        }
-                    }
-                    newFiles.AppendJoin(",",listFile.ToArray());
-                    
-                    return Ok(newFiles.ToString());
+                    return new JsonResult(new { url= result.Data}) ;
                 }
-                else
-                {
-                    return BadRequest();
-                }
+                else return StatusCode(result.StatusCode);
             }
             catch (Exception ex)
             {

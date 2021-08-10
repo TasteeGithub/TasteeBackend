@@ -86,4 +86,9 @@
         Locked
     }
 
+    public enum UploadFileType
+    {
+       File,
+       Image
+    }
 }
