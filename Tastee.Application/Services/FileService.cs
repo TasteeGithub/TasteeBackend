@@ -57,7 +57,7 @@ namespace Tastee.Application.Services
                 // Rename file to random string to prevent injection and similar security threats
                 var trustedFileName = WebUtility.HtmlEncode(file.FileName);
                 var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
-                var randomFileName = Path.GetRandomFileName() + DateTime.UtcNow.ToString("ddMMyyHms");
+                var randomFileName = Path.GetRandomFileName() + DateTime.UtcNow.ToString("ddMMyyyyHms");
                 var uploadPath = fileType == UploadFileType.Image ? _configuration["Path:UploadImagePath"] : _configuration["Path:UploadFilePath"];
                 var trustedStorageName = uploadPath + randomFileName + ext;
 
