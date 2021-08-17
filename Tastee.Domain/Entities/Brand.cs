@@ -18,8 +18,8 @@ namespace Tastee.Domain.Entities
         public int? MinPrice { get; set; }
         public int? MaxPrice { get; set; }
         public string Status { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime? UpdatedDate { get; set; }
+        public ulong CreatedDate { get; set; }
+        public ulong? UpdatedDate { get; set; }
         public string UpdateBy { get; set; }
         public string MetaDescription { get; set; }
         public string SeoTitle { get; set; }
@@ -27,8 +27,15 @@ namespace Tastee.Domain.Entities
         public string SeoImage { get; set; }
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
-        public string Cuisines { get; set; }
-        public string Categories { get; set; }
+        public string[] Cuisines { get; set; }
+        public string[] Categories { get; set; }
         public string MerchantId { get; set; }
+        public string OpenTimeA { get; set; }
+        public string CloseTimeA { get; set; }
+        public string OpenTimeP { get; set; }
+        public string CloseTimeP { get; set; }
+        public ulong? StartDate { get; set; }
+        public ulong? EndDate { get; set; }
+        public short? Type { get; set; }
     }
 }

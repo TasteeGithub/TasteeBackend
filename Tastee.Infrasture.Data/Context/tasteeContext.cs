@@ -102,6 +102,10 @@ namespace Tastee.Infrastucture.Data.Context
 
                 entity.Property(e => e.City).HasMaxLength(100);
 
+                entity.Property(e => e.CloseTimeA).HasColumnName("CloseTime_A");
+
+                entity.Property(e => e.CloseTimeP).HasColumnName("CloseTime_P");
+
                 entity.Property(e => e.CreatedDate).HasColumnType("smalldatetime");
 
                 entity.Property(e => e.Cuisines).HasMaxLength(100);
@@ -110,6 +114,8 @@ namespace Tastee.Infrastucture.Data.Context
                     .IsRequired()
                     .HasMaxLength(100)
                     .IsUnicode(false);
+
+                entity.Property(e => e.EndDate).HasColumnType("smalldatetime");
 
                 entity.Property(e => e.HeadOffice)
                     .IsRequired()
@@ -129,6 +135,10 @@ namespace Tastee.Infrastucture.Data.Context
 
                 entity.Property(e => e.Name).IsRequired();
 
+                entity.Property(e => e.OpenTimeA).HasColumnName("OpenTime_A");
+
+                entity.Property(e => e.OpenTimeP).HasColumnName("OpenTime_P");
+
                 entity.Property(e => e.Phone)
                     .IsRequired()
                     .HasMaxLength(10)
@@ -141,6 +151,8 @@ namespace Tastee.Infrastucture.Data.Context
                     .IsUnicode(false);
 
                 entity.Property(e => e.SeoTitle).HasMaxLength(100);
+
+                entity.Property(e => e.StartDate).HasColumnType("smalldatetime");
 
                 entity.Property(e => e.Status)
                     .IsRequired()

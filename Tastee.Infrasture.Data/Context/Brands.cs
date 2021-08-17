@@ -33,5 +33,12 @@ namespace Tastee.Infrastucture.Data.Context
         public string Cuisines { get; set; }
         public string Categories { get; set; }
         public string MerchantId { get; set; }
+        public TimeSpan? OpenTimeA { get; set; }
+        public TimeSpan? CloseTimeA { get; set; }
+        public TimeSpan? OpenTimeP { get; set; }
+        public TimeSpan? CloseTimeP { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public short? Type { get; set; }
     }
 }

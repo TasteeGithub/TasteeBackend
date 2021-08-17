@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tastee.Application.Interfaces;
+using Tastee.Application.Utilities;
+using Tastee.Application.ViewModel;
 using Tastee.Domain.Entities;
 using Tastee.Infrastucture.Data.Context;
 using Tastee.Shared;
@@ -31,39 +33,78 @@ namespace Tastee.Application.Services
             _serviceBrands = serviceBrands;
         }
 
-        public async Task<Brand> GetByIdAsync(string id)
+        public async Task<Brands> GetByIdAsync(string id)
         {
             var brand = await _serviceBrands.FindAsync(id);
-            return brand.Adapt<Brand>();
+            return brand;
         }
 
-        public async Task<PaggingModel<Brand>> GetBrandsAsync(int pageSize, int? pageIndex, string name)
+        public async Task<PaggingModel<Brand>> GetBrandsAsync(GetBrandsViewModel requestModel)
         {
             ExpressionStarter<Brands> searchCondition = PredicateBuilder.New<Brands>(true);
+            int pageSize = Converters.StringToInteger(requestModel.Length, Constants.DEFAULT_PAGE_SIZE).Value;
+            int skip = Converters.StringToInteger(requestModel.Start).Value;
+            int pageIndex = skip / pageSize + 1;
 
-            if (name != null && name.Length > 0)
+            if (!string.IsNullOrEmpty(requestModel.Name))
             {
-                searchCondition = searchCondition.And(x => x.Name.ToLower().Contains(name.ToLower()));
+                searchCondition = searchCondition.And(x => x.Name.ToLower().Contains(requestModel.Name.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(requestModel.Hotline))
+            {
+                searchCondition = searchCondition.And(x => x.Hotline.Contains(requestModel.Hotline));
+            }
+
+            if (!string.IsNullOrEmpty(requestModel.Email))
+            {
+                searchCondition = searchCondition.And(x => x.Email != null && x.Email.ToLower().Contains(requestModel.Email.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(requestModel.City))
+            {
+                searchCondition = searchCondition.And(x => x.City != null && x.City.ToLower().Contains(requestModel.City.ToLower()));
+            }
+
+            if ((requestModel.Type ?? 0) != 0)
+            {
+                searchCondition = searchCondition.And(x => x.Type == requestModel.Type.Value);
+            }
+
+            if (!string.IsNullOrEmpty(requestModel.Status))
+            {
+                searchCondition = searchCondition.And(x => x.Status.ToLower() == requestModel.Status.ToLower());
+            }
+
+            DateTime? startDate = Converters.UnixTimeStampToDateTime(requestModel.StartDate);
+            if (startDate != null)
+            {
+                searchCondition = searchCondition.And(x => x.StartDate != null && x.StartDate >= startDate.Value.Date);
+            }
+            DateTime? endDate = Converters.UnixTimeStampToDateTime(requestModel.EndDate);
+            if (endDate != null)
+            {
+                endDate = endDate.Value.AddDays(1);
+                searchCondition = searchCondition.And(x => x.EndDate != null && x.EndDate < endDate.Value.Date);
             }
 
             var listBrands = _serviceBrands.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate);
 
-            var pagedListUser = await PaginatedList<Brands>.CreateAsync(listBrands, pageIndex ?? 1, pageSize);
+            var pagedListUser = await PaginatedList<Brands>.CreateAsync(listBrands, pageIndex, pageSize);
 
             PaggingModel<Brand> returnResult = new PaggingModel<Brand>()
             {
-                ListData = pagedListUser.Adapt<List<Brand>>(),
+                ListData = pagedListUser.Select(x => BuildBrandModelFromBrand(x)).ToList(),
                 TotalRows = pagedListUser.TotalRows,
             };
 
             return returnResult;
         }
 
-        public async Task<Response> InsertAsync(Brand model)
+        public async Task<Response> InsertAsync(Brands newBrands)
         {
-            if (!_serviceBrands.Queryable().Any(x => x.Name == model.Name))
+            if (!_serviceBrands.Queryable().Any(x => x.Name == newBrands.Name))
             {
-                Brands newBrands = model.Adapt<Brands>();
                 newBrands.Id = Guid.NewGuid().ToString();
                 newBrands.Status = BrandStatus.Pending.ToString();
                 newBrands.CreatedDate = DateTime.Now;
@@ -75,43 +116,51 @@ namespace Tastee.Application.Services
             return new Response { Successful = false, Message = "Brand is exists" };
         }
 
-        public async Task<Response> UpdateAsync(Brand model)
+        public async Task<Response> UpdateAsync(Brands updateBrand)
         {
-            if (model.Id != null && model.Id.Length > 0)
+            if (updateBrand.Id != null && updateBrand.Id.Length > 0)
             {
-                var brand = await _serviceBrands.FindAsync(model.Id);
+                var brand = await _serviceBrands.FindAsync(updateBrand.Id);
                 if (brand != null)
                 {
-                    brand.Name = model.Name ?? brand.Name;
-                    brand.Address = model.Address ?? brand.Address;
-                    brand.Hotline = model.Hotline ?? brand.Hotline;
-                    brand.Email = model.Email ?? brand.Email;
-                    brand.Phone = model.Phone ?? brand.Phone;
-                    brand.HeadOffice = model.HeadOffice ?? brand.HeadOffice;
-                    brand.Uri = model.Uri ?? brand.Uri;
-                    brand.Logo = model.Logo ?? brand.Logo;
-                    brand.RestaurantImages = model.RestaurantImages ?? brand.RestaurantImages;
-                    brand.City = model.City ?? brand.City;
-                    brand.Area = model.Area ?? brand.Area;
-                    brand.MinPrice = model.MinPrice ?? brand.MinPrice;
-                    brand.MaxPrice = model.MaxPrice ?? brand.MaxPrice;
-                    brand.Status = model.Status ?? brand.Status;
-                    brand.UpdateBy = model.UpdateBy ?? brand.UpdateBy;
-                    brand.MetaDescription = model.MetaDescription ?? brand.MetaDescription;
-                    brand.SeoTitle = model.SeoTitle ?? brand.SeoTitle;
-                    brand.SeoDescription = model.SeoDescription ?? brand.SeoDescription;
-                    brand.SeoImage = model.SeoImage ?? brand.SeoImage;
-                    brand.Latitude = model.Latitude ?? brand.Latitude;
-                    brand.Longitude = model.Longitude ?? brand.Longitude;
-                    brand.Cuisines = model.Cuisines ?? brand.Cuisines;
-                    brand.Categories = model.Categories ?? brand.Categories;
-                    brand.MerchantId = model.MerchantId ?? brand.MerchantId;
-
+                    brand.Name = updateBrand.Name ?? brand.Name;
+                    brand.Address = updateBrand.Address ?? brand.Address;
+                    brand.Hotline = updateBrand.Hotline ?? brand.Hotline;
+                    brand.Email = updateBrand.Email ?? brand.Email;
+                    brand.Phone = updateBrand.Phone ?? brand.Phone;
+                    brand.HeadOffice = updateBrand.HeadOffice ?? brand.HeadOffice;
+                    brand.Uri = updateBrand.Uri ?? brand.Uri;
+                    brand.Logo = updateBrand.Logo ?? brand.Logo;
+                    brand.RestaurantImages = updateBrand.RestaurantImages ?? brand.RestaurantImages;
+                    brand.City = updateBrand.City ?? brand.City;
+                    brand.Area = updateBrand.Area ?? brand.Area;
+                    brand.MinPrice = updateBrand.MinPrice ?? brand.MinPrice;
+                    brand.MaxPrice = updateBrand.MaxPrice ?? brand.MaxPrice;
+                    brand.Status = updateBrand.Status ?? brand.Status;
+                    brand.UpdateBy = updateBrand.UpdateBy ?? brand.UpdateBy;
+                    brand.MetaDescription = updateBrand.MetaDescription ?? brand.MetaDescription;
+                    brand.SeoTitle = updateBrand.SeoTitle ?? brand.SeoTitle;
+                    brand.SeoDescription = updateBrand.SeoDescription ?? brand.SeoDescription;
+                    brand.SeoImage = updateBrand.SeoImage ?? brand.SeoImage;
+                    brand.Latitude = updateBrand.Latitude ?? brand.Latitude;
+                    brand.Longitude = updateBrand.Longitude ?? brand.Longitude;
+                    brand.Cuisines = updateBrand.Cuisines ?? brand.Cuisines;
+                    brand.Categories = updateBrand.Categories ?? brand.Categories;
+                    brand.MerchantId = updateBrand.MerchantId ?? brand.MerchantId;
+                    brand.OpenTimeA = updateBrand.OpenTimeA ?? brand.OpenTimeA;
+                    brand.CloseTimeA = updateBrand.CloseTimeA ?? brand.CloseTimeA;
+                    brand.OpenTimeP = updateBrand.OpenTimeP ?? brand.OpenTimeP;
+                    brand.CloseTimeP = updateBrand.CloseTimeP ?? brand.CloseTimeP;
+                    brand.StartDate = updateBrand.StartDate ?? brand.StartDate;
+                    brand.EndDate = updateBrand.EndDate ?? brand.EndDate;
+                    brand.Type = updateBrand.Type ?? brand.Type;
+                    brand.UpdatedDate = DateTime.Now;
+                    brand.UpdateBy = updateBrand.UpdateBy;
                     _serviceBrands.Update(brand);
 
                     await _unitOfWork.SaveChangesAsync();
 
-                    return new Response {Successful=true,Message="Update Brand success" }  ;
+                    return new Response { Successful = true, Message = "Update Brand success" };
                 }
                 else
                 {
@@ -120,6 +169,108 @@ namespace Tastee.Application.Services
             }
 
             return new Response { Successful = false, Message = "Please input id" };
+        }
+
+        public Brands BuildBrandFromBrandModel(Brand model)
+        {
+            var brand = new Brands()
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Address = model.Address,
+                Hotline = model.Hotline,
+                Email = model.Email,
+                Phone = model.Phone,
+                HeadOffice = model.HeadOffice,
+                Uri = model.Uri,
+                Logo = model.Logo,
+                RestaurantImages = model.RestaurantImages,
+                City = model.City,
+                Area = model.Area,
+                MinPrice = model.MinPrice,
+                MaxPrice = model.MaxPrice,
+                Status = model.Status,
+                UpdateBy = model.UpdateBy,
+                MetaDescription = model.MetaDescription,
+                SeoTitle = model.SeoTitle,
+                SeoDescription = model.SeoDescription,
+                SeoImage = model.SeoImage,
+                Latitude = model.Latitude,
+                Longitude = model.Longitude,
+                MerchantId = model.MerchantId,
+                OpenTimeA = Converters.StringToTimeSpan(model.OpenTimeA),
+                CloseTimeA = Converters.StringToTimeSpan(model.CloseTimeA),
+                OpenTimeP = Converters.StringToTimeSpan(model.OpenTimeP),
+                CloseTimeP = Converters.StringToTimeSpan(model.CloseTimeP),
+                StartDate = Converters.UnixTimeStampToDateTime(model.StartDate),
+                EndDate = Converters.UnixTimeStampToDateTime(model.EndDate),
+                Type = model.Type,
+                UpdatedDate = Converters.UnixTimeStampToDateTime(model.UpdatedDate),
+                CreatedDate = Converters.UnixTimeStampToDateTime(model.CreatedDate, zeroIsNull: false).Value,
+            };
+
+            if (model.Cuisines == null)
+                brand.Cuisines = null;
+            else if (model.Cuisines.Length == 0)
+                brand.Cuisines = String.Empty;
+            else brand.Cuisines = String.Join(',', model.Cuisines);
+
+
+            if (model.Categories == null)
+                brand.Categories = null;
+            else if (model.Categories.Length == 0)
+                brand.Categories = String.Empty;
+            else brand.Categories = String.Join(',', model.Categories);
+
+            return brand;
+        }
+
+        public Brand BuildBrandModelFromBrand(Brands brand)
+        {
+            var model = new Brand()
+            {
+                Id = brand.Id,
+                Name = brand.Name,
+                Address = brand.Address,
+                Hotline = brand.Hotline,
+                Email = brand.Email,
+                Phone = brand.Phone,
+                HeadOffice = brand.HeadOffice,
+                Uri = brand.Uri,
+                Logo = brand.Logo,
+                RestaurantImages = brand.RestaurantImages,
+                City = brand.City,
+                Area = brand.Area,
+                MinPrice = brand.MinPrice,
+                MaxPrice = brand.MaxPrice,
+                Status = brand.Status,
+                UpdateBy = brand.UpdateBy,
+                MetaDescription = brand.MetaDescription,
+                SeoTitle = brand.SeoTitle,
+                SeoDescription = brand.SeoDescription,
+                SeoImage = brand.SeoImage,
+                Latitude = brand.Latitude,
+                Longitude = brand.Longitude,
+                MerchantId = brand.MerchantId,
+                OpenTimeA = Converters.TimeSpanToString(brand.OpenTimeA),
+                CloseTimeA = Converters.TimeSpanToString(brand.CloseTimeA),
+                OpenTimeP = Converters.TimeSpanToString(brand.OpenTimeP),
+                CloseTimeP = Converters.TimeSpanToString(brand.CloseTimeP),
+                StartDate = Converters.DateTimeToUnixTimeStamp(brand.StartDate),
+                EndDate = Converters.DateTimeToUnixTimeStamp(brand.EndDate),
+                Type = brand.Type,
+                UpdatedDate = Converters.DateTimeToUnixTimeStamp(brand.UpdatedDate),
+                CreatedDate = Converters.DateTimeToUnixTimeStamp(brand.CreatedDate).Value,
+            };
+            if (!String.IsNullOrEmpty(brand.Cuisines))
+                model.Cuisines = brand.Cuisines.Split(',');
+            else model.Cuisines = new string[0];
+
+            if (!String.IsNullOrEmpty(brand.Categories))
+                model.Categories = brand.Categories.Split(',');
+            else model.Categories = new string[0];
+
+            return model;
         }
     }
 }

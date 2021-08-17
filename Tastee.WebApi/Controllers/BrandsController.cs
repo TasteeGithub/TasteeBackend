@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Tastee.Application.ViewModel;
 using Tastee.Application.Wrappers;
 using Tastee.Domain.Entities;
 using Tastee.Feature.Brands.Queries;
@@ -32,20 +33,12 @@ namespace Tastee.WebApi.Controllers
 
         [HttpPost]
         [Route("load-data")]
-        public async Task<IActionResult> LoadData(
-            [FromForm] string draw,
-            [FromForm] string start,
-            [FromForm] string length,
-            [FromForm] string name
-            )
+        public async Task<IActionResult> LoadData([FromForm] GetBrandsViewModel model)
         {
             try
             {
-                int pageSize = length != null ? Convert.ToInt32(length) : 0;
-                int skip = start != null ? Convert.ToInt32(start) : 0;
-                int pageIndex = skip / pageSize + 1;
                 int recordsTotal = 0;
-                GetBrandsQuery brandsQuery = new GetBrandsQuery { PageIndex = pageIndex, PageSize = pageSize, BrandName = name };
+                GetBrandsQuery brandsQuery = new GetBrandsQuery { RequestModel = model };
                 var rs = await Mediator.Send(brandsQuery);
 
                 //total number of rows counts
@@ -56,7 +49,7 @@ namespace Tastee.WebApi.Controllers
 
                 //Returning Json Data
                 return new JsonResult(
-                    new { draw, recordsFiltered = recordsTotal, recordsTotal, data });
+                    new { model.Draw, recordsFiltered = recordsTotal, recordsTotal, data });
             }
             catch (Exception ex)
             {
@@ -64,7 +57,7 @@ namespace Tastee.WebApi.Controllers
             }
 
             return new JsonResult(
-                    new { draw, recordsFiltered = 0, recordsTotal = 0, data = new List<Users>() });
+                    new { model.Draw, recordsFiltered = 0, recordsTotal = 0, data = new List<Brand>() });
         }
 
         // GET: api/Brands/5
@@ -89,7 +82,7 @@ namespace Tastee.WebApi.Controllers
 
         // POST: api/Brands
         [HttpPost]
-        public async Task<IActionResult> Post(CreateBrandCommand brandModel)
+        public async Task<IActionResult> Post(Brand model)
         {
             if (!ModelState.IsValid)
             {
@@ -99,21 +92,29 @@ namespace Tastee.WebApi.Controllers
 
                 return Ok(new Response { Successful = false, Message = string.Join(",", errorMessage) });
             }
-            brandModel.UpdateBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-            return Ok(await Mediator.Send(brandModel));
+            model.UpdateBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+            var createCommand = new CreateBrandCommand()
+            {
+                BrandModel = model
+            };
+
+            return Ok(await Mediator.Send(createCommand));
         }
 
         // PUT: api/Brands/5
         [HttpPost]
         [Route("update")]
-        public async Task<IActionResult> Update(UpdateBrandCommand model)
+        public async Task<IActionResult> Update(Brand model)
         {
             bool isActionSuccess = false;
             try
             {
                 model.UpdateBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-                
-                return Ok(await Mediator.Send(model));
+                var updateCommand = new UpdateBrandCommand()
+                {
+                    BrandModel = model
+                };
+                return Ok(await Mediator.Send(updateCommand));
             }
             catch (Exception ex)
             {
