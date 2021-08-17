@@ -19,6 +19,8 @@ namespace Tastee.Infrastucture.Data.Context
         public virtual DbSet<Banners> Banners { get; set; }
         public virtual DbSet<Brands> Brands { get; set; }
         public virtual DbSet<Cities> Cities { get; set; }
+        public virtual DbSet<MenuItems> MenuItems { get; set; }
+        public virtual DbSet<Menus> Menus { get; set; }
         public virtual DbSet<Nlogs> Nlogs { get; set; }
         public virtual DbSet<OperatorRoles> OperatorRoles { get; set; }
         public virtual DbSet<Operators> Operators { get; set; }
@@ -31,7 +33,7 @@ namespace Tastee.Infrastucture.Data.Context
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=MINHTHU-PC;Initial Catalog=tastee;Persist Security Info=True;User ID=tas77143_tastee;Password=K5EOcP3MPgUpc");
+                optionsBuilder.UseSqlServer("Data Source=MINHTHUPC;Initial Catalog=tasteenew;Persist Security Info=True;User ID=tas77143_tastee;Password=K5EOcP3MPgUpc");
             }
         }
 
@@ -39,8 +41,6 @@ namespace Tastee.Infrastucture.Data.Context
         {
             modelBuilder.Entity<Areas>(entity =>
             {
-                entity.ToTable("Areas", "tas77143_tastee");
-
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(200);
@@ -48,8 +48,6 @@ namespace Tastee.Infrastucture.Data.Context
 
             modelBuilder.Entity<Banners>(entity =>
             {
-                entity.ToTable("Banners", "tas77143_tastee");
-
                 entity.Property(e => e.Id)
                     .HasColumnName("ID")
                     .HasMaxLength(200)
@@ -91,8 +89,6 @@ namespace Tastee.Infrastucture.Data.Context
 
             modelBuilder.Entity<Brands>(entity =>
             {
-                entity.ToTable("Brands", "tas77143_tastee");
-
                 entity.Property(e => e.Id)
                     .HasColumnName("ID")
                     .HasMaxLength(200)
@@ -162,16 +158,76 @@ namespace Tastee.Infrastucture.Data.Context
 
             modelBuilder.Entity<Cities>(entity =>
             {
-                entity.ToTable("Cities", "tas77143_tastee");
-
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(200);
             });
 
+            modelBuilder.Entity<MenuItems>(entity =>
+            {
+                entity.Property(e => e.Id)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Description).IsRequired();
+
+                entity.Property(e => e.Image).HasMaxLength(50);
+
+                entity.Property(e => e.MenuId)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.Price).HasColumnType("money");
+
+                entity.Property(e => e.ShortDescription).HasMaxLength(500);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Menus>(entity =>
+            {
+                entity.Property(e => e.Id)
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.BrandId)
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CreatedBy).HasMaxLength(50);
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+            });
+
             modelBuilder.Entity<Nlogs>(entity =>
             {
-                entity.ToTable("NLogs", "tas77143_tastee");
+                entity.ToTable("NLogs");
 
                 entity.Property(e => e.Application)
                     .IsRequired()
@@ -192,8 +248,6 @@ namespace Tastee.Infrastucture.Data.Context
             {
                 entity.HasKey(e => new { e.UserId, e.RoleId });
 
-                entity.ToTable("OperatorRoles", "tas77143_tastee");
-
                 entity.Property(e => e.UserId)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -205,8 +259,6 @@ namespace Tastee.Infrastucture.Data.Context
 
             modelBuilder.Entity<Operators>(entity =>
             {
-                entity.ToTable("Operators", "tas77143_tastee");
-
                 entity.Property(e => e.Id)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -239,8 +291,6 @@ namespace Tastee.Infrastucture.Data.Context
 
             modelBuilder.Entity<ProductSliders>(entity =>
             {
-                entity.ToTable("ProductSliders", "tas77143_tastee");
-
                 entity.Property(e => e.Id)
                     .HasColumnName("ID")
                     .HasMaxLength(200)
@@ -280,8 +330,6 @@ namespace Tastee.Infrastucture.Data.Context
             {
                 entity.HasNoKey();
 
-                entity.ToTable("Roles", "tas77143_tastee");
-
                 entity.Property(e => e.Id)
                     .IsRequired()
                     .HasMaxLength(50)
@@ -294,8 +342,6 @@ namespace Tastee.Infrastucture.Data.Context
 
             modelBuilder.Entity<Users>(entity =>
             {
-                entity.ToTable("Users", "tas77143_tastee");
-
                 entity.Property(e => e.Id)
                     .HasMaxLength(50)
                     .IsUnicode(false);
