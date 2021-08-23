@@ -239,7 +239,7 @@ namespace Tastee.Infrastucture.Data.Context
 
             modelBuilder.Entity<MenuItems>(entity =>
             {
-                entity.ToTable("MenuItems", "tas77143_tastee");
+                entity.ToTable("MenuItems");
 
                 entity.Property(e => e.Id)
                     .HasMaxLength(200)
@@ -281,7 +281,7 @@ namespace Tastee.Infrastucture.Data.Context
 
             modelBuilder.Entity<Menus>(entity =>
             {
-                entity.ToTable("Menus", "tas77143_tastee");
+                entity.ToTable("Menus");
 
                 entity.Property(e => e.Id)
                     .HasMaxLength(200)

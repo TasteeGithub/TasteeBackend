@@ -23,7 +23,7 @@ namespace Tastee.Application.Features.Menus.Queries
             public async Task<Response<Menu>> Handle(GetMenuByIdQuery request, CancellationToken cancellationToken)
             {
                 var menu = await _menuService.GetByIdAsync(request.Id);
-                return new Response<Menu>(menu);
+                return new Response<Menu>(_menuService.BuildMenuModelFromMenu(menu));
             }
         }
     }

@@ -11,6 +11,7 @@ using Tastee.Application.Features.Menus.Commands;
 using Tastee.Application.Features.Menus.Items.Commands;
 using Tastee.Application.Features.Menus.Items.Queries;
 using Tastee.Application.Features.Menus.Queries;
+using Tastee.Application.ViewModel;
 using Tastee.Application.Wrappers;
 using Tastee.Domain.Entities;
 using Tastee.Shared;
@@ -18,7 +19,7 @@ using URF.Core.Abstractions;
 
 namespace Tastee.WebApi.Controllers
 {
-    [Authorize]
+
     [Route("api/[controller]")]
     [ApiController]
     public class MenusController : BaseApiController
@@ -67,29 +68,16 @@ namespace Tastee.WebApi.Controllers
         /// <summary>
         /// Load list Menu
         /// </summary>
-        /// <param name="draw"></param>
-        /// <param name="start"></param>
-        /// <param name="length"></param>
-        /// <param name="name"></param>
-        /// <param name="status"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("load-data")]
-        public async Task<IActionResult> LoadData(
-            [FromForm] string draw,
-            [FromForm] string start,
-            [FromForm] string length,
-            [FromForm] string name,
-            [FromForm] int? status
-            )
+        public async Task<IActionResult> LoadData([FromForm] GetMenusViewModel model)
         {
             try
             {
-                int pageSize = length != null ? Convert.ToInt32(length) : Constants.DEFAULT_PAGE_SIZE;
-                int skip = start != null ? Convert.ToInt32(start) : 0;
-                int pageIndex = skip / pageSize + 1;
                 int recordsTotal = 0;
-                GetMenusQuery menusQuery = new GetMenusQuery { PageIndex = pageIndex, PageSize = pageSize, MenuName = name, Status = status };
+                GetMenusQuery menusQuery = new GetMenusQuery { RequestModel = model };
                 var rs = await Mediator.Send(menusQuery);
 
                 //total number of rows counts
@@ -100,7 +88,7 @@ namespace Tastee.WebApi.Controllers
 
                 //Returning Json Data
                 return new JsonResult(
-                    new { draw, recordsFiltered = recordsTotal, recordsTotal, data });
+                    new { model.Draw, recordsFiltered = recordsTotal, recordsTotal, data });
             }
             catch (Exception ex)
             {
@@ -108,7 +96,7 @@ namespace Tastee.WebApi.Controllers
             }
 
             return new JsonResult(
-                    new { draw, recordsFiltered = 0, recordsTotal = 0, data = new List<Menu>() });
+                    new { model.Draw, recordsFiltered = 0, recordsTotal = 0, data = new List<Menu>() });
         }
 
         /// <summary>
@@ -117,7 +105,7 @@ namespace Tastee.WebApi.Controllers
         /// <param name="menuModel"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Post(CreateMenuCommand menuModel)
+        public async Task<IActionResult> Post(Menu menuModel)
         {
             if (!ModelState.IsValid)
             {
@@ -128,7 +116,11 @@ namespace Tastee.WebApi.Controllers
                 return Ok(new Response { Successful = false, Message = string.Join(",", errorMessage) });
             }
             menuModel.CreatedBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-            return Ok(await Mediator.Send(menuModel));
+            var createCommand = new CreateMenuCommand()
+            {
+                MenuModel = menuModel
+            };
+            return Ok(await Mediator.Send(createCommand));
         }
 
 
@@ -139,14 +131,17 @@ namespace Tastee.WebApi.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("update")]
-        public async Task<IActionResult> Update(UpdateMenuCommand model)
+        public async Task<IActionResult> Update(Menu model)
         {
             bool isActionSuccess = false;
             try
             {
                 model.UpdatedBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-
-                return Ok(await Mediator.Send(model));
+                var updateCommand = new UpdateMenuCommand()
+                {
+                    MenuModel = model
+                };
+                return Ok(await Mediator.Send(updateCommand));
             }
             catch (Exception ex)
             {

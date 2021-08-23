@@ -11,13 +11,7 @@ namespace Tastee.Application.Features.Menus.Commands
 {
     public class CreateMenuCommand : IRequest<Response>
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public string BrandId { get; set; }
-        public int Status { get; set; }
-        public int Order { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public string CreatedBy { get; set; }
+        public Menu MenuModel;
     }
 
     public class CreateMenuCommandHandler : IRequestHandler<CreateMenuCommand, Response>
@@ -31,8 +25,8 @@ namespace Tastee.Application.Features.Menus.Commands
 
         public async Task<Response> Handle(CreateMenuCommand request, CancellationToken cancellationToken)
         {
-            var menuModel = request.Adapt<Menu>();
-            return await _menuService.InsertAsync(menuModel);
+            var menu = _menuService.BuildMenuFromMenuModel(request.MenuModel);
+            return await _menuService.InsertAsync(menu);
         }
     }
 }
