@@ -17,9 +17,11 @@ namespace Tastee.Application.Interfaces
 
         #region Items
         Task<MenuItem> GetItemByIdAsync(string id);
-        Task<PaggingModel<MenuItem>> GetMenuItemsAsync(int pageSize, int? pageIndex, string name, int? status);
-        Task<Response> InsertItemAsync(MenuItem model);
-        Task<Response> UpdateItemAsync(MenuItem model);
+        Task<PaggingModel<MenuItem>> GetMenuItemsAsync(GetMenuItemsViewModel requestModel);
+        Task<Response> InsertItemAsync(MenuItems newMenuItem);
+        Task<Response> UpdateItemAsync(MenuItems updateMenuItem);
+        MenuItems BuildMenuItemFromMenuItemModel(MenuItem model);
+        MenuItem BuildMenuItemModelFromMenuItem(MenuItems menu);
         #endregion
     }
 }

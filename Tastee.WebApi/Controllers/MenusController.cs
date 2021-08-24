@@ -19,7 +19,7 @@ using URF.Core.Abstractions;
 
 namespace Tastee.WebApi.Controllers
 {
-
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MenusController : BaseApiController
@@ -183,48 +183,25 @@ namespace Tastee.WebApi.Controllers
         /// <summary>
         /// Load list menu items
         /// </summary>
-        /// <param name="draw"></param>
-        /// <param name="start"></param>
-        /// <param name="length"></param>
-        /// <param name="name"></param>
-        /// <param name="status"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("Items/load-data")]
-        public async Task<IActionResult> ItemsLoadData(
-            [FromForm] string draw,
-            [FromForm] string start,
-            [FromForm] string length,
-            [FromForm] string name,
-            [FromForm] int? status
-            )
+        public async Task<IActionResult> ItemsLoadData([FromForm] GetMenuItemsViewModel model)
         {
-            try
-            {
-                int pageSize = length != null ? Convert.ToInt32(length) : Constants.DEFAULT_PAGE_SIZE;
-                int skip = start != null ? Convert.ToInt32(start) : 0;
-                int pageIndex = skip / pageSize + 1;
-                int recordsTotal = 0;
-                GetMenuItemsQuery menusQuery = new GetMenuItemsQuery { PageIndex = pageIndex, PageSize = pageSize, ItemName = name, Status = status };
-                var rs = await Mediator.Send(menusQuery);
+            int recordsTotal = 0;
+            GetMenuItemsQuery menusQuery = new GetMenuItemsQuery { RequestModel = model };
+            var rs = await Mediator.Send(menusQuery);
 
-                //total number of rows counts
-                recordsTotal = rs.TotalRows;
+            //total number of rows counts
+            recordsTotal = rs.TotalRows;
 
-                //Paging
-                var data = rs.ListData;
+            //Paging
+            var data = rs.ListData;
 
-                //Returning Json Data
-                return new JsonResult(
-                    new { draw, recordsFiltered = recordsTotal, recordsTotal, data });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "LoadData");
-            }
-
+            //Returning Json Data
             return new JsonResult(
-                    new { draw, recordsFiltered = 0, recordsTotal = 0, data = new List<MenuItem>() });
+                new { model.Draw, recordsFiltered = recordsTotal, recordsTotal, data });
         }
 
         /// <summary>
@@ -234,7 +211,7 @@ namespace Tastee.WebApi.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("Items")]
-        public async Task<IActionResult> ItemPost(CreateMenuItemCommand itemModel)
+        public async Task<IActionResult> ItemPost(MenuItem itemModel)
         {
             if (!ModelState.IsValid)
             {
@@ -245,7 +222,11 @@ namespace Tastee.WebApi.Controllers
                 return Ok(new Response { Successful = false, Message = string.Join(",", errorMessage) });
             }
             itemModel.CreatedBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-            return Ok(await Mediator.Send(itemModel));
+            var createCommand = new CreateMenuItemCommand()
+            {
+                MenuItemModel = itemModel
+            };
+            return Ok(await Mediator.Send(createCommand));
         }
 
 
@@ -256,14 +237,17 @@ namespace Tastee.WebApi.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("Items/update")]
-        public async Task<IActionResult> ItemsUpdate(UpdateMenuItemCommand model)
+        public async Task<IActionResult> ItemsUpdate(MenuItem model)
         {
             bool isActionSuccess = false;
             try
             {
                 model.UpdatedBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-
-                return Ok(await Mediator.Send(model));
+                var updateCommand = new UpdateMenuItemCommand()
+                {
+                    MenuItemModel = model
+                };
+                return Ok(await Mediator.Send(updateCommand));
             }
             catch (Exception ex)
             {

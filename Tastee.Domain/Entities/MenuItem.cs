@@ -6,7 +6,6 @@ namespace Tastee.Domain.Entities
 {
     public partial class MenuItem : BaseEntity
     {
-        public string Id { get; set; }
         public string Name { get; set; }
         public string MenuId { get; set; }
         public string Image { get; set; }
@@ -17,9 +16,9 @@ namespace Tastee.Domain.Entities
         public int? SaleNumber { get; set; }
         public int? Status { get; set; }
         public int? Order { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public ulong CreatedDate { get; set; }
         public string CreatedBy { get; set; }
-        public DateTime? UpdatedDate { get; set; }
+        public ulong? UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
     }
 }

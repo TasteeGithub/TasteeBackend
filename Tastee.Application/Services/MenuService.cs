@@ -70,12 +70,12 @@ namespace Tastee.Application.Services
 
             var listMenus = _serviceMenus.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate);
 
-            var pagedListUser = await PaginatedList<Menus>.CreateAsync(listMenus, pageIndex, pageSize);
+            var pagedListMenus = await PaginatedList<Menus>.CreateAsync(listMenus, pageIndex, pageSize);
 
             PaggingModel<Menu> returnResult = new PaggingModel<Menu>()
             {
-                ListData = pagedListUser.Select(x=>BuildMenuModelFromMenu(x)).ToList(),
-                TotalRows = pagedListUser.TotalRows,
+                ListData = pagedListMenus.Select(x => BuildMenuModelFromMenu(x)).ToList(),
+                TotalRows = pagedListMenus.TotalRows,
             };
 
             return returnResult;
@@ -103,9 +103,9 @@ namespace Tastee.Application.Services
                 var menu = await _serviceMenus.FindAsync(updateMenus.Id);
                 if (menu != null)
                 {
-                    menu.Name = updateMenus.Name;
+                    menu.Name = updateMenus.Name ?? menu.Name;
                     menu.Status = updateMenus.Status;
-                    menu.Order = updateMenus.Order;
+                    menu.Order = updateMenus.Order >> menu.Order;
                     menu.UpdatedBy = updateMenus.UpdatedBy;
                     menu.UpdatedDate = DateTime.Now;
                     _serviceMenus.Update(menu);
@@ -162,68 +162,78 @@ namespace Tastee.Application.Services
         public async Task<MenuItem> GetItemByIdAsync(string id)
         {
             var menuItem = await _serviceMenuItems.FindAsync(id);
-            return menuItem.Adapt<MenuItem>();
+            return BuildMenuItemModelFromMenuItem(menuItem);
         }
 
-        public async Task<PaggingModel<MenuItem>> GetMenuItemsAsync(int pageSize, int? pageIndex, string name, int? status)
+        public async Task<PaggingModel<MenuItem>> GetMenuItemsAsync(GetMenuItemsViewModel requestModel)
         {
+            int pageSize = Converters.StringToInteger(requestModel.Length, Constants.DEFAULT_PAGE_SIZE).Value;
+            int skip = Converters.StringToInteger(requestModel.Start).Value;
+            int pageIndex = skip / pageSize + 1;
+
             ExpressionStarter<MenuItems> searchCondition = PredicateBuilder.New<MenuItems>(true);
 
-            if ((name ?? string.Empty).Length > 0)
+            if (!String.IsNullOrEmpty(requestModel.Name))
             {
-                searchCondition = searchCondition.And(x => x.Name.ToLower().Contains(name.ToLower()));
+                searchCondition = searchCondition.And(x => x.Name.ToLower().Contains(requestModel.Name.ToLower()));
             }
 
-            if (status != null)
+            if (!String.IsNullOrEmpty(requestModel.BrandId))
             {
-                searchCondition = searchCondition.And(x => x.Status == status.Value);
+                //Get List MenuId by BrandId
+                ExpressionStarter<Menus> searchMenuCondition = PredicateBuilder.New<Menus>(true);
+                searchMenuCondition = searchMenuCondition.And(x => x.BrandId == requestModel.BrandId);
+                var listMenuId = _serviceMenus.Queryable().Where(searchMenuCondition).Select(x => x.Id).ToList();
+
+                //Filter MenuItem by MenuId
+                searchCondition = searchCondition.And(x => listMenuId.Contains(x.MenuId));
+            }
+
+            if (requestModel.Status != null)
+            {
+                searchCondition = searchCondition.And(x => x.Status == requestModel.Status.Value);
             }
 
             var listmenuItems = _serviceMenuItems.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate);
 
-            var pagedListUser = await PaginatedList<MenuItems>.CreateAsync(listmenuItems, pageIndex ?? 1, pageSize);
+            var pagedListMenuItems = await PaginatedList<MenuItems>.CreateAsync(listmenuItems, pageIndex, pageSize);
 
             PaggingModel<MenuItem> returnResult = new PaggingModel<MenuItem>()
             {
-                ListData = pagedListUser.Adapt<List<MenuItem>>(),
-                TotalRows = pagedListUser.TotalRows,
+                ListData = pagedListMenuItems.Select(x => BuildMenuItemModelFromMenuItem(x)).ToList(),
+                TotalRows = pagedListMenuItems.TotalRows,
             };
 
             return returnResult;
         }
 
-        public async Task<Response> InsertItemAsync(MenuItem model)
+        public async Task<Response> InsertItemAsync(MenuItems newMenuItem)
         {
-            if (!_serviceMenus.Queryable().Any(x => x.Name == model.Name))
-            {
-                MenuItems newmenuItems = model.Adapt<MenuItems>();
-                newmenuItems.Id = Guid.NewGuid().ToString();
-                newmenuItems.CreatedDate = DateTime.Now;
-                newmenuItems.CreatedBy = model.CreatedBy;
-                _serviceMenuItems.Insert(newmenuItems);
-                await _unitOfWork.SaveChangesAsync();
-                return new Response { Successful = true, Message = "Add menu item successed" };
-            }
-            return new Response { Successful = false, Message = "Menu item is exists" };
+            newMenuItem.Id = Guid.NewGuid().ToString();
+            newMenuItem.CreatedDate = DateTime.Now;
+            newMenuItem.CreatedBy = newMenuItem.CreatedBy;
+            _serviceMenuItems.Insert(newMenuItem);
+            await _unitOfWork.SaveChangesAsync();
+            return new Response { Successful = true, Message = "Add menu item successed" };
         }
 
-        public async Task<Response> UpdateItemAsync(MenuItem model)
+        public async Task<Response> UpdateItemAsync(MenuItems updateMenuItems)
         {
-            if (model.Id != null && model.Id.Length > 0)
+            if (updateMenuItems.Id != null && updateMenuItems.Id.Length > 0)
             {
-                var menuItem = await _serviceMenuItems.FindAsync(model.Id);
+                var menuItem = await _serviceMenuItems.FindAsync(updateMenuItems.Id);
                 if (menuItem != null)
                 {
-                    menuItem.Name = model.Name;
-                    menuItem.Status = model.Status;
-                    menuItem.Order = model.Order;
-                    menuItem.MenuId = model.MenuId;
-                    menuItem.Image = model.Image;
-                    menuItem.Description = model.Description;
-                    menuItem.ShortDescription = model.ShortDescription;
-                    menuItem.Price = model.Price;
-                    menuItem.LikeNumber = model.LikeNumber;
-                    menuItem.UpdatedBy = model.UpdatedBy;
+                    menuItem.Name = updateMenuItems.Name ?? menuItem.Name;
+                    menuItem.Status = updateMenuItems.Status ?? menuItem.Status;
+                    menuItem.Order = updateMenuItems.Order ?? menuItem.Order;
+                    menuItem.MenuId = updateMenuItems.MenuId ?? menuItem.MenuId;
+                    menuItem.Image = updateMenuItems.Image ?? menuItem.Image;
+                    menuItem.Description = updateMenuItems.Description ?? menuItem.Description;
+                    menuItem.ShortDescription = updateMenuItems.ShortDescription ?? menuItem.ShortDescription;
+                    menuItem.Price = updateMenuItems.Price ?? menuItem.Price;
+                    menuItem.LikeNumber = updateMenuItems.LikeNumber ?? menuItem.LikeNumber;
+                    menuItem.UpdatedBy = updateMenuItems.UpdatedBy;
                     menuItem.UpdatedDate = DateTime.Now;
                     _serviceMenuItems.Update(menuItem);
                     await _unitOfWork.SaveChangesAsync();
@@ -236,6 +246,55 @@ namespace Tastee.Application.Services
                 }
             }
             return new Response { Successful = false, Message = "Please input id" };
+        }
+
+
+        public MenuItems BuildMenuItemFromMenuItemModel(MenuItem model)
+        {
+            var menuItem = new MenuItems()
+            {
+                Id = model.Id,
+                Name = model.Name,
+                MenuId = model.MenuId,
+                Status = model.Status,
+                Order = model.Order,
+                Description = model.Description,
+                Image = model.Image,
+                LikeNumber = model.LikeNumber,
+                Price = model.Price,
+                SaleNumber = model.SaleNumber,
+                ShortDescription = model.ShortDescription,
+                CreatedDate = Converters.UnixTimeStampToDateTime(model.CreatedDate, zeroIsNull: false).Value,
+                CreatedBy = model.CreatedBy,
+                UpdatedDate = Converters.UnixTimeStampToDateTime(model.UpdatedDate),
+                UpdatedBy = model.UpdatedBy,
+            };
+
+            return menuItem;
+        }
+
+        public MenuItem BuildMenuItemModelFromMenuItem(MenuItems menuItem)
+        {
+            var model = new MenuItem()
+            {
+
+                Id = menuItem.Id,
+                Name = menuItem.Name,
+                MenuId = menuItem.MenuId,
+                Status = menuItem.Status,
+                Order = menuItem.Order,
+                Description = menuItem.Description,
+                Image = menuItem.Image,
+                LikeNumber = menuItem.LikeNumber,
+                Price = menuItem.Price,
+                SaleNumber = menuItem.SaleNumber,
+                ShortDescription = menuItem.ShortDescription,
+                CreatedDate = Converters.DateTimeToUnixTimeStamp(menuItem.CreatedDate).Value,
+                CreatedBy = menuItem.CreatedBy,
+                UpdatedDate = Converters.DateTimeToUnixTimeStamp(menuItem.UpdatedDate),
+                UpdatedBy = menuItem.UpdatedBy,
+            };
+            return model;
         }
         #endregion
     }
