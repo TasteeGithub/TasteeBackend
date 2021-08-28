@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -6,9 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Tastee.Application.Features.Brands.Commands;
 using Tastee.Application.ViewModel;
 using Tastee.Application.Wrappers;
 using Tastee.Domain.Entities;
+using Tastee.Domain.Models.Brands;
 using Tastee.Feature.Brands.Queries;
 using Tastee.Features.Brands.Commands;
 using Tastee.Features.Brands.Queries;
@@ -101,7 +104,11 @@ namespace Tastee.WebApi.Controllers
             return Ok(await Mediator.Send(createCommand));
         }
 
-        // PUT: api/Brands/5
+        /// <summary>
+        /// Update brand
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("update")]
         public async Task<IActionResult> Update(Brand model)
@@ -125,6 +132,36 @@ namespace Tastee.WebApi.Controllers
                 _logger.LogInformation("Update Brand, Brand: {0}, Result status: {1}", model, isActionSuccess);
             }
             return Ok(new { Successful = false, Error = "Has error when update" });
+        }
+
+
+        [HttpPost]
+        [Route("uploadimages")]
+        public async Task<IActionResult> UploadImages([FromForm] UploadBrandImageDto request)
+        {
+            bool isActionSuccess = false;
+            try
+            {
+                var uploadCommand = new UploadBrandImagesCommand()
+                {
+                    RequestModel = request,
+                    UploadBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value
+                };
+
+                var result = await Mediator.Send(uploadCommand);
+                if (result.Successful)
+                    isActionSuccess = true;
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Upload Brand Images, Brand: {0}", request.BrandID);
+            }
+            finally
+            {
+                _logger.LogInformation("Upload Brand, Brand: {0}, Result status: {1}", request.BrandID, isActionSuccess);
+            }
+            return Ok(new { Successful = false, Error = "Has error when upload" });
         }
     }
 }

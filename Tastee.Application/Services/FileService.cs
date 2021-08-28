@@ -4,14 +4,18 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Tastee.Application.Interfaces;
 using Tastee.Domain.Models;
+using Tastee.Domain.Models.Brands;
 using Tastee.Shared;
+using Tastee.Shared.Models.Files;
 
 namespace Tastee.Application.Services
 {
@@ -38,13 +42,13 @@ namespace Tastee.Application.Services
         /// <param name="objectTypeName"></param>
         /// <param name="metaTags"></param>
         /// <returns>An AWSUploadResult with the link to the uploaded content, if successful</returns>
-        public async Task<AWSUploadResult<string>> UploadImageToS3BucketAsync(IFormFile file, UploadFileType fileType)
+        public async Task<AWSUploadResult<string>> UploadFilesToS3BucketAsync(IFormFile file, UploadFileType fileType)
         {
             try
             {
                 string bucketName = _configuration["AWS:BucketName"];
 
-                if (!IsValidImageFile(file, fileType))
+                if (!IsValidFile(file, fileType))
                 {
                     _logger.LogInformation("Invalid file");
                     return new AWSUploadResult<string>
@@ -57,7 +61,7 @@ namespace Tastee.Application.Services
                 // Rename file to random string to prevent injection and similar security threats
                 var trustedFileName = WebUtility.HtmlEncode(file.FileName);
                 var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
-                var randomFileName = Path.GetRandomFileName() + DateTime.UtcNow.ToString("ddMMyyyyHms");
+                var randomFileName = GenerateRandomName();
                 var uploadPath = fileType == UploadFileType.Image ? _configuration["Path:UploadImagePath"] : _configuration["Path:UploadFilePath"];
                 var trustedStorageName = uploadPath + randomFileName + ext;
 
@@ -110,6 +114,44 @@ namespace Tastee.Application.Services
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="directoryPath"></param>
+        /// <param name=""></param>
+        /// <returns></returns>
+        public async Task<string> UploadFolderToS3BucketAsync(string directoryPath, string keyPrefix)
+        {
+            string errorMsg = String.Empty;
+            try
+            {
+
+                string bucketName = _configuration["AWS:BucketName"];
+                var request = new TransferUtilityUploadDirectoryRequest
+                {
+                    BucketName = bucketName,
+                    Directory = directoryPath,
+                    SearchOption = SearchOption.AllDirectories,
+                    KeyPrefix = keyPrefix,
+                    CannedACL = S3CannedACL.PublicRead,
+                };
+
+                await _transferUtility.UploadDirectoryAsync(request);
+
+                return errorMsg;
+            }
+            catch (AmazonS3Exception e)
+            {
+                errorMsg = String.Format("Error encountered ***. Message:'{0}' when writing an object", e.Message);
+            }
+
+            catch (Exception e)
+            {
+                errorMsg = String.Format("Unknown encountered on server. Message:'{0}' when writing an object", e.Message);
+            }
+            return errorMsg;
+        }
+
+        /// <summary>
         /// Generates URL for uploaded file
         /// </summary>
         /// <param name="bucketName"></param>
@@ -146,7 +188,7 @@ namespace Tastee.Application.Services
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        private bool IsValidImageFile(IFormFile file, UploadFileType fileType)
+        public bool IsValidFile(IFormFile file, UploadFileType fileType)
         {
             string[] permittedExtensions;
             // Check file length
@@ -179,19 +221,49 @@ namespace Tastee.Application.Services
             return true;
         }
 
-        //public string Upload(IFormFile file,string targetFolder)
-        //{
-        //    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim().ToString();
+        public UploadTmpFolderResponse UploadTmpFolder(UploadBrandImageDto request)
+        {
 
-        //    FileInfo fileInfo = new FileInfo(fileName);
-        //    string newFileName = Path.GetRandomFileName().Replace(".", string.Empty) + fileInfo.Extension.Replace("\"", string.Empty);
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), _configuration["Path:UploadTmpPath"], GenerateRandomName());
+            var response = new UploadTmpFolderResponse
+            {
+                FolderPath = pathToSave,
+                ImgDictionary = new Dictionary<int, string>()
+            };
+            if (!Directory.Exists(pathToSave))
+            {
+                Directory.CreateDirectory(pathToSave);
+            }
+            for (int i = 0; i < request.Files.Count; i++)
+            {
+                var fileModel = request.Files[i];
+                var ext = Path.GetExtension(fileModel.File.FileName).ToLowerInvariant();
+                string fileName = GenerateRandomName() + ext;
+                string fullPath = Path.Combine(pathToSave, fileName);
 
-        //    var fullPath = Path.Combine(targetFolder, newFileName);
-        //    using (var stream = new FileStream(fullPath, FileMode.Create))
-        //    {
-        //        file.CopyTo(stream);
-        //    }
-        //    return newFileName;
-        //}
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    fileModel.File.CopyTo(stream);
+                }
+                response.ImgDictionary.Add(i, fileName);
+            }
+
+            return response;
+        }
+
+        public void DeleteFolder(string path, bool deleteContent = true)
+        {
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, true);
+            }
+        }
+
+        #region PrivateMethod
+        private string GenerateRandomName()
+        {
+            return Path.GetRandomFileName() + DateTime.UtcNow.ToString("ddMMyyyyHms");
+        }
+        #endregion
     }
 }

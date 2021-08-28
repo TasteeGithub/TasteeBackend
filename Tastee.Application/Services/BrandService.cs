@@ -21,17 +21,21 @@ namespace Tastee.Application.Services
         private readonly ILogger<BrandService> _logger;
 
         private readonly IGenericService<Brands> _serviceBrands;
+        private readonly IGenericService<RestaurantSpace> _serviceRestaurantSpace;
 
         public BrandService(
            ILogger<BrandService> logger,
            IUnitOfWork unitOfWork,
-           IGenericService<Brands> serviceBrands
+           IGenericService<Brands> serviceBrands,
+           IGenericService<RestaurantSpace> serviceRestaurantSpace
            )
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _serviceBrands = serviceBrands;
+            _serviceRestaurantSpace = serviceRestaurantSpace;
         }
+
 
         public async Task<Brands> GetByIdAsync(string id)
         {
@@ -272,5 +276,17 @@ namespace Tastee.Application.Services
 
             return model;
         }
+
+        #region RestaurantSpace
+        public async Task<Response> InsertRangeRestaurantSpaceAsync(List<RestaurantSpace> listRestaurantSpace)
+        {
+            foreach (var item in listRestaurantSpace)
+            {
+                _serviceRestaurantSpace.Insert(item);
+            }
+            await _unitOfWork.SaveChangesAsync();
+            return new Response { Successful = true, Message = "Add successed" };
+        }
+        #endregion
     }
 }

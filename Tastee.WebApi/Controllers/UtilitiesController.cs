@@ -64,7 +64,7 @@ namespace Tastee.WebApi.Controllers
                 //        return BadRequest();
                 //    }
 
-                var result = await _fileService.UploadImageToS3BucketAsync(requestDto.File, requestDto.IsImage ? UploadFileType.Image : UploadFileType.File);
+                var result = await _fileService.UploadFilesToS3BucketAsync(requestDto.File, requestDto.IsImage ? UploadFileType.Image : UploadFileType.File);
                 if (result.StatusCode == StatusCodes.Status200OK)
                 {
                     return new JsonResult(new { url= result.Data}) ;

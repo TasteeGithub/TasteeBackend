@@ -36,7 +36,9 @@ namespace Tastee.Infrastructure.IoC
             services.AddScoped<IGenericService<Users>, GenericService<Users>>();
 
             services.AddScoped<ITrackableRepository<Brands>, TrackableRepository<Brands>>();
+            services.AddScoped<ITrackableRepository<RestaurantSpace>, TrackableRepository<RestaurantSpace>>();
             services.AddScoped<IGenericService<Brands>, GenericService<Brands>>();
+            services.AddScoped<IGenericService<RestaurantSpace>, GenericService<RestaurantSpace>>();
             services.AddScoped<IBrandService, BrandService>();
 
             services.AddScoped<ITrackableRepository<Cities>, TrackableRepository<Cities>>();
