@@ -192,7 +192,7 @@ namespace Tastee.Application.Services
         {
             string[] permittedExtensions;
             // Check file length
-            if (file.Length < 0)
+            if (file.Length <= 0)
             {
                 return false;
             }

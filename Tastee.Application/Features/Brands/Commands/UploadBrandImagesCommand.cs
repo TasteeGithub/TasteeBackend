@@ -35,9 +35,14 @@ namespace Tastee.Application.Features.Brands.Commands
             public async Task<UploadFilesResponse> Handle(UploadBrandImagesCommand request, CancellationToken cancellationToken)
             {
                 var requestModel = request.RequestModel;
+                if(requestModel.Files.Count == 0)
+                {
+                    return new UploadFilesResponse { Successful = false, Message = "Please input upload files" };
+                }
+
                 foreach (var fileModel in requestModel.Files)
                 {
-                    if (!_fileService.IsValidFile(fileModel.File, UploadFileType.Image))
+                    if (fileModel.File == null || !_fileService.IsValidFile(fileModel.File, UploadFileType.Image))
                     {
                         return new UploadFilesResponse { Successful = false, Message = "Invalid file" };
                     }
