@@ -85,7 +85,7 @@ namespace Tastee.Application.Services
 
         public async Task<Response> InsertAsync(Menus newMenus)
         {
-            if (!_serviceMenus.Queryable().Any(x => x.Name == newMenus.Name))
+            if (!_serviceMenus.Queryable().Any(x => x.Name == newMenus.Name && x.BrandId == newMenus.BrandId))
             {
                 newMenus.Id = Guid.NewGuid().ToString();
                 newMenus.CreatedDate = DateTime.Now;
@@ -176,6 +176,11 @@ namespace Tastee.Application.Services
             if (!String.IsNullOrEmpty(requestModel.Name))
             {
                 searchCondition = searchCondition.And(x => x.Name.ToLower().Contains(requestModel.Name.ToLower()));
+            }
+
+            if (!String.IsNullOrEmpty(requestModel.MenuID))
+            {
+                searchCondition = searchCondition.And(x => x.MenuId == requestModel.MenuID);
             }
 
             if (!String.IsNullOrEmpty(requestModel.BrandId))

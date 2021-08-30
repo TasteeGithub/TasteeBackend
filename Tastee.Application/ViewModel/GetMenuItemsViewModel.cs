@@ -11,6 +11,7 @@ namespace Tastee.Application.ViewModel
         public string Length { get; set; }
         public string Name { get; set; }
         public int? Status { get; set; }
+        public string MenuID { get; set; }
         public string BrandId { get; set; }
     }
 }
