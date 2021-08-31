@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using URF.Core.EF.Trackable;
+using System.Text;
 
-namespace Tastee.Infrastucture.Data.Context
+namespace Tastee.Domain.Entities 
 {
-    public partial class RestaurantSpace: Entity
+    public class BrandImage : BaseEntity
     {
-        public string Id { get; set; }
         public string BrandId { get; set; }
         public string Image { get; set; }
         public int? Status { get; set; }

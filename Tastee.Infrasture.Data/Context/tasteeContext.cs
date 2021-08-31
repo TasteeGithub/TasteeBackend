@@ -25,7 +25,7 @@ namespace Tastee.Infrastucture.Data.Context
         public virtual DbSet<OperatorRoles> OperatorRoles { get; set; }
         public virtual DbSet<Operators> Operators { get; set; }
         public virtual DbSet<ProductSliders> ProductSliders { get; set; }
-        public virtual DbSet<RestaurantSpace> RestaurantSpace { get; set; }
+        public virtual DbSet<BrandImages> BrandImages { get; set; }
         public virtual DbSet<Roles> Roles { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
@@ -339,7 +339,7 @@ namespace Tastee.Infrastucture.Data.Context
                 entity.Property(e => e.UpdateDate).HasColumnType("smalldatetime");
             });
 
-            modelBuilder.Entity<RestaurantSpace>(entity =>
+            modelBuilder.Entity<BrandImages>(entity =>
             {
                 entity.Property(e => e.Id)
                     .HasMaxLength(200)

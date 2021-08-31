@@ -63,14 +63,14 @@ namespace Tastee.Application.Features.Brands.Commands
                 }
                 _fileService.DeleteFolder(imgDict.FolderPath);
 
-                var lstRestaurauntSpace = new List<RestaurantSpace>();
+                var lstRestaurauntSpace = new List<BrandImages>();
                 string bucketName = _configuration["AWS:BucketName"];
                 var listUrls = new List<string>();
                 foreach (var key in imgDict.ImgDictionary.Keys)
                 {
                     var url = _fileService.GenerateAwsFileUrl(bucketName, String.Format("{0}/{1}", keyPrefix, imgDict.ImgDictionary[key])).Data;
                     listUrls.Add(url);
-                    lstRestaurauntSpace.Add(new RestaurantSpace()
+                    lstRestaurauntSpace.Add(new BrandImages()
                     {
                         BrandId = requestModel.BrandID,
                         CreatedBy = request.UploadBy,

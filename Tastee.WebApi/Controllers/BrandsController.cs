@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Tastee.Application.Features.Brands.Commands;
+using Tastee.Application.Features.Brands.RestaurantSpace;
 using Tastee.Application.ViewModel;
 using Tastee.Application.Wrappers;
 using Tastee.Domain.Entities;
@@ -17,6 +18,7 @@ using Tastee.Features.Brands.Commands;
 using Tastee.Features.Brands.Queries;
 using Tastee.Infrastucture.Data.Context;
 using Tastee.Shared;
+using Tastee.Shared.Models.Brands;
 
 namespace Tastee.WebApi.Controllers
 {
@@ -134,9 +136,9 @@ namespace Tastee.WebApi.Controllers
             return Ok(new { Successful = false, Error = "Has error when update" });
         }
 
-
+        #region BrandImages
         [HttpPost]
-        [Route("uploadimages")]
+        [Route("images")]
         public async Task<IActionResult> UploadImages([FromForm] UploadBrandImageDto request)
         {
             bool isActionSuccess = false;
@@ -163,5 +165,40 @@ namespace Tastee.WebApi.Controllers
             }
             return Ok(new { Successful = false, Error = "Has error when upload" });
         }
+
+        /// <summary>
+        /// Get list BrandImage
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("images/load-data")]
+        public async Task<IActionResult> BrandImages_LoadData([FromForm] GetBrandImagesModel model)
+        {
+            try
+            {
+                int recordsTotal = 0;
+                GetBrandImagesQuery brandsQuery = new GetBrandImagesQuery { RequestModel = model };
+                var rs = await Mediator.Send(brandsQuery);
+
+                //total number of rows counts
+                recordsTotal = rs.TotalRows;
+
+                //Paging
+                var data = rs.ListData;
+
+                //Returning Json Data
+                return new JsonResult(
+                    new { model.Draw, recordsFiltered = recordsTotal, recordsTotal, data });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "LoadData");
+            }
+
+            return new JsonResult(
+                    new { model.Draw, recordsFiltered = 0, recordsTotal = 0, data = new List<BrandImages>() });
+        }
+        #endregion
     }
 }

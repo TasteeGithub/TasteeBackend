@@ -11,6 +11,7 @@ using Tastee.Application.ViewModel;
 using Tastee.Domain.Entities;
 using Tastee.Infrastucture.Data.Context;
 using Tastee.Shared;
+using Tastee.Shared.Models.Brands;
 using URF.Core.Abstractions;
 
 namespace Tastee.Application.Services
@@ -21,13 +22,13 @@ namespace Tastee.Application.Services
         private readonly ILogger<BrandService> _logger;
 
         private readonly IGenericService<Brands> _serviceBrands;
-        private readonly IGenericService<RestaurantSpace> _serviceRestaurantSpace;
+        private readonly IGenericService<BrandImages> _serviceRestaurantSpace;
 
         public BrandService(
            ILogger<BrandService> logger,
            IUnitOfWork unitOfWork,
            IGenericService<Brands> serviceBrands,
-           IGenericService<RestaurantSpace> serviceRestaurantSpace
+           IGenericService<BrandImages> serviceRestaurantSpace
            )
         {
             _unitOfWork = unitOfWork;
@@ -278,7 +279,7 @@ namespace Tastee.Application.Services
         }
 
         #region RestaurantSpace
-        public async Task<Response> InsertRangeRestaurantSpaceAsync(List<RestaurantSpace> listRestaurantSpace)
+        public async Task<Response> InsertRangeRestaurantSpaceAsync(List<BrandImages> listRestaurantSpace)
         {
             foreach (var item in listRestaurantSpace)
             {
@@ -287,6 +288,59 @@ namespace Tastee.Application.Services
             await _unitOfWork.SaveChangesAsync();
             return new Response { Successful = true, Message = "Add successed" };
         }
+
+        public async Task<PaggingModel<BrandImage>> GetBrandImagesAsync(GetBrandImagesModel requestModel)
+        {
+            ExpressionStarter<BrandImages> searchCondition = PredicateBuilder.New<BrandImages>(true);
+            int pageSize = Converters.StringToInteger(requestModel.Length, Constants.DEFAULT_PAGE_SIZE).Value;
+            int skip = Converters.StringToInteger(requestModel.Start).Value;
+            int pageIndex = skip / pageSize + 1;
+
+            if (!string.IsNullOrEmpty(requestModel.ID))
+            {
+                searchCondition = searchCondition.And(x => x.Id == requestModel.ID);
+            }
+
+            if ((requestModel.Status ?? 0) != 0)
+            {
+                searchCondition = searchCondition.And(x => x.Status != null && x.Status == requestModel.Status.Value);
+            }
+
+            if (!string.IsNullOrEmpty(requestModel.BrandID))
+            {
+                searchCondition = searchCondition.And(x => x.BrandId == requestModel.BrandID);
+            }
+
+            var listBrandImages = _serviceRestaurantSpace.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate);
+
+            var pagedListUser = await PaginatedList<BrandImages>.CreateAsync(listBrandImages, pageIndex, pageSize);
+
+            PaggingModel<BrandImage> returnResult = new PaggingModel<BrandImage>()
+            {
+                ListData = pagedListUser.Select(x => BuildBrandImageModelFromBrandImage(x)).ToList(),
+                TotalRows = pagedListUser.TotalRows,
+            };
+
+            return returnResult;
+        }
+
+        public BrandImage BuildBrandImageModelFromBrandImage(BrandImages brandImage)
+        {
+            var model = new BrandImage()
+            {
+                Id = brandImage.Id,
+                BrandId = brandImage.BrandId,
+                Description = brandImage.Description,
+                Image = brandImage.Image,
+                Status = brandImage.Status,
+                UpdatedDate = brandImage.UpdatedDate,
+                UpdatedBy = brandImage.UpdatedBy,
+                CreatedDate = brandImage.CreatedDate,
+                CreatedBy = brandImage.CreatedBy,
+            };
+            return model;
+        }
+
         #endregion
     }
 }

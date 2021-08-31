@@ -5,6 +5,7 @@ using Tastee.Application.ViewModel;
 using Tastee.Domain.Entities;
 using Tastee.Infrastucture.Data.Context;
 using Tastee.Shared;
+using Tastee.Shared.Models.Brands;
 
 namespace Tastee.Application.Interfaces
 {
@@ -17,7 +18,8 @@ namespace Tastee.Application.Interfaces
         #endregion
 
         #region RestaurantSpace
-        Task<Response> InsertRangeRestaurantSpaceAsync(List<RestaurantSpace> listRestaurantSpace);
+        Task<Response> InsertRangeRestaurantSpaceAsync(List<BrandImages> listRestaurantSpace);
+        Task<PaggingModel<BrandImage>> GetBrandImagesAsync(GetBrandImagesModel requestModel);
         #endregion
 
     }
