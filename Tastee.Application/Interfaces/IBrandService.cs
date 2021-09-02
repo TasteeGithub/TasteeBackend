@@ -13,13 +13,17 @@ namespace Tastee.Application.Interfaces
     {
         #region Brand
         Task<PaggingModel<Brand>> GetBrandsAsync(GetBrandsViewModel requestModel);
-        Brands BuildBrandFromBrandModel(Brand model);
-        Brand BuildBrandModelFromBrand(Brands brand);
+        Brands BuildBrandFromModel(Brand model);
+        Brand BuildModelFromBrand(Brands brand);
         #endregion
 
         #region RestaurantSpace
         Task<Response> InsertRangeRestaurantSpaceAsync(List<BrandImages> listRestaurantSpace);
         Task<PaggingModel<BrandImage>> GetBrandImagesAsync(GetBrandImagesModel requestModel);
+        Task<BrandImages> GetBrandImageByIdAsync(string id);
+        Task<Response> UpdateBrandImageAsync(BrandImages updateImage);
+        BrandImage BuildModelFromBrandImage(BrandImages brandImage);
+        BrandImages BuildBrandImageFromModel(BrandImage model);
         #endregion
 
     }

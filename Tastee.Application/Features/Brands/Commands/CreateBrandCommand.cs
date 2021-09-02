@@ -29,7 +29,7 @@ namespace Tastee.Features.Brands.Commands
 
         public async Task<Response> Handle(CreateBrandCommand request, CancellationToken cancellationToken)
         {
-            var brand = _brandService.BuildBrandFromBrandModel(request.BrandModel);
+            var brand = _brandService.BuildBrandFromModel(request.BrandModel);
             return await _brandService.InsertAsync(brand);
         }
     }

@@ -22,21 +22,20 @@ namespace Tastee.Application.Services
         private readonly ILogger<BrandService> _logger;
 
         private readonly IGenericService<Brands> _serviceBrands;
-        private readonly IGenericService<BrandImages> _serviceRestaurantSpace;
+        private readonly IGenericService<BrandImages> _serviceBrandImage;
 
         public BrandService(
            ILogger<BrandService> logger,
            IUnitOfWork unitOfWork,
            IGenericService<Brands> serviceBrands,
-           IGenericService<BrandImages> serviceRestaurantSpace
+           IGenericService<BrandImages> serviceBrandImage
            )
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _serviceBrands = serviceBrands;
-            _serviceRestaurantSpace = serviceRestaurantSpace;
+            _serviceBrandImage = serviceBrandImage;
         }
-
 
         public async Task<Brands> GetByIdAsync(string id)
         {
@@ -99,7 +98,7 @@ namespace Tastee.Application.Services
 
             PaggingModel<Brand> returnResult = new PaggingModel<Brand>()
             {
-                ListData = pagedListUser.Select(x => BuildBrandModelFromBrand(x)).ToList(),
+                ListData = pagedListUser.Select(x => BuildModelFromBrand(x)).ToList(),
                 TotalRows = pagedListUser.TotalRows,
             };
 
@@ -176,7 +175,7 @@ namespace Tastee.Application.Services
             return new Response { Successful = false, Message = "Please input id" };
         }
 
-        public Brands BuildBrandFromBrandModel(Brand model)
+        public Brands BuildBrandFromModel(Brand model)
         {
             var brand = new Brands()
             {
@@ -230,7 +229,7 @@ namespace Tastee.Application.Services
             return brand;
         }
 
-        public Brand BuildBrandModelFromBrand(Brands brand)
+        public Brand BuildModelFromBrand(Brands brand)
         {
             var model = new Brand()
             {
@@ -283,7 +282,7 @@ namespace Tastee.Application.Services
         {
             foreach (var item in listRestaurantSpace)
             {
-                _serviceRestaurantSpace.Insert(item);
+                _serviceBrandImage.Insert(item);
             }
             await _unitOfWork.SaveChangesAsync();
             return new Response { Successful = true, Message = "Add successed" };
@@ -311,20 +310,53 @@ namespace Tastee.Application.Services
                 searchCondition = searchCondition.And(x => x.BrandId == requestModel.BrandID);
             }
 
-            var listBrandImages = _serviceRestaurantSpace.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate);
+            var listBrandImages = _serviceBrandImage.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate);
 
             var pagedListUser = await PaginatedList<BrandImages>.CreateAsync(listBrandImages, pageIndex, pageSize);
 
             PaggingModel<BrandImage> returnResult = new PaggingModel<BrandImage>()
             {
-                ListData = pagedListUser.Select(x => BuildBrandImageModelFromBrandImage(x)).ToList(),
+                ListData = pagedListUser.Select(x => BuildModelFromBrandImage(x)).ToList(),
                 TotalRows = pagedListUser.TotalRows,
             };
 
             return returnResult;
         }
 
-        public BrandImage BuildBrandImageModelFromBrandImage(BrandImages brandImage)
+        public async Task<BrandImages> GetBrandImageByIdAsync(string id)
+        {
+            var image = await _serviceBrandImage.FindAsync(id);
+            return image;
+        }
+
+        public async Task<Response> UpdateBrandImageAsync(BrandImages updateImage)
+        {
+            if (updateImage.Id != null && updateImage.Id.Length > 0)
+            {
+                var image = await _serviceBrandImage.FindAsync(updateImage.Id);
+                if (image != null)
+                {
+                    image.Status = updateImage.Status ?? image.Status;
+                    image.Description = updateImage.Description;
+                    image.UpdatedDate = Converters.DateTimeToUnixTimeStamp(DateTime.Now).Value;
+                    image.UpdatedBy = updateImage.UpdatedBy;
+                    _serviceBrandImage.Update(image);
+
+                    await _unitOfWork.SaveChangesAsync();
+
+                    return new Response { Successful = true, Message = "Update BrandImage success" };
+                }
+                else
+                {
+                    return new Response { Successful = false, Message = "BrandImage not found" };
+                }
+            }
+
+            return new Response { Successful = false, Message = "Please input id" };
+        }
+
+
+        public BrandImage BuildModelFromBrandImage(BrandImages brandImage)
         {
             var model = new BrandImage()
             {
@@ -339,6 +371,23 @@ namespace Tastee.Application.Services
                 CreatedBy = brandImage.CreatedBy,
             };
             return model;
+        }
+
+        public BrandImages BuildBrandImageFromModel(BrandImage model)
+        {
+            var image = new BrandImages()
+            {
+                Id = model.Id,
+                BrandId = model.BrandId,
+                Description = model.Description,
+                Image = model.Image,
+                Status = model.Status,
+                UpdatedDate = model.UpdatedDate,
+                UpdatedBy = model.UpdatedBy,
+                CreatedDate = model.CreatedDate,
+                CreatedBy = model.CreatedBy,
+            };
+            return image;
         }
 
         #endregion

@@ -18,8 +18,8 @@ namespace Tastee.Domain.Entities
         public int? MinPrice { get; set; }
         public int? MaxPrice { get; set; }
         public string Status { get; set; }
-        public ulong CreatedDate { get; set; }
-        public ulong? UpdatedDate { get; set; }
+        public long CreatedDate { get; set; }
+        public long? UpdatedDate { get; set; }
         public string UpdateBy { get; set; }
         public string MetaDescription { get; set; }
         public string SeoTitle { get; set; }
@@ -34,8 +34,8 @@ namespace Tastee.Domain.Entities
         public string CloseTimeA { get; set; }
         public string OpenTimeP { get; set; }
         public string CloseTimeP { get; set; }
-        public ulong? StartDate { get; set; }
-        public ulong? EndDate { get; set; }
+        public long? StartDate { get; set; }
+        public long? EndDate { get; set; }
         public short? Type { get; set; }
     }
 }

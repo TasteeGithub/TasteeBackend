@@ -9,7 +9,7 @@ using Tastee.Shared;
 using Tastee.Shared.Models.Brands;
 using Tastee.Domain.Entities;
 
-namespace Tastee.Application.Features.Brands.RestaurantSpace
+namespace Tastee.Application.Features.Brands.BrandImagesFeatures.Queries
 {
     public class GetBrandImagesQuery : IRequest<PaggingModel<BrandImage>>
     {

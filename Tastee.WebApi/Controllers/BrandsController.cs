@@ -7,8 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Tastee.Application.Features.Brands.BrandImagesFeatures.Commands;
+using Tastee.Application.Features.Brands.BrandImagesFeatures.Queries;
 using Tastee.Application.Features.Brands.Commands;
-using Tastee.Application.Features.Brands.RestaurantSpace;
 using Tastee.Application.ViewModel;
 using Tastee.Application.Wrappers;
 using Tastee.Domain.Entities;
@@ -198,6 +199,61 @@ namespace Tastee.WebApi.Controllers
 
             return new JsonResult(
                     new { model.Draw, recordsFiltered = 0, recordsTotal = 0, data = new List<BrandImages>() });
+        }
+
+        /// <summary>
+        /// Get Brand Image Detail
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("images/detail/{id}")]
+        public async Task<IActionResult> GetBrandImageDetail(string id)
+        {
+            try
+            {
+                GetBrandImageByIdQuery rq = new GetBrandImageByIdQuery { Id = id };
+                return Ok(await Mediator.Send(rq));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Get brand image detail, Id: {0}", id);
+            }
+            finally
+            {
+                _logger.LogInformation("Get brand image detail, Id {0}", id);
+            }
+            return Ok(new Response<Brand>("Has error"));
+        }
+
+        /// <summary>
+        /// Update Brand Image
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("images/update")]
+        public async Task<IActionResult> UpdateBrandImage(UpdateBrandImageModel model)
+        {
+            bool isActionSuccess = false;
+            try
+            {
+                var updateCommand = new UpdateBrandImageCommand()
+                {
+                    Model = model,
+                    UpdatedBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value
+                };
+
+                return Ok(await Mediator.Send(updateCommand));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Update brand, Brand: {0}", model);
+            }
+            finally
+            {
+                _logger.LogInformation("Update BrandImage, data: {0}, Result status: {1}", model, isActionSuccess);
+            }
+            return Ok(new { Successful = false, Error = "Has error when update" });
         }
         #endregion
     }

@@ -45,7 +45,7 @@ namespace Tastee.Application.Utilities
             return date.Value.ToString(formatStr, CultureInfo.InvariantCulture);
         }
 
-        public static DateTime? UnixTimeStampToDateTime(ulong? unixTimeStamp, bool zeroIsNull = true)
+        public static DateTime? UnixTimeStampToDateTime(long? unixTimeStamp, bool zeroIsNull = true)
         {
             if (unixTimeStamp == null || (unixTimeStamp == 0 && zeroIsNull))
                 return null;
@@ -55,11 +55,11 @@ namespace Tastee.Application.Utilities
             return dateTime;
         }
 
-        public static ulong? DateTimeToUnixTimeStamp(DateTime? date)
+        public static long? DateTimeToUnixTimeStamp(DateTime? date)
         {
             if (date == null)
                 return null;
-            return (ulong)((DateTimeOffset)date).ToUnixTimeSeconds();
+            return ((DateTimeOffset)date).ToUnixTimeSeconds();
         }
         #endregion
 

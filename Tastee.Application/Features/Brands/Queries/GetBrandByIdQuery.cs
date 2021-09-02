@@ -23,7 +23,9 @@ namespace Tastee.Feature.Brands.Queries
             public async Task<Response<Brand>> Handle(GetBrandByIdQuery request, CancellationToken cancellationToken)
             {
                 var brand = await _brandService.GetByIdAsync(request.Id);
-                return new Response<Brand>(_brandService.BuildBrandModelFromBrand(brand));
+                if (brand == null)
+                    return new Response<Brand>("Brand not found");
+                return new Response<Brand>(_brandService.BuildModelFromBrand(brand));
             }
         }
     }
