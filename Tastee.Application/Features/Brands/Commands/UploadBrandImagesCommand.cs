@@ -80,7 +80,7 @@ namespace Tastee.Application.Features.Brands.Commands
                         Image = url
                     });
                 }
-                await _brandService.InsertRangeRestaurantSpaceAsync(lstRestaurauntSpace);
+                await _brandService.InsertBrandImagesAsync(lstRestaurauntSpace);
                 return new UploadFilesResponse { Successful = true, Message = "Upload success", Urls = listUrls };
             }
         }

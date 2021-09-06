@@ -278,7 +278,7 @@ namespace Tastee.Application.Services
         }
 
         #region RestaurantSpace
-        public async Task<Response> InsertRangeRestaurantSpaceAsync(List<BrandImages> listRestaurantSpace)
+        public async Task<Response> InsertBrandImagesAsync(List<BrandImages> listRestaurantSpace)
         {
             foreach (var item in listRestaurantSpace)
             {
@@ -286,6 +286,16 @@ namespace Tastee.Application.Services
             }
             await _unitOfWork.SaveChangesAsync();
             return new Response { Successful = true, Message = "Add successed" };
+        }
+
+        public async Task<Response> DeleteBrandImagesAsync(string id)
+        {
+            var image = await GetBrandImageByIdAsync(id);
+            if (image != null)
+                _serviceBrandImage.Delete(image);
+
+            await _unitOfWork.SaveChangesAsync();
+            return new Response { Successful = true, Message = "Delete successed" };
         }
 
         public async Task<PaggingModel<BrandImage>> GetBrandImagesAsync(GetBrandImagesModel requestModel)

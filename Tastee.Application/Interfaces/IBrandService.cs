@@ -18,7 +18,8 @@ namespace Tastee.Application.Interfaces
         #endregion
 
         #region RestaurantSpace
-        Task<Response> InsertRangeRestaurantSpaceAsync(List<BrandImages> listRestaurantSpace);
+        Task<Response> InsertBrandImagesAsync(List<BrandImages> listRestaurantSpace);
+        Task<Response> DeleteBrandImagesAsync(string id);
         Task<PaggingModel<BrandImage>> GetBrandImagesAsync(GetBrandImagesModel requestModel);
         Task<BrandImages> GetBrandImageByIdAsync(string id);
         Task<Response> UpdateBrandImageAsync(BrandImages updateImage);

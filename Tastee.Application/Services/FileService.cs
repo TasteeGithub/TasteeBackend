@@ -1,4 +1,5 @@
 ﻿using Amazon.S3;
+using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -65,7 +66,7 @@ namespace Tastee.Application.Services
                 var uploadPath = fileType == UploadFileType.Image ? _configuration["Path:UploadImagePath"] : _configuration["Path:UploadFilePath"];
                 var trustedStorageName = uploadPath + randomFileName + ext;
 
-                // Create the image object to be uploaded in memory
+                //Create the image object to be uploaded in memory
                 var transferUtilityRequest = new TransferUtilityUploadRequest()
                 {
                     InputStream = file.OpenReadStream(),
@@ -257,6 +258,37 @@ namespace Tastee.Application.Services
             {
                 Directory.Delete(path, true);
             }
+        }
+
+        public async Task<string> DeleteFromS3BucketAsync(string brandID, string fileName)
+        {
+            string errorMsg = String.Empty;
+            try
+            {
+                string bucketName = _configuration["AWS:BucketName"];
+                var keyPrefix = String.Format("{0}{1}{2}", _configuration["Path:UploadImagePath"], _configuration["Path:UploadBrandImagePath"], brandID);
+                var key = String.Format("{0}/{1}", keyPrefix, fileName);
+
+                var result = await _transferUtility.S3Client.DeleteObjectAsync(new DeleteObjectRequest
+                {
+                    BucketName = bucketName,
+                    Key = key
+                });
+            }
+            catch (AmazonS3Exception amazonS3Exception)
+            {
+                if (amazonS3Exception.ErrorCode != null &&
+                    (amazonS3Exception.ErrorCode.Equals("InvalidAccessKeyId") ||
+                    amazonS3Exception.ErrorCode.Equals("InvalidSecurity")))
+                {
+                    errorMsg = "Please check the provided AWS Credentials.";
+                }
+                else
+                {
+                    errorMsg = string.Format("An error occurred with the message '{0}' when deleting an object", amazonS3Exception.Message);
+                }
+            }
+            return errorMsg;
         }
 
         #region PrivateMethod

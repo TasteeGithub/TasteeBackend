@@ -247,13 +247,44 @@ namespace Tastee.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Update brand, Brand: {0}", model);
+                _logger.LogError(ex, "Update BrandImage, BrandImage: {0}", model);
             }
             finally
             {
                 _logger.LogInformation("Update BrandImage, data: {0}, Result status: {1}", model, isActionSuccess);
             }
             return Ok(new { Successful = false, Error = "Has error when update" });
+        }
+
+
+        /// <summary>
+        /// Delete Brand Image
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("images/delete")]
+        public async Task<IActionResult> DeleteBrandImage(string id)
+        {
+            bool isActionSuccess = false;
+            try
+            {
+                var deleteCommand = new DeleteBrandImageCommand()
+                {
+                  ID= id
+                };
+
+                return Ok(await Mediator.Send(deleteCommand));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Delete BrandImage, ID: {0}", id);
+            }
+            finally
+            {
+                _logger.LogInformation("Delete BrandImage, id: {0}, Result status: {1}", id, isActionSuccess);
+            }
+            return Ok(new { Successful = false, Error = "Has error when delete" });
         }
         #endregion
     }

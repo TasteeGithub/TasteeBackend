@@ -17,5 +17,6 @@ namespace Tastee.Application.Interfaces
         bool IsValidFile(IFormFile file, UploadFileType fileType);
         void DeleteFolder(string path, bool deleteContent = true);
         AWSUploadResult<string> GenerateAwsFileUrl(string bucketName, string key, bool useRegion = true);
+        Task<string> DeleteFromS3BucketAsync(string brandID, string fileName);
     }
 }
