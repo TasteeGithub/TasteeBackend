@@ -191,7 +191,7 @@ namespace Tastee.Infrastucture.Data.Context
 
                 entity.Property(e => e.Description).IsRequired();
 
-                entity.Property(e => e.Image).HasMaxLength(50);
+                entity.Property(e => e.Image).HasMaxLength(200);
 
                 entity.Property(e => e.MenuId)
                     .IsRequired()
