@@ -16,7 +16,7 @@ namespace Tastee.Application.ViewModel
         public string City { get; set; }
         public short? Type { get; set; }
         public string Status { get; set; }
-        public ulong? StartDate { get; set; }
-        public ulong? EndDate { get; set; }
+        public long? StartDate { get; set; }
+        public long? EndDate { get; set; }
     }
 }
