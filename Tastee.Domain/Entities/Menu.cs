@@ -10,9 +10,9 @@ namespace Tastee.Domain.Entities
         public string BrandId { get; set; }
         public int Status { get; set; }
         public int Order { get; set; }
-        public ulong CreatedDate { get; set; }
+        public long CreatedDate { get; set; }
         public string CreatedBy { get; set; }
-        public ulong? UpdatedDate { get; set; }
+        public long? UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
     }
 }

@@ -17,6 +17,97 @@
             <param name="status"></param>
             <returns></returns>
         </member>
+        <member name="M:Tastee.WebApi.Controllers.BrandsController.Update(Tastee.Domain.Entities.Brand)">
+            <summary>
+            Update brand
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.BrandsController.BrandImages_LoadData(Tastee.Shared.Models.Brands.GetBrandImagesModel)">
+            <summary>
+            Get list BrandImage
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.BrandsController.GetBrandImageDetail(System.String)">
+            <summary>
+            Get Brand Image Detail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.BrandsController.UpdateBrandImage(Tastee.Shared.Models.Brands.UpdateBrandImageModel)">
+            <summary>
+            Update Brand Image
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.BrandsController.DeleteBrandImage(System.String)">
+            <summary>
+            Delete Brand Image
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.MenusController.GetMenuDetail(System.String)">
+            <summary>
+            Get menu detail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.MenusController.LoadData(Tastee.Application.ViewModel.GetMenusViewModel)">
+            <summary>
+            Load list Menu
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.MenusController.Post(Tastee.Domain.Entities.Menu)">
+            <summary>
+            Create menu
+            </summary>
+            <param name="menuModel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.MenusController.Update(Tastee.Domain.Entities.Menu)">
+            <summary>
+            Update menu
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.MenusController.GetMenuItemDetail(System.String)">
+            <summary>
+            Get menu item detail
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.MenusController.ItemsLoadData(Tastee.Application.ViewModel.GetMenuItemsViewModel)">
+            <summary>
+            Load list menu items
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.MenusController.ItemPost(Tastee.Domain.Entities.MenuItem)">
+            <summary>
+            Create menu item
+            </summary>
+            <param name="itemModel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tastee.WebApi.Controllers.MenusController.ItemsUpdate(Tastee.Domain.Entities.MenuItem)">
+            <summary>
+            Update menu item
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
         <member name="M:Tastee.WebApi.Controllers.ProductSliderController.LoadData(System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
             <summary>
             Load dữ liệu có phân trang
