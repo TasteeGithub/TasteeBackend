@@ -12,6 +12,7 @@ using Tastee.Domain.Entities;
 using Tastee.Infrastucture.Data.Context;
 using Tastee.Shared;
 using Tastee.Shared.Models.Brands;
+using Tastee.Shared.Models.Brands.BrandDecorations;
 using URF.Core.Abstractions;
 
 namespace Tastee.Application.Services
@@ -23,20 +24,24 @@ namespace Tastee.Application.Services
 
         private readonly IGenericService<Brands> _serviceBrands;
         private readonly IGenericService<BrandImages> _serviceBrandImage;
+        private readonly IGenericService<BrandDecorations> _serviceBrandDecoration;
 
         public BrandService(
            ILogger<BrandService> logger,
            IUnitOfWork unitOfWork,
            IGenericService<Brands> serviceBrands,
-           IGenericService<BrandImages> serviceBrandImage
+           IGenericService<BrandImages> serviceBrandImage,
+           IGenericService<BrandDecorations> serviceBrandDecoration
            )
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _serviceBrands = serviceBrands;
             _serviceBrandImage = serviceBrandImage;
+            _serviceBrandDecoration = serviceBrandDecoration;
         }
 
+        #region Brand
         public async Task<Brands> GetByIdAsync(string id)
         {
             var brand = await _serviceBrands.FindAsync(id);
@@ -273,6 +278,7 @@ namespace Tastee.Application.Services
 
             return model;
         }
+        #endregion
 
         #region RestaurantSpace
         public async Task<Response> InsertBrandImagesAsync(List<BrandImages> listRestaurantSpace)
@@ -396,6 +402,47 @@ namespace Tastee.Application.Services
             };
             return image;
         }
+
+        #endregion
+
+        #region BrandDecoration
+        public async Task<Response> InsertBrandDecorationAsync(BrandDecorations item)
+        {
+            item.CreatedDate = Converters.DateTimeToUnixTimeStamp(DateTime.Now).Value;
+            item.Id = Guid.NewGuid().ToString();
+            _serviceBrandDecoration.Insert(item);
+            await _unitOfWork.SaveChangesAsync();
+            return new Response { Successful = true, Message = "Add successed" };
+        }
+
+        public async Task<BrandDecorations> GetBrandDecorationByBrandIdAsync(string brandId)
+        {
+            ExpressionStarter<BrandDecorations> searchCondition = PredicateBuilder.New<BrandDecorations>(true);
+            searchCondition = searchCondition.And(x => x.BrandId == brandId);
+            return _serviceBrandDecoration.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate).FirstOrDefault();
+        }
+
+        public WidgetsModel BuildDefaultBrandDecoration(Brands brand)
+        {
+            WidgetsModel widgets = new WidgetsModel
+            {
+                InfoWidget = new InfoWidgetModel
+                {
+                    BrandAddress = brand.Address,
+                    BrandImage = brand.RestaurantImages,
+                    BrandLogo = brand.Logo,
+                    BrandName = brand.Name,
+                    BrandType = brand.Type,
+                    DisplayOrder = 0,
+                    Style = 1,
+                    Url= brand.Uri
+                }
+
+            };
+            return widgets;
+        }
+
+
 
         #endregion
     }

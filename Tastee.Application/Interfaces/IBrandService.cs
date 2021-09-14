@@ -6,6 +6,7 @@ using Tastee.Domain.Entities;
 using Tastee.Infrastucture.Data.Context;
 using Tastee.Shared;
 using Tastee.Shared.Models.Brands;
+using Tastee.Shared.Models.Brands.BrandDecorations;
 
 namespace Tastee.Application.Interfaces
 {
@@ -25,6 +26,12 @@ namespace Tastee.Application.Interfaces
         Task<Response> UpdateBrandImageAsync(BrandImages updateImage);
         BrandImage BuildModelFromBrandImage(BrandImages brandImage);
         BrandImages BuildBrandImageFromModel(BrandImage model);
+        #endregion
+
+        #region BrandDecoration
+        Task<Response> InsertBrandDecorationAsync(BrandDecorations item);
+        Task<BrandDecorations> GetBrandDecorationByBrandIdAsync(string brandId);
+        WidgetsModel BuildDefaultBrandDecoration(Brands brand);
         #endregion
 
     }

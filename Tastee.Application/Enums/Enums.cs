@@ -91,4 +91,11 @@
        File,
        Image
     }
+
+    public enum BrandDecorationStatus
+    {
+        Draft,
+        Approved
+    }
+
 }

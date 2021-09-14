@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Tastee.Application.Features.Brands.BrandDecorationFeatures.Commands;
 using Tastee.Application.Features.Brands.BrandImagesFeatures.Commands;
 using Tastee.Application.Features.Brands.BrandImagesFeatures.Queries;
 using Tastee.Application.Features.Brands.Commands;
@@ -30,13 +31,16 @@ namespace Tastee.WebApi.Controllers
     {
         private readonly ILogger<BrandsController> _logger;
 
+        #region Contructor
         public BrandsController(
             ILogger<BrandsController> logger
             )
         {
             _logger = logger;
         }
+        #endregion
 
+        #region Brand
         [HttpPost]
         [Route("load-data")]
         public async Task<IActionResult> LoadData([FromForm] GetBrandsViewModel model)
@@ -136,6 +140,7 @@ namespace Tastee.WebApi.Controllers
             }
             return Ok(new { Successful = false, Error = "Has error when update" });
         }
+        #endregion
 
         #region BrandImages
         [HttpPost]
@@ -271,7 +276,7 @@ namespace Tastee.WebApi.Controllers
             {
                 var deleteCommand = new DeleteBrandImageCommand()
                 {
-                  ID= id
+                    ID = id
                 };
 
                 return Ok(await Mediator.Send(deleteCommand));
@@ -285,6 +290,38 @@ namespace Tastee.WebApi.Controllers
                 _logger.LogInformation("Delete BrandImage, id: {0}, Result status: {1}", id, isActionSuccess);
             }
             return Ok(new { Successful = false, Error = "Has error when delete" });
+        }
+        #endregion
+
+        #region Decoration
+        /// <summary>
+        /// Init Brand Decoration
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("decoration/{id}")]
+        public async Task<IActionResult> BrandDecoration_Init(string id)
+        {
+            try
+            {
+                InitBrandDecorationCommand rq = new InitBrandDecorationCommand
+                {
+
+                    BrandId = id,
+                    UserEmail = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value
+                };
+                return Ok(await Mediator.Send(rq));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "init brand decoration, brand id: {0}", id);
+            }
+            finally
+            {
+                _logger.LogInformation("init brand decoration, brand Id {0}", id);
+            }
+            return Ok(new Response<Brand>("Has error"));
         }
         #endregion
     }
