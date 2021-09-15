@@ -21,6 +21,7 @@ using Tastee.Features.Brands.Queries;
 using Tastee.Infrastucture.Data.Context;
 using Tastee.Shared;
 using Tastee.Shared.Models.Brands;
+using Tastee.Shared.Models.Brands.BrandDecorations;
 
 namespace Tastee.WebApi.Controllers
 {
@@ -300,26 +301,26 @@ namespace Tastee.WebApi.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("decoration/{id}")]
-        public async Task<IActionResult> BrandDecoration_Init(string id)
+        [Route("decoration")]
+        public async Task<IActionResult> BrandDecoration_Init(InitBrandDecorationModel model)
         {
             try
             {
                 InitBrandDecorationCommand rq = new InitBrandDecorationCommand
                 {
 
-                    BrandId = id,
+                    BrandId = model.BrandId,
                     UserEmail = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value
                 };
                 return Ok(await Mediator.Send(rq));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "init brand decoration, brand id: {0}", id);
+                _logger.LogError(ex, "init brand decoration, brand id: {0}", model.BrandId);
             }
             finally
             {
-                _logger.LogInformation("init brand decoration, brand Id {0}", id);
+                _logger.LogInformation("init brand decoration, brand Id {0}", model.BrandId);
             }
             return Ok(new Response<Brand>("Has error"));
         }
