@@ -77,7 +77,8 @@ namespace Tastee.Application.Features.Brands.Commands
                         CreatedDate = (long)(Converters.DateTimeToUnixTimeStamp(DateTime.Now).Value),
                         Description = requestModel.Files[key].Description,
                         Id = Guid.NewGuid().ToString(),
-                        Image = url
+                        Image = url,
+                        Status= requestModel.Files[key].Status
                     });
                 }
                 await _brandService.InsertBrandImagesAsync(lstRestaurauntSpace);

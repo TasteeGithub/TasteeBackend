@@ -24,6 +24,7 @@ namespace Tastee.Shared.Models.Brands.BrandDecorations
 
     public class GeneralWidgetModel
     {
+        [JsonProperty("widget_style")]
         public int Style { get; set; }
         [JsonProperty("display_order")]
         public int DisplayOrder { get; set; }
