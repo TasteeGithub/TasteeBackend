@@ -20,25 +20,28 @@ namespace Tastee.Application.Services
     public class BrandService : IBrandService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<BrandService> _logger;
 
         private readonly IGenericService<Brands> _serviceBrands;
         private readonly IGenericService<BrandImages> _serviceBrandImage;
         private readonly IGenericService<BrandDecorations> _serviceBrandDecoration;
+        private readonly IGenericService<Menus> _serviceMenus;
+        private readonly IGenericService<MenuItems> _serviceMenuItems;
 
         public BrandService(
-           ILogger<BrandService> logger,
            IUnitOfWork unitOfWork,
            IGenericService<Brands> serviceBrands,
            IGenericService<BrandImages> serviceBrandImage,
-           IGenericService<BrandDecorations> serviceBrandDecoration
+           IGenericService<BrandDecorations> serviceBrandDecoration,
+           IGenericService<Menus> serviceMenus,
+           IGenericService<MenuItems> serviceMenuItems
            )
         {
             _unitOfWork = unitOfWork;
-            _logger = logger;
             _serviceBrands = serviceBrands;
             _serviceBrandImage = serviceBrandImage;
             _serviceBrandDecoration = serviceBrandDecoration;
+            _serviceMenus = serviceMenus;
+            _serviceMenuItems = serviceMenuItems;
         }
 
         #region Brand
@@ -278,6 +281,14 @@ namespace Tastee.Application.Services
 
             return model;
         }
+
+        public Response CheckMenuItemsBelongBrand(List<string> itemIds, string brandId)
+        {
+            var notExistIds = itemIds.Except(_serviceMenuItems.Queryable().Select(x => x.Id)).ToList();
+            if (notExistIds.Count != 0)
+                return new Response() { Successful = false, Message = String.Format("Item: {0} not exists", notExistIds.First()) };
+            return new Response() { Successful = true };
+        }
         #endregion
 
         #region RestaurantSpace
@@ -435,7 +446,7 @@ namespace Tastee.Application.Services
                     BrandType = brand.Type,
                     DisplayOrder = 0,
                     Style = 1,
-                    Url= brand.Uri
+                    Url = brand.Uri
                 }
 
             };

@@ -21,6 +21,8 @@ namespace Tastee.Infrastucture.Data.Context
         public virtual DbSet<BrandImages> BrandImages { get; set; }
         public virtual DbSet<Brands> Brands { get; set; }
         public virtual DbSet<Cities> Cities { get; set; }
+        public virtual DbSet<GroupItemMapping> GroupItemMapping { get; set; }
+        public virtual DbSet<GroupItems> GroupItems { get; set; }
         public virtual DbSet<MenuItems> MenuItems { get; set; }
         public virtual DbSet<Menus> Menus { get; set; }
         public virtual DbSet<Nlogs> Nlogs { get; set; }
@@ -35,7 +37,7 @@ namespace Tastee.Infrastucture.Data.Context
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=MINHTHUPC;Initial Catalog=tasteenew;Persist Security Info=True;User ID=tas77143_tastee;Password=K5EOcP3MPgUpc");
+                optionsBuilder.UseSqlServer("Data Source=DESKTOP-1T5J9OI;Initial Catalog=tastee;Persist Security Info=True;User ID=sa;Password=123456");
             }
         }
 
@@ -214,6 +216,37 @@ namespace Tastee.Infrastucture.Data.Context
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<GroupItemMapping>(entity =>
+            {
+                entity.HasKey(e => new { e.GroupId, e.ItemId })
+                    .HasName("PK_GroupItemMapping_1");
+
+                entity.Property(e => e.GroupId).HasMaxLength(50);
+
+                entity.Property(e => e.ItemId).HasMaxLength(50);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<GroupItems>(entity =>
+            {
+                entity.Property(e => e.Id).HasMaxLength(50);
+
+                entity.Property(e => e.BrandId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Name).HasMaxLength(100);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(50);
             });
 
             modelBuilder.Entity<MenuItems>(entity =>

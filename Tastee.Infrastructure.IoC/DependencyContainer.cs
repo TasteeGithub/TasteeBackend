@@ -67,6 +67,13 @@ namespace Tastee.Infrastructure.IoC
 
             services.AddScoped<IFileService, FileService>();
 
+
+            services.AddScoped<ITrackableRepository<GroupItems>, TrackableRepository<GroupItems>>();
+            services.AddScoped<IGenericService<GroupItems>, GenericService<GroupItems>>();
+            services.AddScoped<ITrackableRepository<GroupItemMapping>, TrackableRepository<GroupItemMapping>>();
+            services.AddScoped<IGenericService<GroupItemMapping>, GenericService<GroupItemMapping>>();
+            services.AddScoped<IGroupItemsService, GroupItemsService>();
+
             services.AddMediatR(System.AppDomain.CurrentDomain.GetAssemblies());
 
         }

@@ -14,6 +14,7 @@ namespace Tastee.Application.Interfaces
     {
         #region Brand
         Task<PaggingModel<Brand>> GetBrandsAsync(GetBrandsViewModel requestModel);
+        Response CheckMenuItemsBelongBrand(List<string> itemIds, string brandId);
         Brands BuildBrandFromModel(Brand model);
         Brand BuildModelFromBrand(Brands brand);
         #endregion
