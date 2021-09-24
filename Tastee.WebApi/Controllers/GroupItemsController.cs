@@ -75,7 +75,7 @@ namespace Tastee.WebApi.Controllers
             {
                 _logger.LogInformation("Get group item detail, Id {0}", id);
             }
-            return Ok(new Response<GroupItem>("Has error"));
+            return Ok(new Response<GroupItemDetail>("Has error"));
         }
 
         // POST: api/GroupItems
@@ -103,8 +103,8 @@ namespace Tastee.WebApi.Controllers
 
         #region GroupItemsMapping
         // POST: api/GroupItems/Items
-        [Route("items")]
         [HttpPost]
+        [Route("items")]
         public async Task<IActionResult> GroupItemsMapping_Post(InsertGroupItemMappingViewModel model)
         {
             if (!ModelState.IsValid)
@@ -119,6 +119,25 @@ namespace Tastee.WebApi.Controllers
             {
                 Model = model,
                 UserEmail = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value
+            };
+            return Ok(await Mediator.Send(createCommand));
+        }
+
+        [HttpPost]
+        [Route("items/delete")]
+        public async Task<IActionResult> GroupItemsMapping_Delete(DeleteGroupItemMappingViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errorMessage = ModelState.Values
+                    .SelectMany(x => x.Errors)
+                    .Select(x => x.ErrorMessage);
+
+                return Ok(new Response { Successful = false, Message = string.Join(",", errorMessage) });
+            }
+            var createCommand = new DeleteGroupItemsMappingCommand()
+            {
+               Model= model
             };
             return Ok(await Mediator.Send(createCommand));
         }

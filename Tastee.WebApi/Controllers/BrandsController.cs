@@ -324,6 +324,31 @@ namespace Tastee.WebApi.Controllers
             }
             return Ok(new Response<Brand>("Has error"));
         }
+
+        [HttpPost]
+        [Route("decoration/update")]
+        public async Task<IActionResult> BrandDecoration_Update([FromForm] UpdateBrandDecorationModel request)
+        {
+            try
+            {
+                InitBrandDecorationCommand rq = new InitBrandDecorationCommand
+                {
+
+                    BrandId = model.BrandId,
+                    UserEmail = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value
+                };
+                return Ok(await Mediator.Send(rq));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "update brand decoration, brand id: {0}", model.BrandId);
+            }
+            finally
+            {
+                _logger.LogInformation("update brand decoration, brand Id {0}", model.BrandId);
+            }
+            return Ok(new Response<Brand>("Has error"));
+        }
         #endregion
     }
 }

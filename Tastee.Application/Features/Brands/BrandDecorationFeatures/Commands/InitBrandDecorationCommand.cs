@@ -31,7 +31,7 @@ namespace Tastee.Application.Features.Brands.BrandDecorationFeatures.Commands
             }
             public async Task<Response<string>> Handle(InitBrandDecorationCommand request, CancellationToken cancellationToken)
             {
-                var decoration = await _brandService.GetBrandDecorationByBrandIdAsync(request.BrandId);
+                var decoration = _brandService.GetBrandDecorationByBrandId(request.BrandId);
                 if (decoration != null)
                     return new Response<string>(decoration.WidgetsJson, null);
 

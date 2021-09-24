@@ -89,10 +89,10 @@ namespace Tastee.Application.Services
                 searchCondition = searchCondition.And(x => x.BrandId.ToLower() == requestModel.BrandId.ToLower());
             }
 
-            
+
             var listGroup = _serviceGroupItems.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate);
 
-            var pagedListGroup= await PaginatedList<GroupItems>.CreateAsync(listGroup, pageIndex, pageSize);
+            var pagedListGroup = await PaginatedList<GroupItems>.CreateAsync(listGroup, pageIndex, pageSize);
 
             PaggingModel<GroupItem> returnResult = new PaggingModel<GroupItem>()
             {
@@ -102,7 +102,12 @@ namespace Tastee.Application.Services
             return returnResult;
         }
 
-
+        public GroupItemDetail BuildGroupItemDetail(GroupItems group)
+        {
+            GroupItemDetail detail = group.Adapt<GroupItemDetail>();
+            detail.MenuItemIds = GetGroupItemMappingByGroupIdAsync(group.Id).Select(x=>x.ItemId).ToList();
+            return detail;
+        }
         #endregion
 
         #region GroupItemsMapping
@@ -113,6 +118,37 @@ namespace Tastee.Application.Services
             var listItems = _serviceGroupItemMapping.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate).ToList();
             return listItems;
         }
+
+        public async Task<Response> InsertGroupItemMappingAsync(List<string> itemIds, string groupId, string createdBy)
+        {
+            var existItemIds = _serviceGroupItemMapping.Queryable().Where(x => itemIds.Contains(x.ItemId) && x.GroupId == groupId).Select(x => x.ItemId).ToList();
+            var listItemIds = itemIds.Except(existItemIds).ToList();
+            foreach (var itemId in listItemIds)
+            {
+                _serviceGroupItemMapping.Insert(new GroupItemMapping
+                {
+                    CreatedBy = createdBy,
+                    CreatedDate = Converters.DateTimeToUnixTimeStamp(DateTime.Now).Value,
+                    GroupId = groupId,
+                    ItemId = itemId,
+                });
+            }
+            await _unitOfWork.SaveChangesAsync();
+            return new Response { Successful = true, Message = "Add items successed" };
+        }
+
+
+        public async Task<Response> DeleteGroupItemMapping(List<string> itemIds, string groupId)
+        {
+            var items = _serviceGroupItemMapping.Queryable().Where(x => itemIds.Contains(x.ItemId) && x.GroupId == groupId).ToList();
+            foreach (var item in items)
+            {
+                _serviceGroupItemMapping.Delete(item);
+            }
+            await _unitOfWork.SaveChangesAsync();
+            return new Response { Successful = true, Message = "Delete successed" };
+        }
+
         #endregion
     }
 }

@@ -13,4 +13,9 @@ namespace Tastee.Domain.Entities
         public string UpdatedBy { get; set; }
         public string Name { get; set; }
     }
+
+    public class GroupItemDetail: GroupItem
+    {
+        public List<string> MenuItemIds { get; set; }
+    }
 }

@@ -35,8 +35,10 @@ namespace Tastee.Features.GroupItems.Commands
             var group = await _groupItemService.GetByIdAsync(insertModel.GroupItemsId);
             if (group == null)
                 return new Response() { Successful = false, Message = "Group item not found" };
-            var rs = _brandService.CheckMenuItemsBelongBrand(request.Model.ListItemId, group.BrandId);
-            return null;
+            var rs = await _brandService.CheckMenuItemsBelongBrand(insertModel.ListItemId, group.BrandId);
+            if (!rs.Successful)
+                return rs;
+           return await _groupItemService.InsertGroupItemMappingAsync(insertModel.ListItemId, insertModel.GroupItemsId, request.UserEmail);
         }
     }
 }

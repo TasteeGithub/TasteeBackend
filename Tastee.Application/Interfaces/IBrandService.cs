@@ -14,9 +14,9 @@ namespace Tastee.Application.Interfaces
     {
         #region Brand
         Task<PaggingModel<Brand>> GetBrandsAsync(GetBrandsViewModel requestModel);
-        Response CheckMenuItemsBelongBrand(List<string> itemIds, string brandId);
         Brands BuildBrandFromModel(Brand model);
         Brand BuildModelFromBrand(Brands brand);
+        Task<Response> CheckMenuItemsBelongBrand(List<string> itemIds, string brandId);
         #endregion
 
         #region RestaurantSpace
@@ -31,7 +31,8 @@ namespace Tastee.Application.Interfaces
 
         #region BrandDecoration
         Task<Response> InsertBrandDecorationAsync(BrandDecorations item);
-        Task<BrandDecorations> GetBrandDecorationByBrandIdAsync(string brandId);
+        Task<Response> UpdateBrandDecorationAsync(BrandDecorations item);
+        BrandDecorations GetBrandDecorationByBrandId(string brandId);
         WidgetsModel BuildDefaultBrandDecoration(Brands brand);
         #endregion
 

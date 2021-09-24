@@ -282,11 +282,20 @@ namespace Tastee.Application.Services
             return model;
         }
 
-        public Response CheckMenuItemsBelongBrand(List<string> itemIds, string brandId)
+        public async Task<Response> CheckMenuItemsBelongBrand(List<string> itemIds, string brandId)
         {
+            var brand = await GetByIdAsync(brandId);
+            if (brand == null)
+                return new Response() { Successful = false, Message = String.Format("brand not found") };
+
             var notExistIds = itemIds.Except(_serviceMenuItems.Queryable().Select(x => x.Id)).ToList();
             if (notExistIds.Count != 0)
-                return new Response() { Successful = false, Message = String.Format("Item: {0} not exists", notExistIds.First()) };
+                return new Response() { Successful = false, Message = String.Format("Item: {0} not found", notExistIds.First()) };
+
+            var menuIds = _serviceMenuItems.Queryable().Where(x => itemIds.Contains(x.Id)).Select(x => x.MenuId).ToList();
+            var brandIdsFromMenu = _serviceMenus.Queryable().Where(x => menuIds.Contains(x.Id)).Select(x => x.BrandId).ToList();
+            if (brandIdsFromMenu.Count != 1 || brandIdsFromMenu.FirstOrDefault() != brandId)
+                return new Response() { Successful = false, Message = String.Format("Items not belong brand") };
             return new Response() { Successful = true };
         }
         #endregion
@@ -426,7 +435,33 @@ namespace Tastee.Application.Services
             return new Response { Successful = true, Message = "Add successed" };
         }
 
-        public async Task<BrandDecorations> GetBrandDecorationByBrandIdAsync(string brandId)
+        public async Task<Response> UpdateBrandDecorationAsync(BrandDecorations updateDecoration)
+        {
+            if (updateDecoration.Id != null && updateDecoration.Id.Length > 0)
+            {
+                var decoration = await _serviceBrandDecoration.FindAsync(updateDecoration.Id);
+                if (decoration != null)
+                {
+                    decoration.WidgetsJson = updateDecoration.WidgetsJson;
+                    decoration.Status = updateDecoration.Status;
+                    decoration.UpdatedDate = Converters.DateTimeToUnixTimeStamp(DateTime.Now);
+                    decoration.UpdatedBy = updateDecoration.UpdatedBy;
+                    _serviceBrandDecoration.Update(decoration);
+
+                    await _unitOfWork.SaveChangesAsync();
+
+                    return new Response { Successful = true, Message = "Update Brand Decoration success" };
+                }
+                else
+                {
+                    return new Response { Successful = false, Message = "Brand Decoration not found" };
+                }
+            }
+
+            return new Response { Successful = false, Message = "Please input id" };
+        }
+
+        public BrandDecorations GetBrandDecorationByBrandId(string brandId)
         {
             ExpressionStarter<BrandDecorations> searchCondition = PredicateBuilder.New<BrandDecorations>(true);
             searchCondition = searchCondition.And(x => x.BrandId == brandId);

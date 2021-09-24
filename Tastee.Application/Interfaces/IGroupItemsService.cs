@@ -11,8 +11,16 @@ namespace Tastee.Application.Interfaces
 {
     public interface IGroupItemsService : ITasteeServices<GroupItems>
     {
+        #region GroupItem
         Task<PaggingModel<GroupItem>> GetGroupItemsAsync(GetGroupItemViewModel requestModel);
+        GroupItemDetail BuildGroupItemDetail(GroupItems group);
+        #endregion
 
+        #region GroupItemsMapping
         List<GroupItemMapping> GetGroupItemMappingByGroupIdAsync(string GroupId);
+        Task<Response> InsertGroupItemMappingAsync(List<string> itemIds, string groupId, string createdBy);
+        Task<Response> DeleteGroupItemMapping(List<string> itemIds, string groupId);
+        #endregion
+
     }
 }
