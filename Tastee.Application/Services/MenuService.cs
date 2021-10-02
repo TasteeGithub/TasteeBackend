@@ -101,22 +101,19 @@ namespace Tastee.Application.Services
             if (updateMenus.Id != null && updateMenus.Id.Length > 0)
             {
                 var menu = await _serviceMenus.FindAsync(updateMenus.Id);
-                if (menu != null)
-                {
-                    menu.Name = updateMenus.Name ?? menu.Name;
-                    menu.Status = updateMenus.Status;
-                    menu.Order = updateMenus.Order >> menu.Order;
-                    menu.UpdatedBy = updateMenus.UpdatedBy;
-                    menu.UpdatedDate = DateTime.Now;
-                    _serviceMenus.Update(menu);
-                    await _unitOfWork.SaveChangesAsync();
-
-                    return new Response { Successful = true, Message = "Update menu success" };
-                }
-                else
-                {
+                if (menu == null)
                     return new Response { Successful = false, Message = "Menu not found" };
-                }
+                if (_serviceMenus.Queryable().Any(x => x.Name == menu.Name && x.BrandId == menu.BrandId))
+                    return new Response { Successful = false, Message = "Menu name is exists" };
+                menu.Name = updateMenus.Name ?? menu.Name;
+                menu.Status = updateMenus.Status;
+                menu.Order = updateMenus.Order >> menu.Order;
+                menu.UpdatedBy = updateMenus.UpdatedBy;
+                menu.UpdatedDate = DateTime.Now;
+                _serviceMenus.Update(menu);
+                await _unitOfWork.SaveChangesAsync();
+                return new Response { Successful = true, Message = "Update menu success" };
+
             }
             return new Response { Successful = false, Message = "Please input id" };
         }

@@ -125,51 +125,48 @@ namespace Tastee.Application.Services
             if (updateBrand.Id != null && updateBrand.Id.Length > 0)
             {
                 var brand = await _serviceBrands.FindAsync(updateBrand.Id);
-                if (brand != null)
-                {
-                    brand.Name = updateBrand.Name ?? brand.Name;
-                    brand.Address = updateBrand.Address ?? brand.Address;
-                    brand.Hotline = updateBrand.Hotline ?? brand.Hotline;
-                    brand.Email = updateBrand.Email ?? brand.Email;
-                    brand.Phone = updateBrand.Phone ?? brand.Phone;
-                    brand.HeadOffice = updateBrand.HeadOffice ?? brand.HeadOffice;
-                    brand.Uri = updateBrand.Uri ?? brand.Uri;
-                    brand.Logo = updateBrand.Logo ?? brand.Logo;
-                    brand.RestaurantImages = updateBrand.RestaurantImages ?? brand.RestaurantImages;
-                    brand.City = updateBrand.City ?? brand.City;
-                    brand.Area = updateBrand.Area ?? brand.Area;
-                    brand.MinPrice = updateBrand.MinPrice ?? brand.MinPrice;
-                    brand.MaxPrice = updateBrand.MaxPrice ?? brand.MaxPrice;
-                    brand.Status = updateBrand.Status ?? brand.Status;
-                    brand.UpdateBy = updateBrand.UpdateBy ?? brand.UpdateBy;
-                    brand.MetaDescription = updateBrand.MetaDescription ?? brand.MetaDescription;
-                    brand.SeoTitle = updateBrand.SeoTitle ?? brand.SeoTitle;
-                    brand.SeoDescription = updateBrand.SeoDescription ?? brand.SeoDescription;
-                    brand.SeoImage = updateBrand.SeoImage ?? brand.SeoImage;
-                    brand.Latitude = updateBrand.Latitude ?? brand.Latitude;
-                    brand.Longitude = updateBrand.Longitude ?? brand.Longitude;
-                    brand.Cuisines = updateBrand.Cuisines ?? brand.Cuisines;
-                    brand.Categories = updateBrand.Categories ?? brand.Categories;
-                    brand.MerchantId = updateBrand.MerchantId ?? brand.MerchantId;
-                    brand.OpenTimeA = updateBrand.OpenTimeA ?? brand.OpenTimeA;
-                    brand.CloseTimeA = updateBrand.CloseTimeA ?? brand.CloseTimeA;
-                    brand.OpenTimeP = updateBrand.OpenTimeP ?? brand.OpenTimeP;
-                    brand.CloseTimeP = updateBrand.CloseTimeP ?? brand.CloseTimeP;
-                    brand.StartDate = updateBrand.StartDate ?? brand.StartDate;
-                    brand.EndDate = updateBrand.EndDate ?? brand.EndDate;
-                    brand.Type = updateBrand.Type ?? brand.Type;
-                    brand.UpdatedDate = DateTime.Now;
-                    brand.UpdateBy = updateBrand.UpdateBy;
-                    _serviceBrands.Update(brand);
-
-                    await _unitOfWork.SaveChangesAsync();
-
-                    return new Response { Successful = true, Message = "Update Brand success" };
-                }
-                else
-                {
+                if (brand == null)
                     return new Response { Successful = false, Message = "Brand not found" };
-                }
+                if (_serviceBrands.Queryable().Any(x => x.Uri == updateBrand.Uri))
+                    return new Response { Successful = false, Message = "Uri is exists" };
+                brand.Name = updateBrand.Name ?? brand.Name;
+                brand.Address = updateBrand.Address ?? brand.Address;
+                brand.Hotline = updateBrand.Hotline ?? brand.Hotline;
+                brand.Email = updateBrand.Email ?? brand.Email;
+                brand.Phone = updateBrand.Phone ?? brand.Phone;
+                brand.HeadOffice = updateBrand.HeadOffice ?? brand.HeadOffice;
+                brand.Uri = updateBrand.Uri ?? brand.Uri;
+                brand.Logo = updateBrand.Logo ?? brand.Logo;
+                brand.RestaurantImages = updateBrand.RestaurantImages ?? brand.RestaurantImages;
+                brand.City = updateBrand.City ?? brand.City;
+                brand.Area = updateBrand.Area ?? brand.Area;
+                brand.MinPrice = updateBrand.MinPrice ?? brand.MinPrice;
+                brand.MaxPrice = updateBrand.MaxPrice ?? brand.MaxPrice;
+                brand.Status = updateBrand.Status ?? brand.Status;
+                brand.UpdateBy = updateBrand.UpdateBy ?? brand.UpdateBy;
+                brand.MetaDescription = updateBrand.MetaDescription ?? brand.MetaDescription;
+                brand.SeoTitle = updateBrand.SeoTitle ?? brand.SeoTitle;
+                brand.SeoDescription = updateBrand.SeoDescription ?? brand.SeoDescription;
+                brand.SeoImage = updateBrand.SeoImage ?? brand.SeoImage;
+                brand.Latitude = updateBrand.Latitude ?? brand.Latitude;
+                brand.Longitude = updateBrand.Longitude ?? brand.Longitude;
+                brand.Cuisines = updateBrand.Cuisines ?? brand.Cuisines;
+                brand.Categories = updateBrand.Categories ?? brand.Categories;
+                brand.MerchantId = updateBrand.MerchantId ?? brand.MerchantId;
+                brand.OpenTimeA = updateBrand.OpenTimeA ?? brand.OpenTimeA;
+                brand.CloseTimeA = updateBrand.CloseTimeA ?? brand.CloseTimeA;
+                brand.OpenTimeP = updateBrand.OpenTimeP ?? brand.OpenTimeP;
+                brand.CloseTimeP = updateBrand.CloseTimeP ?? brand.CloseTimeP;
+                brand.StartDate = updateBrand.StartDate ?? brand.StartDate;
+                brand.EndDate = updateBrand.EndDate ?? brand.EndDate;
+                brand.Type = updateBrand.Type ?? brand.Type;
+                brand.UpdatedDate = DateTime.Now;
+                brand.UpdateBy = updateBrand.UpdateBy;
+                _serviceBrands.Update(brand);
+
+                await _unitOfWork.SaveChangesAsync();
+
+                return new Response { Successful = true, Message = "Update Brand success" };
             }
 
             return new Response { Successful = false, Message = "Please input id" };
