@@ -24,6 +24,7 @@ namespace Tastee.Application.Services
         private readonly IGenericService<Brands> _serviceBrands;
         private readonly IGenericService<BrandImages> _serviceBrandImage;
         private readonly IGenericService<BrandDecorations> _serviceBrandDecoration;
+        private readonly IGenericService<DecorationImages> _serviceDecorationImages;
         private readonly IGenericService<Menus> _serviceMenus;
         private readonly IGenericService<MenuItems> _serviceMenuItems;
 
@@ -32,6 +33,7 @@ namespace Tastee.Application.Services
            IGenericService<Brands> serviceBrands,
            IGenericService<BrandImages> serviceBrandImage,
            IGenericService<BrandDecorations> serviceBrandDecoration,
+           IGenericService<DecorationImages> serviceDecorationImages,
            IGenericService<Menus> serviceMenus,
            IGenericService<MenuItems> serviceMenuItems
            )
@@ -42,6 +44,7 @@ namespace Tastee.Application.Services
             _serviceBrandDecoration = serviceBrandDecoration;
             _serviceMenus = serviceMenus;
             _serviceMenuItems = serviceMenuItems;
+            _serviceDecorationImages = serviceDecorationImages;
         }
 
         #region Brand
@@ -431,6 +434,16 @@ namespace Tastee.Application.Services
             item.CreatedDate = Converters.DateTimeToUnixTimeStamp(DateTime.Now).Value;
             item.Id = Guid.NewGuid().ToString();
             _serviceBrandDecoration.Insert(item);
+            await _unitOfWork.SaveChangesAsync();
+            return new Response { Successful = true, Message = "Add successed" };
+        }
+
+        public async Task<Response> InsertDecorationImagesAsync(List<DecorationImages> items)
+        {
+            foreach (var item in items)
+            {
+                _serviceDecorationImages.Insert(item);
+            }
             await _unitOfWork.SaveChangesAsync();
             return new Response { Successful = true, Message = "Add successed" };
         }

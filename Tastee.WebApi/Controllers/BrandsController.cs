@@ -331,21 +331,21 @@ namespace Tastee.WebApi.Controllers
         {
             try
             {
-                InitBrandDecorationCommand rq = new InitBrandDecorationCommand
+                UpdateBrandDecorationCommand rq = new UpdateBrandDecorationCommand
                 {
 
-                    BrandId = model.BrandId,
+                    Model = request,
                     UserEmail = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value
                 };
                 return Ok(await Mediator.Send(rq));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "update brand decoration, brand id: {0}", model.BrandId);
+                _logger.LogError(ex, "update brand decoration, brand id: {0}", request.BrandID);
             }
             finally
             {
-                _logger.LogInformation("update brand decoration, brand Id {0}", model.BrandId);
+                _logger.LogInformation("update brand decoration, brand Id {0}", request.BrandID);
             }
             return Ok(new Response<Brand>("Has error"));
         }

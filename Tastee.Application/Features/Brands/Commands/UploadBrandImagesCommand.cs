@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -54,8 +55,8 @@ namespace Tastee.Application.Features.Brands.Commands
                     return new UploadFilesResponse { Successful = false, Message = "Brand not found" };
                 }
 
-                var imgDict = _fileService.UploadTmpFolder(requestModel);
-                var keyPrefix = String.Format("{0}{1}{2}", _configuration["Path:UploadImagePath"], _configuration["Path:UploadBrandImagePath"], requestModel.BrandID);
+                var imgDict = _fileService.UploadTmpFolder(requestModel.Files.Select(x=>x.File).ToList());
+                var keyPrefix = _fileService.GenerateS3KeyPrefix(requestModel.BrandID, UploadFileType.Image, ObjectType.Brand);
                 var uploadResult = await _fileService.UploadFolderToS3BucketAsync(imgDict.FolderPath, keyPrefix);
                 if (!String.IsNullOrEmpty(uploadResult))
                 {

@@ -31,7 +31,7 @@ namespace Tastee.Application.Features.Brands.BrandImagesFeatures.Commands
             var image = await _brandService.GetBrandImageByIdAsync(request.ID);
             if (image == null)
                 return new Response { Successful = false, Message = "BrandImage not found" };
-            var msg = await _fileService.DeleteFromS3BucketAsync(image.BrandId, UtilitiesMethod.GetFilenameFromUrl(image.Image));
+            var msg = await _fileService.DeleteFromS3BucketAsync(image.Image);
             if (!String.IsNullOrEmpty(msg))
                 return new Response { Successful = false, Message = "Delete S3 Image failed" };
             return await _brandService.DeleteBrandImagesAsync(request.ID);

@@ -13,12 +13,12 @@ namespace Tastee.Shared.Models.Brands.BrandDecorations
         public GeneralWidgetModel BrandImageWidget { get; set; }
         [JsonProperty("menu_widget", NullValueHandling = NullValueHandling.Ignore)]
         public MenuWidgetModel MenuWidget { get; set; }
-        [JsonProperty("singel_banner_widget", NullValueHandling = NullValueHandling.Ignore)]
-        public SingelBannerWidgetModel SingelBannerWidget { get; set; }
-        [JsonProperty("silder_banner_widget", NullValueHandling = NullValueHandling.Ignore)]
-        public SliderBannerWidgetModel SliderBannerWidget { get; set; }
-        [JsonProperty("group_item_widget", NullValueHandling = NullValueHandling.Ignore)]
-        public GroupItemWidgetModel GroupItemWidget { get; set; }
+        [JsonProperty("singel_banner_widgets", NullValueHandling = NullValueHandling.Ignore)]
+        public List<SingelBannerWidgetModel> SingelBannerWidget { get; set; }
+        [JsonProperty("silder_banner_widgets", NullValueHandling = NullValueHandling.Ignore)]
+        public List<SliderBannerWidgetModel> SliderBannerWidget { get; set; }
+        [JsonProperty("group_item_widgets", NullValueHandling = NullValueHandling.Ignore)]
+        public List<GroupItemWidgetModel> GroupItemWidget { get; set; }
 
     }
 

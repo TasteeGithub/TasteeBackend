@@ -21,6 +21,7 @@ namespace Tastee.Infrastucture.Data.Context
         public virtual DbSet<BrandImages> BrandImages { get; set; }
         public virtual DbSet<Brands> Brands { get; set; }
         public virtual DbSet<Cities> Cities { get; set; }
+        public virtual DbSet<DecorationImages> DecorationImages { get; set; }
         public virtual DbSet<GroupItemMapping> GroupItemMapping { get; set; }
         public virtual DbSet<GroupItems> GroupItems { get; set; }
         public virtual DbSet<MenuItems> MenuItems { get; set; }
@@ -214,6 +215,19 @@ namespace Tastee.Infrastucture.Data.Context
             modelBuilder.Entity<Cities>(entity =>
             {
                 entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<DecorationImages>(entity =>
+            {
+                entity.Property(e => e.Id).HasMaxLength(50);
+
+                entity.Property(e => e.DecorationId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Image)
                     .IsRequired()
                     .HasMaxLength(200);
             });

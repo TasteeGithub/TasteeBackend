@@ -92,6 +92,12 @@
        Image
     }
 
+    public enum ObjectType
+    {
+        Brand,
+        Decoration
+    }
+
     public enum BrandDecorationStatus
     {
         Draft,

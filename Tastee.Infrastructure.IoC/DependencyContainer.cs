@@ -37,9 +37,11 @@ namespace Tastee.Infrastructure.IoC
 
             services.AddScoped<ITrackableRepository<Brands>, TrackableRepository<Brands>>();
             services.AddScoped<ITrackableRepository<BrandDecorations>, TrackableRepository<BrandDecorations>>();
+            services.AddScoped<ITrackableRepository<DecorationImages>, TrackableRepository<DecorationImages>>();
             services.AddScoped<ITrackableRepository<BrandImages>, TrackableRepository<BrandImages>>();
             services.AddScoped<IGenericService<Brands>, GenericService<Brands>>();
             services.AddScoped<IGenericService<BrandDecorations>, GenericService<BrandDecorations>>();
+            services.AddScoped<IGenericService<DecorationImages>, GenericService<DecorationImages>>();
             services.AddScoped<IGenericService<BrandImages>, GenericService<BrandImages>>();
             services.AddScoped<IBrandService, BrandService>();
 

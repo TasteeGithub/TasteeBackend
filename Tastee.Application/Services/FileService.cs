@@ -222,7 +222,7 @@ namespace Tastee.Application.Services
             return true;
         }
 
-        public UploadTmpFolderResponse UploadTmpFolder(UploadBrandImageDto request)
+        public UploadTmpFolderResponse UploadTmpFolder(List<IFormFile> files)
         {
 
             var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), _configuration["Path:UploadTmpPath"], GenerateRandomName());
@@ -235,16 +235,16 @@ namespace Tastee.Application.Services
             {
                 Directory.CreateDirectory(pathToSave);
             }
-            for (int i = 0; i < request.Files.Count; i++)
+            for (int i = 0; i < files.Count; i++)
             {
-                var fileModel = request.Files[i];
-                var ext = Path.GetExtension(fileModel.File.FileName).ToLowerInvariant();
+                var fileModel = files[i];
+                var ext = Path.GetExtension(fileModel.FileName).ToLowerInvariant();
                 string fileName = GenerateRandomName() + ext;
                 string fullPath = Path.Combine(pathToSave, fileName);
 
                 using (var stream = new FileStream(fullPath, FileMode.Create))
                 {
-                    fileModel.File.CopyTo(stream);
+                    fileModel.CopyTo(stream);
                 }
                 response.ImgDictionary.Add(i, fileName);
             }
@@ -260,19 +260,16 @@ namespace Tastee.Application.Services
             }
         }
 
-        public async Task<string> DeleteFromS3BucketAsync(string brandID, string fileName)
+        public async Task<string> DeleteFromS3BucketAsync(string url)
         {
             string errorMsg = String.Empty;
             try
             {
                 string bucketName = _configuration["AWS:BucketName"];
-                var keyPrefix = String.Format("{0}{1}{2}", _configuration["Path:UploadImagePath"], _configuration["Path:UploadBrandImagePath"], brandID);
-                var key = String.Format("{0}/{1}", keyPrefix, fileName);
-
                 var result = await _transferUtility.S3Client.DeleteObjectAsync(new DeleteObjectRequest
                 {
                     BucketName = bucketName,
-                    Key = key
+                    Key = url
                 });
             }
             catch (AmazonS3Exception amazonS3Exception)
@@ -289,6 +286,22 @@ namespace Tastee.Application.Services
                 }
             }
             return errorMsg;
+        }
+
+        public string GenerateS3KeyPrefix(string objectId, UploadFileType fileType = UploadFileType.Image, ObjectType objectType = ObjectType.Brand)
+        {
+            var fileTypeFolder = _configuration["Path:UploadImagePath"];
+            if (fileType == UploadFileType.File)
+            {
+                fileTypeFolder = _configuration["Path:UploadFilePath"];
+            }
+
+            var objectFolder = _configuration["Path:UploadBrandImagePath"];
+            if (objectType == ObjectType.Decoration)
+            {
+                objectFolder = _configuration["Path:UploadBrandDecorationPath"];
+            }
+            return String.Format("{0}{1}{2}", fileTypeFolder, objectFolder, objectId);
         }
 
         #region PrivateMethod

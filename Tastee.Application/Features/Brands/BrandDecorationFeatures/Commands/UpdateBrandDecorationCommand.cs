@@ -3,10 +3,12 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Tastee.Application.Interfaces;
+using Tastee.Application.Utilities;
 using Tastee.Application.Wrappers;
 using Tastee.Infrastucture.Data.Context;
 using Tastee.Shared;
@@ -34,12 +36,95 @@ namespace Tastee.Application.Features.Brands.BrandDecorationFeatures.Commands
                 var updateModel = request.Model;
                 var decoration = _brandService.GetBrandDecorationByBrandId(updateModel.BrandID);
                 if (decoration != null)
-                    return new Response() { Successful= false, Message="Decoration not found" };
+                    return new Response() { Successful = false, Message = "Decoration not found" };
 
+                if (!updateModel.Widgets.TryParseJson(out WidgetsModel uWidgetModel))
+                {
+                    return new Response() { Successful = false, Message = "Decoration not valid" };
+                }
+                decoration.WidgetsJson.TryParseJson(out WidgetsModel cWidgetModel);
+
+                if (updateModel.Files.Count != 0)
+                {
+                    var rs = _fileService.UploadTmpFolder(updateModel.Files.Select(x => x.File).ToList());
+                    var key_perfix = _fileService.GenerateS3KeyPrefix(decoration.Id, UploadFileType.Image, ObjectType.Decoration);
+                    var uploadResult = await _fileService.UploadFolderToS3BucketAsync(rs.FolderPath, key_perfix);
+                    if (!String.IsNullOrEmpty(uploadResult))
+                    {
+                        return new Response() { Successful = false, Message = "Update Image Failed" };
+                    }
+                    _fileService.DeleteFolder(rs.FolderPath);
+
+                    var listDecorationImg = new List<DecorationImages>();
+                    var imgDict = new Dictionary<string, string>();
+                    var listKeys = rs.ImgDictionary.Keys.ToList();
+                    for (int i = 0; i <= listKeys.Count(); i++)
+                    {
+                        var key = listKeys[i];
+                        string bucketName = _configuration["AWS:BucketName"];
+                        var url = _fileService.GenerateAwsFileUrl(bucketName, String.Format("{0}/{1}", key_perfix, rs.ImgDictionary[key])).Data;
+
+                        listDecorationImg.Add(new DecorationImages()
+                        {
+                            DecorationId = decoration.BrandId,
+                            Image = url
+                        });
+                        imgDict.Add(updateModel.Files[i].Name, url);
+                    }
+                    await _brandService.InsertDecorationImagesAsync(listDecorationImg);
+                    var currentImages = ReplaceImage(ref uWidgetModel, cWidgetModel, imgDict);
+                }
                 decoration.UpdatedBy = request.UserEmail;
-                decoration.WidgetsJson = JsonConvert.SerializeObject(updateModel.Widgets);
+                decoration.WidgetsJson = JsonConvert.SerializeObject(uWidgetModel);
 
                 return await _brandService.UpdateBrandDecorationAsync(decoration); ;
+            }
+
+            private List<string> ReplaceImage(ref WidgetsModel uWidgetModel, WidgetsModel cWidgetModel, Dictionary<string, string> imgDict)
+            {
+                var currentImages = new List<string>();
+
+                // InfoWidget
+                currentImages.Add(cWidgetModel.InfoWidget.BrandImage);
+                if (imgDict.Keys.Contains(uWidgetModel.InfoWidget.BrandImage))
+                {
+                    uWidgetModel.InfoWidget.BrandImage = imgDict[uWidgetModel.InfoWidget.BrandImage];
+                }
+
+                //SingleBanner
+                foreach (var widget in cWidgetModel.SingelBannerWidget)
+                {
+                    currentImages.Add(widget.Image);
+
+                }
+                foreach ( var widget in uWidgetModel.SingelBannerWidget)
+                {
+                    if (imgDict.Keys.Contains(widget.Image))
+                    {
+                        widget.Image = imgDict[widget.Image];
+                    }
+                }
+
+                //SilderBanner
+                foreach (var widget in cWidgetModel.SliderBannerWidget)
+                {
+                    currentImages.AddRange(widget.Images);
+
+                }
+                foreach (var widget in uWidgetModel.SliderBannerWidget)
+                {
+                    var newImgs = new List<string>();
+                    foreach(var image in widget.Images)
+                    {
+                        if (imgDict.Keys.Contains(image))
+                            newImgs.Add(imgDict[image]);
+                        else
+                            newImgs.Add(image);
+                    }
+                    widget.Images = newImgs;
+                }
+
+                return currentImages;
             }
         }
     }
