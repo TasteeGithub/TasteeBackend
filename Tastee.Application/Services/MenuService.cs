@@ -85,7 +85,7 @@ namespace Tastee.Application.Services
 
         public async Task<Response> InsertAsync(Menus newMenus)
         {
-            if (!_serviceMenus.Queryable().Any(x => x.Name == newMenus.Name && x.BrandId == newMenus.BrandId))
+            if (!_serviceMenus.Queryable().Any(x => x.Name.ToLower() == newMenus.Name.ToLower() && x.BrandId == newMenus.BrandId))
             {
                 newMenus.Id = Guid.NewGuid().ToString();
                 newMenus.CreatedDate = DateTime.Now;
@@ -103,7 +103,8 @@ namespace Tastee.Application.Services
                 var menu = await _serviceMenus.FindAsync(updateMenus.Id);
                 if (menu == null)
                     return new Response { Successful = false, Message = "Menu not found" };
-                if (_serviceMenus.Queryable().Any(x => x.Name == menu.Name && x.BrandId == menu.BrandId))
+                var brandId = String.IsNullOrEmpty(updateMenus.BrandId) ? menu.BrandId : updateMenus.BrandId;
+                if (_serviceMenus.Queryable().Any(x => x.Name.ToLower() == updateMenus.Name.ToLower() && x.BrandId == brandId))
                     return new Response { Successful = false, Message = "Menu name is exists" };
                 menu.Name = updateMenus.Name ?? menu.Name;
                 menu.Status = updateMenus.Status;

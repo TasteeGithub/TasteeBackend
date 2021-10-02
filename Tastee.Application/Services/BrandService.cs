@@ -107,7 +107,7 @@ namespace Tastee.Application.Services
 
         public async Task<Response> InsertAsync(Brands newBrands)
         {
-            if (!_serviceBrands.Queryable().Any(x => x.Name == newBrands.Name))
+            if (!_serviceBrands.Queryable().Any(x => x.Name.ToLower() == newBrands.Name.ToLower()))
             {
                 newBrands.Id = Guid.NewGuid().ToString();
                 newBrands.Status = BrandStatus.Pending.ToString();
@@ -127,7 +127,7 @@ namespace Tastee.Application.Services
                 var brand = await _serviceBrands.FindAsync(updateBrand.Id);
                 if (brand == null)
                     return new Response { Successful = false, Message = "Brand not found" };
-                if (_serviceBrands.Queryable().Any(x => x.Uri == updateBrand.Uri))
+                if (_serviceBrands.Queryable().Any(x => x.Uri.ToLower() == updateBrand.Uri.ToLower() && x.Id != brand.Id))
                     return new Response { Successful = false, Message = "Uri is exists" };
                 brand.Name = updateBrand.Name ?? brand.Name;
                 brand.Address = updateBrand.Address ?? brand.Address;
