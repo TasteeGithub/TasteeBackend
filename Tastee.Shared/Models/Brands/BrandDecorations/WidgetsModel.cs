@@ -51,11 +51,13 @@ namespace Tastee.Shared.Models.Brands.BrandDecorations
 
     public class SingelBannerWidgetModel : GeneralWidgetModel
     {
+        [JsonProperty("image")]
         public string Image { get; set; }
     }
 
     public class SliderBannerWidgetModel : GeneralWidgetModel
     {
+        [JsonProperty("images")]
         public List<string> Images { get; set; }
     }
 

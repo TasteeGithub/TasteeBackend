@@ -35,7 +35,7 @@ namespace Tastee.Application.Features.Brands.BrandDecorationFeatures.Commands
             {
                 var updateModel = request.Model;
                 var decoration = _brandService.GetBrandDecorationByBrandId(updateModel.BrandID);
-                if (decoration != null)
+                if (decoration == null)
                     return new Response() { Successful = false, Message = "Decoration not found" };
 
                 if (!updateModel.Widgets.TryParseJson(out WidgetsModel uWidgetModel))
@@ -58,7 +58,7 @@ namespace Tastee.Application.Features.Brands.BrandDecorationFeatures.Commands
                     var listDecorationImg = new List<DecorationImages>();
                     var imgDict = new Dictionary<string, string>();
                     var listKeys = rs.ImgDictionary.Keys.ToList();
-                    for (int i = 0; i <= listKeys.Count(); i++)
+                    for (int i = 0; i < listKeys.Count(); i++)
                     {
                         var key = listKeys[i];
                         string bucketName = _configuration["AWS:BucketName"];
@@ -67,12 +67,13 @@ namespace Tastee.Application.Features.Brands.BrandDecorationFeatures.Commands
                         listDecorationImg.Add(new DecorationImages()
                         {
                             DecorationId = decoration.BrandId,
-                            Image = url
+                            Image = url,
+                            Id = Guid.NewGuid().ToString()
                         });
                         imgDict.Add(updateModel.Files[i].Name, url);
                     }
                     await _brandService.InsertDecorationImagesAsync(listDecorationImg);
-                    var currentImages = ReplaceImage(ref uWidgetModel, cWidgetModel, imgDict);
+                    ReplaceImage(ref uWidgetModel, cWidgetModel, imgDict);
                 }
                 decoration.UpdatedBy = request.UserEmail;
                 decoration.WidgetsJson = JsonConvert.SerializeObject(uWidgetModel);
@@ -80,51 +81,53 @@ namespace Tastee.Application.Features.Brands.BrandDecorationFeatures.Commands
                 return await _brandService.UpdateBrandDecorationAsync(decoration); ;
             }
 
-            private List<string> ReplaceImage(ref WidgetsModel uWidgetModel, WidgetsModel cWidgetModel, Dictionary<string, string> imgDict)
+            private void ReplaceImage(ref WidgetsModel uWidgetModel, WidgetsModel cWidgetModel, Dictionary<string, string> imgDict)
             {
-                var currentImages = new List<string>();
+                //var currentImages = new List<string>();
 
                 // InfoWidget
-                currentImages.Add(cWidgetModel.InfoWidget.BrandImage);
+                //currentImages.Add(cWidgetModel.InfoWidget.BrandImage);
                 if (imgDict.Keys.Contains(uWidgetModel.InfoWidget.BrandImage))
                 {
                     uWidgetModel.InfoWidget.BrandImage = imgDict[uWidgetModel.InfoWidget.BrandImage];
                 }
 
                 //SingleBanner
-                foreach (var widget in cWidgetModel.SingelBannerWidget)
-                {
-                    currentImages.Add(widget.Image);
+                //foreach (var widget in cWidgetModel.SingelBannerWidget)
+                //{
+                //    currentImages.Add(widget.Image);
 
-                }
-                foreach ( var widget in uWidgetModel.SingelBannerWidget)
-                {
-                    if (imgDict.Keys.Contains(widget.Image))
+                //}
+                if (uWidgetModel.SingelBannerWidget != null)
+                    foreach (var widget in uWidgetModel.SingelBannerWidget)
                     {
-                        widget.Image = imgDict[widget.Image];
+                        if (imgDict.Keys.Contains(widget.Image))
+                        {
+                            widget.Image = imgDict[widget.Image];
+                        }
                     }
-                }
 
                 //SilderBanner
-                foreach (var widget in cWidgetModel.SliderBannerWidget)
-                {
-                    currentImages.AddRange(widget.Images);
+                //foreach (var widget in cWidgetModel.SliderBannerWidget)
+                //{
+                //    currentImages.AddRange(widget.Images);
 
-                }
-                foreach (var widget in uWidgetModel.SliderBannerWidget)
-                {
-                    var newImgs = new List<string>();
-                    foreach(var image in widget.Images)
+                //}
+                if (uWidgetModel.SliderBannerWidget != null)
+                    foreach (var widget in uWidgetModel.SliderBannerWidget)
                     {
-                        if (imgDict.Keys.Contains(image))
-                            newImgs.Add(imgDict[image]);
-                        else
-                            newImgs.Add(image);
+                        var newImgs = new List<string>();
+                        foreach (var image in widget.Images)
+                        {
+                            if (imgDict.Keys.Contains(image))
+                                newImgs.Add(imgDict[image]);
+                            else
+                                newImgs.Add(image);
+                        }
+                        widget.Images = newImgs;
                     }
-                    widget.Images = newImgs;
-                }
 
-                return currentImages;
+                //return currentImages;
             }
         }
     }
