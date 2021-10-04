@@ -160,7 +160,7 @@ namespace Tastee.WebApi.Controllers
                     signingCredentials: creds
                 );
                 IsActionSuccess = true;
-                return Ok(new LoginResult { Successful = true, Token = new JwtSecurityTokenHandler().WriteToken(token) });
+                return Ok(new LoginResult { Successful = true, Token = new JwtSecurityTokenHandler().WriteToken(token), FullName = user.FullName, Status = user.Status });
             }
             catch (Exception ex)
             {
