@@ -12,7 +12,6 @@ namespace Tastee.Infrastucture.Data.Context
         public string CreatedBy { get; set; }
         public long? UpdatedDate { get; set; }
         public string UpdatedBy { get; set; }
-        public string WidgetsJson { get; set; }
         public int Status { get; set; }
     }
 }

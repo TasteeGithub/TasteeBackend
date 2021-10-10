@@ -30,11 +30,13 @@ namespace Tastee.Application.Interfaces
         #endregion
 
         #region BrandDecoration
-        Task<Response> InsertBrandDecorationAsync(BrandDecorations item);
-        Task<Response> InsertDecorationImagesAsync(List<DecorationImages> items);
-        Task<Response> UpdateBrandDecorationAsync(BrandDecorations item);
+        Task<Response> InsertBrandDecorationAsync(WidgetsModel model, string brandId, string userEmail);
+        Task<Response> InsertWidgetImagesAsync(List<WidgetImages> items);
+        Task<Response> UpdateBrandDecorationAsync(BrandDecorations item, WidgetsModel widgets);
         BrandDecorations GetBrandDecorationByBrandId(string brandId);
         WidgetsModel BuildDefaultBrandDecoration(Brands brand);
+        WidgetsModel BuildBrandDecoration(BrandDecorations brandDecoration);
+        Task<PaggingModel<WidgetImage>> GetWidgetImageAsync(GetWidgetImageModel requestModel);
         #endregion
 
     }

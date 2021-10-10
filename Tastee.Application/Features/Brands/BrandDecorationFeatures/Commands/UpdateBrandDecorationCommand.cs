@@ -42,8 +42,8 @@ namespace Tastee.Application.Features.Brands.BrandDecorationFeatures.Commands
                 {
                     return new Response() { Successful = false, Message = "Decoration not valid" };
                 }
-                decoration.WidgetsJson.TryParseJson(out WidgetsModel cWidgetModel);
 
+                WidgetsModel cWidgetModel = _brandService.BuildBrandDecoration(decoration);
                 if (updateModel.Files.Count != 0)
                 {
                     var rs = _fileService.UploadTmpFolder(updateModel.Files.Select(x => x.File).ToList());
@@ -55,7 +55,7 @@ namespace Tastee.Application.Features.Brands.BrandDecorationFeatures.Commands
                     }
                     _fileService.DeleteFolder(rs.FolderPath);
 
-                    var listDecorationImg = new List<DecorationImages>();
+                    var listWidgetImages = new List<WidgetImages>();
                     var imgDict = new Dictionary<string, string>();
                     var listKeys = rs.ImgDictionary.Keys.ToList();
                     for (int i = 0; i < listKeys.Count(); i++)
@@ -63,22 +63,12 @@ namespace Tastee.Application.Features.Brands.BrandDecorationFeatures.Commands
                         var key = listKeys[i];
                         string bucketName = _configuration["AWS:BucketName"];
                         var url = _fileService.GenerateAwsFileUrl(bucketName, String.Format("{0}/{1}", key_perfix, rs.ImgDictionary[key])).Data;
-
-                        listDecorationImg.Add(new DecorationImages()
-                        {
-                            DecorationId = decoration.BrandId,
-                            Image = url,
-                            Id = Guid.NewGuid().ToString()
-                        });
                         imgDict.Add(updateModel.Files[i].Name, url);
                     }
-                    await _brandService.InsertDecorationImagesAsync(listDecorationImg);
                     ReplaceImage(ref uWidgetModel, cWidgetModel, imgDict);
                 }
                 decoration.UpdatedBy = request.UserEmail;
-                decoration.WidgetsJson = JsonConvert.SerializeObject(uWidgetModel);
-
-                return await _brandService.UpdateBrandDecorationAsync(decoration); ;
+                return await _brandService.UpdateBrandDecorationAsync(decoration, uWidgetModel); ;
             }
 
             private void ReplaceImage(ref WidgetsModel uWidgetModel, WidgetsModel cWidgetModel, Dictionary<string, string> imgDict)

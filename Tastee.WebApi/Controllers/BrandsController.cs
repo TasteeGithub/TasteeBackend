@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Tastee.Application.Features.Brands.BrandDecorationFeatures.Commands;
+using Tastee.Application.Features.Brands.BrandDecorationFeatures.Queries;
 using Tastee.Application.Features.Brands.BrandImagesFeatures.Commands;
 using Tastee.Application.Features.Brands.BrandImagesFeatures.Queries;
 using Tastee.Application.Features.Brands.Commands;
@@ -348,6 +349,35 @@ namespace Tastee.WebApi.Controllers
                 _logger.LogInformation("update brand decoration, brand Id {0}", request.BrandID);
             }
             return Ok(new Response<Brand>("Has error"));
+        }
+
+        [HttpPost]
+        [Route("decoration/images/load-data")]
+        public async Task<IActionResult> DecorationImages_LoadData([FromForm] GetWidgetImageModel model)
+        {
+            try
+            {
+                int recordsTotal = 0;
+                GetDecorationImagesQuery query = new GetDecorationImagesQuery { RequestModel = model };
+                var rs = await Mediator.Send(query);
+
+                //total number of rows counts
+                recordsTotal = rs.TotalRows;
+
+                //Paging
+                var data = rs.ListData;
+
+                //Returning Json Data
+                return new JsonResult(
+                    new { model.Draw, recordsFiltered = recordsTotal, recordsTotal, data });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "DecorationImages_LoadData");
+            }
+
+            return new JsonResult(
+                    new { model.Draw, recordsFiltered = 0, recordsTotal = 0, data = new List<WidgetImage>() });
         }
         #endregion
     }

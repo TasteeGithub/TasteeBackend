@@ -1,6 +1,7 @@
 ﻿using LinqKit;
 using Mapster;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,18 +25,24 @@ namespace Tastee.Application.Services
         private readonly IGenericService<Brands> _serviceBrands;
         private readonly IGenericService<BrandImages> _serviceBrandImage;
         private readonly IGenericService<BrandDecorations> _serviceBrandDecoration;
-        private readonly IGenericService<DecorationImages> _serviceDecorationImages;
+        private readonly IGenericService<WidgetImages> _serviceWidgetImages;
         private readonly IGenericService<Menus> _serviceMenus;
         private readonly IGenericService<MenuItems> _serviceMenuItems;
+        private readonly IGenericService<BrandMerchants> _serviceBrandMerchants;
+        private readonly IGenericService<Users> _serviceUsers;
+        private readonly IGenericService<Widgets> _serviceWidgets;
 
         public BrandService(
            IUnitOfWork unitOfWork,
            IGenericService<Brands> serviceBrands,
            IGenericService<BrandImages> serviceBrandImage,
            IGenericService<BrandDecorations> serviceBrandDecoration,
-           IGenericService<DecorationImages> serviceDecorationImages,
+           IGenericService<WidgetImages> serviceWidgetImages,
            IGenericService<Menus> serviceMenus,
-           IGenericService<MenuItems> serviceMenuItems
+           IGenericService<MenuItems> serviceMenuItems,
+           IGenericService<BrandMerchants> serviceBrandMerchants,
+           IGenericService<Users> serviceUsers,
+           IGenericService<Widgets> serviceWidgets
            )
         {
             _unitOfWork = unitOfWork;
@@ -44,7 +51,10 @@ namespace Tastee.Application.Services
             _serviceBrandDecoration = serviceBrandDecoration;
             _serviceMenus = serviceMenus;
             _serviceMenuItems = serviceMenuItems;
-            _serviceDecorationImages = serviceDecorationImages;
+            _serviceWidgetImages = serviceWidgetImages;
+            _serviceBrandMerchants = serviceBrandMerchants;
+            _serviceUsers = serviceUsers;
+            _serviceWidgets = serviceWidgets;
         }
 
         #region Brand
@@ -125,6 +135,17 @@ namespace Tastee.Application.Services
                 newBrands.CreatedDate = DateTime.Now;
                 newBrands.UpdatedDate = DateTime.Now;
                 _serviceBrands.Insert(newBrands);
+
+
+                var userId = _serviceUsers.Queryable().Where(x => x.Email == newBrands.UpdateBy).FirstOrDefault();
+                var brandMerchants = new BrandMerchants()
+                {
+                    BrandId = newBrands.Id,
+                    UserId = userId.Id,
+                    Id = Guid.NewGuid().ToString()
+                };
+                _serviceBrandMerchants.Insert(brandMerchants);
+
                 await _unitOfWork.SaveChangesAsync();
                 return new Response { Successful = true, Message = "Add brand successed" };
             }
@@ -429,37 +450,68 @@ namespace Tastee.Application.Services
         #endregion
 
         #region BrandDecoration
-        public async Task<Response> InsertBrandDecorationAsync(BrandDecorations item)
+        public async Task<Response> InsertBrandDecorationAsync(WidgetsModel model, string brandId, string userEmail)
         {
-            item.CreatedDate = Converters.DateTimeToUnixTimeStamp(DateTime.Now).Value;
-            item.Id = Guid.NewGuid().ToString();
-            _serviceBrandDecoration.Insert(item);
+            var decoration = new BrandDecorations
+            {
+                BrandId = brandId,
+                CreatedBy = userEmail,
+                Status = (int)BrandDecorationStatus.Draft,
+            };
+            decoration.CreatedDate = Converters.DateTimeToUnixTimeStamp(DateTime.Now).Value;
+            decoration.Id = Guid.NewGuid().ToString();
+            _serviceBrandDecoration.Insert(decoration);
+
+            var infoWidget = new Widgets()
+            {
+                DecorationId = decoration.Id,
+                Id = Guid.NewGuid().ToString(),
+                ExtraData = JsonConvert.SerializeObject(model.InfoWidget),
+                WidgetType = (int)WidgetType.Info
+            };
+            _serviceWidgets.Insert(infoWidget);
+
             await _unitOfWork.SaveChangesAsync();
             return new Response { Successful = true, Message = "Add successed" };
         }
 
-        public async Task<Response> InsertDecorationImagesAsync(List<DecorationImages> items)
+        public async Task<Response> InsertWidgetImagesAsync(List<WidgetImages> items)
         {
             foreach (var item in items)
             {
-                _serviceDecorationImages.Insert(item);
+                _serviceWidgetImages.Insert(item);
             }
             await _unitOfWork.SaveChangesAsync();
             return new Response { Successful = true, Message = "Add successed" };
         }
 
-        public async Task<Response> UpdateBrandDecorationAsync(BrandDecorations updateDecoration)
+        public async Task<Response> UpdateBrandDecorationAsync(BrandDecorations item, WidgetsModel widgets)
         {
-            if (updateDecoration.Id != null && updateDecoration.Id.Length > 0)
+            if (item.Id != null && item.Id.Length > 0)
             {
-                var decoration = await _serviceBrandDecoration.FindAsync(updateDecoration.Id);
+                var decoration = await _serviceBrandDecoration.FindAsync(item.Id);
                 if (decoration != null)
                 {
-                    decoration.WidgetsJson = updateDecoration.WidgetsJson;
-                    decoration.Status = updateDecoration.Status;
+                    decoration.Status = item.Status;
                     decoration.UpdatedDate = Converters.DateTimeToUnixTimeStamp(DateTime.Now);
-                    decoration.UpdatedBy = updateDecoration.UpdatedBy;
+                    decoration.UpdatedBy = item.UpdatedBy;
                     _serviceBrandDecoration.Update(decoration);
+
+                    //Widget
+                    var summary = BuildWidgetsSummary(widgets, decoration.Id);
+                    //Clear old data
+                    var dWidgets = _serviceWidgets.Queryable().Where(x => x.DecorationId == decoration.Id).ToList();
+                    var widgetIds = dWidgets.Select(x => x.Id).ToList();
+                    var images = _serviceWidgetImages.Queryable().Where(x => widgetIds.Contains(x.WidgetId)).ToList();
+                    foreach (var img in images)
+                        _serviceWidgetImages.Delete(img);
+                    foreach (var widget in dWidgets)
+                        _serviceWidgets.Delete(widget);
+                    //Insert new data
+                    foreach (var widget in summary.Widgets)
+                        _serviceWidgets.Insert(widget);
+                    foreach (var img in summary.Images)
+                        _serviceWidgetImages.Insert(img);
 
                     await _unitOfWork.SaveChangesAsync();
 
@@ -477,7 +529,7 @@ namespace Tastee.Application.Services
         public BrandDecorations GetBrandDecorationByBrandId(string brandId)
         {
             ExpressionStarter<BrandDecorations> searchCondition = PredicateBuilder.New<BrandDecorations>(true);
-            searchCondition = searchCondition.And(x => x.BrandId == brandId);
+            searchCondition = searchCondition.And(x => x.BrandId == brandId && x.Status == (int)BrandDecorationStatus.Draft);
             return _serviceBrandDecoration.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate).FirstOrDefault();
         }
 
@@ -501,8 +553,268 @@ namespace Tastee.Application.Services
             return widgets;
         }
 
+        public WidgetsModel BuildBrandDecoration(BrandDecorations brandDecoration)
+        {
+            WidgetsModel model = new WidgetsModel();
+            if (brandDecoration == null)
+                return null;
+
+            var brand = _serviceBrands.Queryable().Where(s => s.Id == brandDecoration.BrandId).FirstOrDefault();
+            model = BuildDefaultBrandDecoration(brand);
+
+            var listWidgets = _serviceWidgets.Queryable().Where(x => x.DecorationId == brandDecoration.Id).ToList();
+            foreach (var widget in listWidgets)
+            {
+                if (widget.WidgetType == (int)WidgetType.Info)
+                {
+                    widget.ExtraData.TryParseJson(out InfoWidgetModel infomodel);
+                    model.InfoWidget = infomodel;
+                }
+                else if (widget.WidgetType == (int)WidgetType.BrandImage)
+                {
+                    widget.ExtraData.TryParseJson(out GeneralWidgetModel brandImageModel);
+                    model.BrandImageWidget = brandImageModel;
+                }
+                else if (widget.WidgetType == (int)WidgetType.GroupItem)
+                {
+                    widget.ExtraData.TryParseJson(out GroupItemWidgetModel groupItemModel);
+                    if (model.GroupItemWidget == null)
+                        model.GroupItemWidget = new List<GroupItemWidgetModel>();
+                    model.GroupItemWidget.Add(groupItemModel);
+                }
+                else if (widget.WidgetType == (int)WidgetType.Menu)
+                {
+                    widget.ExtraData.TryParseJson(out MenuWidgetModel menuModel);
+                    model.MenuWidget = menuModel;
+                }
+                else if (widget.WidgetType == (int)WidgetType.SingelBanner)
+                {
+                    widget.ExtraData.TryParseJson(out SingelBannerWidgetModel singerModel);
+                    if (model.SingelBannerWidget == null)
+                        model.SingelBannerWidget = new List<SingelBannerWidgetModel>();
+                    model.SingelBannerWidget.Add(singerModel);
+                }
+                else if (widget.WidgetType == (int)WidgetType.SliderBanner)
+                {
+                    widget.ExtraData.TryParseJson(out SliderBannerWidgetModel sliderModel);
+                    if (model.SliderBannerWidget == null)
+                        model.SliderBannerWidget = new List<SliderBannerWidgetModel>();
+                    model.SliderBannerWidget.Add(sliderModel);
+                }
+            }
+
+            return model;
+        }
+
+        public async Task<PaggingModel<WidgetImage>> GetWidgetImageAsync(GetWidgetImageModel requestModel)
+        {
+            ExpressionStarter<WidgetImages> searchCondition = PredicateBuilder.New<WidgetImages>(true);
+            int pageSize = Converters.StringToInteger(requestModel.Length, Constants.DEFAULT_PAGE_SIZE).Value;
+            int skip = Converters.StringToInteger(requestModel.Start).Value;
+            int pageIndex = skip / pageSize + 1;
+
+            List<string> DecorationIDs = new List<string>();
+            List<string> WidgetIds = new List<string>();
+
+            if (!string.IsNullOrEmpty(requestModel.BrandId))
+            {
+                DecorationIDs = _serviceBrandDecoration.Queryable().Where(x => x.BrandId == requestModel.BrandId).Select(x => x.Id).ToList();
+            }
+            if (!string.IsNullOrEmpty(requestModel.DecorationId))
+            {
+                DecorationIDs.Add(requestModel.DecorationId);
+            }
+            if (DecorationIDs.Count != 0)
+            {
+                WidgetIds = _serviceWidgets.Queryable().Where(x => DecorationIDs.Contains(x.DecorationId)).Select(x => x.Id).ToList();
+            }
+            if (!string.IsNullOrEmpty(requestModel.WidgetId))
+            {
+                WidgetIds.Add(requestModel.WidgetId);
+            }
+
+            if (WidgetIds.Count != 0)
+            {
+                searchCondition = searchCondition.And(x => WidgetIds.Contains(x.WidgetId));
+            }
+
+            var listImages = _serviceWidgetImages.Queryable().Where(searchCondition);
+
+            var pagedListImages = await PaginatedList<WidgetImages>.CreateAsync(listImages, pageIndex, pageSize);
+
+            PaggingModel<WidgetImage> returnResult = new PaggingModel<WidgetImage>()
+            {
+                ListData = pagedListImages.Select(x => BuildModelFromWidgetImages(x)).ToList(),
+                TotalRows = pagedListImages.TotalRows,
+            };
+
+            return returnResult;
+        }
+
+        #endregion
+
+        #region BrandMerchants
+        public async Task<Response> InsertBrandMerchantsAsync(BrandMerchants item)
+        {
+            _serviceBrandMerchants.Insert(item);
+            await _unitOfWork.SaveChangesAsync();
+            return new Response { Successful = true, Message = "Add successed" };
+        }
+        #endregion
 
 
+        #region Private Method
+        public class WidgetsSummary
+        {
+            public List<Widgets> Widgets { get; set; }
+            public List<WidgetImages> Images { get; set; }
+        }
+
+        private WidgetImage BuildModelFromWidgetImages(WidgetImages item)
+        {
+            var rs = new WidgetImage()
+            {
+                Id = item.Id,
+                Image = item.Image,
+                Status = item.Status,
+                WidgetId = item.WidgetId
+            };
+            var widget = _serviceWidgets.Queryable().Where(x => x.Id == item.WidgetId).FirstOrDefault();
+            if (widget != null)
+            {
+                var decoration = _serviceBrandDecoration.Queryable().Where(x => x.Id == widget.DecorationId).FirstOrDefault();
+                if (decoration != null)
+                {
+                    rs.DecorationId = decoration.Id;
+                    rs.BrandId = decoration.BrandId;
+                }
+            }
+            return rs;
+        }
+
+        private WidgetsSummary BuildWidgetsSummary(WidgetsModel model, string decorationId)
+        {
+            var rs = new WidgetsSummary()
+            {
+                Widgets = new List<Widgets>(),
+                Images = new List<WidgetImages>(0)
+            };
+
+            //InfoWidget
+            if (model.InfoWidget != null)
+            {
+                var info = new Widgets()
+                {
+                    DecorationId = decorationId,
+                    Id = Guid.NewGuid().ToString(),
+                    WidgetType = (int)WidgetType.Info,
+                    ExtraData = JsonConvert.SerializeObject(model.InfoWidget)
+                };
+                var infoImage = new WidgetImages()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WidgetId = info.Id,
+                    Image = model.InfoWidget.BrandImage,
+                    Status = (int)WidgetImageStatus.Default
+                };
+                rs.Widgets.Add(info);
+                rs.Images.Add(infoImage);
+            }
+
+            //BrandImageWidget
+            if (model.BrandImageWidget != null)
+            {
+                rs.Widgets.Add(new Widgets()
+                {
+                    DecorationId = decorationId,
+                    Id = Guid.NewGuid().ToString(),
+                    WidgetType = (int)WidgetType.BrandImage,
+                    ExtraData = JsonConvert.SerializeObject(model.BrandImageWidget)
+                });
+            }
+
+            //MenuWidget
+            if (model.MenuWidget != null)
+            {
+                rs.Widgets.Add(new Widgets()
+                {
+                    DecorationId = decorationId,
+                    Id = Guid.NewGuid().ToString(),
+                    WidgetType = (int)WidgetType.Menu,
+                    ExtraData = JsonConvert.SerializeObject(model.MenuWidget)
+                });
+            }
+
+            //GroupItemWidgets
+            if (model.GroupItemWidget != null)
+            {
+                foreach (var item in model.GroupItemWidget)
+                {
+                    rs.Widgets.Add(new Widgets()
+                    {
+                        DecorationId = decorationId,
+                        Id = Guid.NewGuid().ToString(),
+                        WidgetType = (int)WidgetType.GroupItem,
+                        ExtraData = JsonConvert.SerializeObject(item)
+                    });
+                }
+            }
+
+            //SliderWidgets
+            if (model.SliderBannerWidget != null)
+            {
+                foreach (var item in model.SliderBannerWidget)
+                {
+                    var slider = new Widgets()
+                    {
+                        DecorationId = decorationId,
+                        Id = Guid.NewGuid().ToString(),
+                        WidgetType = (int)WidgetType.SliderBanner,
+                        ExtraData = JsonConvert.SerializeObject(item)
+                    };
+
+                    foreach (var image in item.Images)
+                    {
+                        rs.Images.Add(new WidgetImages()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            WidgetId = slider.Id,
+                            Image = image,
+                            Status = (int)WidgetImageStatus.Default
+                        });
+                    }
+                    rs.Widgets.Add(slider);
+                }
+
+            }
+
+            //SingerWidgets
+            if (model.SingelBannerWidget != null)
+            {
+                foreach (var item in model.SingelBannerWidget)
+                {
+                    var singel = new Widgets()
+                    {
+                        DecorationId = decorationId,
+                        Id = Guid.NewGuid().ToString(),
+                        WidgetType = (int)WidgetType.SingelBanner,
+                        ExtraData = JsonConvert.SerializeObject(item)
+                    };
+
+                    rs.Images.Add(new WidgetImages()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        WidgetId = singel.Id,
+                        Image = item.Image,
+                        Status = (int)WidgetImageStatus.Default
+                    });
+
+                    rs.Widgets.Add(singel);
+                }
+            }
+
+            return rs;
+        }
         #endregion
     }
 }

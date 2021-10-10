@@ -104,4 +104,18 @@
         Approved
     }
 
+    public enum WidgetImageStatus
+    {
+        Default // TBD
+    }
+
+    public enum WidgetType
+    {
+       Info,
+       BrandImage,
+       Menu,
+       SingelBanner,
+       SliderBanner,
+       GroupItem
+    }
 }

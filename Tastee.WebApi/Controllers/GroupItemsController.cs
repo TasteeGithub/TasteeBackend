@@ -99,6 +99,30 @@ namespace Tastee.WebApi.Controllers
             return Ok(await Mediator.Send(createCommand));
         }
 
+        [HttpPost]
+        [Route("update")]
+        public async Task<IActionResult> Update(UpdateGroupItemViewModel model)
+        {
+            bool isActionSuccess = false;
+            try
+            {
+                var updateCommand = new UpdateGroupItemsCommand()
+                {
+                    Model = model,
+                    UserEmail = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value
+                };
+                return Ok(await Mediator.Send(updateCommand));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Update brand, Brand: {0}", model);
+            }
+            finally
+            {
+                _logger.LogInformation("Update Brand, Brand: {0}, Result status: {1}", model, isActionSuccess);
+            }
+            return Ok(new { Successful = false, Error = "Has error when update" });
+        }
         #endregion
 
         #region GroupItemsMapping
@@ -137,7 +161,7 @@ namespace Tastee.WebApi.Controllers
             }
             var createCommand = new DeleteGroupItemsMappingCommand()
             {
-               Model= model
+                Model = model
             };
             return Ok(await Mediator.Send(createCommand));
         }

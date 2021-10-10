@@ -31,24 +31,21 @@ namespace Tastee.Application.Features.Brands.BrandDecorationFeatures.Commands
             }
             public async Task<Response<string>> Handle(InitBrandDecorationCommand request, CancellationToken cancellationToken)
             {
+                var widgetModel = new WidgetsModel();
                 var decoration = _brandService.GetBrandDecorationByBrandId(request.BrandId);
                 if (decoration != null)
-                    return new Response<string>(decoration.WidgetsJson, null);
+                {
+                    widgetModel = _brandService.BuildBrandDecoration(decoration);
+                    return new Response<string>(JsonConvert.SerializeObject(widgetModel), null);
+                }
 
                 var brand = await _brandService.GetByIdAsync(request.BrandId);
                 if (brand == null)
                     return new Response<string>("Brand not found");
-                var widgets = _brandService.BuildDefaultBrandDecoration(brand);
+                widgetModel = _brandService.BuildDefaultBrandDecoration(brand);
 
-                decoration = new BrandDecorations
-                {
-                    BrandId = brand.Id,
-                    CreatedBy = request.UserEmail,
-                    Status = (int)BrandDecorationStatus.Draft,
-                    WidgetsJson = JsonConvert.SerializeObject(widgets)
-                };
-                await _brandService.InsertBrandDecorationAsync(decoration);
-                return new Response<string>(decoration.WidgetsJson, null);
+                await _brandService.InsertBrandDecorationAsync(widgetModel, brand.Id, request.UserEmail);
+                return new Response<string>(JsonConvert.SerializeObject(widgetModel), null);
             }
         }
     }

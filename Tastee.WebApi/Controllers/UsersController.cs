@@ -32,6 +32,7 @@ namespace Tastee.WebApi.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IGenericService<Users> _serviceUsers;
+        private readonly IGenericService<BrandMerchants> _serviceBrandMerchant;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<UsersController> _logger;
 
@@ -41,13 +42,15 @@ namespace Tastee.WebApi.Controllers
             IConfiguration configuration,
             ILogger<UsersController> logger,
             IUnitOfWork unitOfWork,
-            IGenericService<Users> serviceUsers
+            IGenericService<Users> serviceUsers,
+            IGenericService<BrandMerchants> serviceBrandMerchant
             )
         {
             _configuration = configuration;
             _unitOfWork = unitOfWork;
             _logger = logger;
             _serviceUsers = serviceUsers;
+            _serviceBrandMerchant = serviceBrandMerchant;
         }
 
         [AllowAnonymous]
@@ -417,6 +420,28 @@ namespace Tastee.WebApi.Controllers
                 return Ok(new { Successful = false, Error = "Password is incorrect !" });
             }
             return Ok(new { Successful = false, Error = "" });
+        }
+
+        [HttpGet]
+        [Route("merchants")]
+        public async Task<IActionResult> GetListMerchant()
+        {
+
+            try
+            {
+                var email = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+                var user = _serviceUsers.Queryable().Where(x => x.Email == email).FirstOrDefault();
+                var brandIds= _serviceBrandMerchant.Queryable().Where(x => x.UserId == user.Id).Select(x => x.BrandId).ToList();
+
+                //Returning Json Data
+                return new JsonResult(new { BrandIds = brandIds });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Load listMerchant");
+            }
+
+            return new JsonResult(new { data = new List<string>() });
         }
     }
 }

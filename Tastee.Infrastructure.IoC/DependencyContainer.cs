@@ -37,12 +37,17 @@ namespace Tastee.Infrastructure.IoC
 
             services.AddScoped<ITrackableRepository<Brands>, TrackableRepository<Brands>>();
             services.AddScoped<ITrackableRepository<BrandDecorations>, TrackableRepository<BrandDecorations>>();
-            services.AddScoped<ITrackableRepository<DecorationImages>, TrackableRepository<DecorationImages>>();
+            services.AddScoped<ITrackableRepository<WidgetImages>, TrackableRepository<WidgetImages>>();
+            services.AddScoped<ITrackableRepository<Widgets>, TrackableRepository<Widgets>>();
             services.AddScoped<ITrackableRepository<BrandImages>, TrackableRepository<BrandImages>>();
+            services.AddScoped<ITrackableRepository<BrandMerchants>, TrackableRepository<BrandMerchants>>();
+
             services.AddScoped<IGenericService<Brands>, GenericService<Brands>>();
             services.AddScoped<IGenericService<BrandDecorations>, GenericService<BrandDecorations>>();
-            services.AddScoped<IGenericService<DecorationImages>, GenericService<DecorationImages>>();
+            services.AddScoped<IGenericService<WidgetImages>, GenericService<WidgetImages>>();
+            services.AddScoped<IGenericService<Widgets>, GenericService<Widgets>>();
             services.AddScoped<IGenericService<BrandImages>, GenericService<BrandImages>>();
+            services.AddScoped<IGenericService<BrandMerchants>, GenericService<BrandMerchants>>();
             services.AddScoped<IBrandService, BrandService>();
 
             services.AddScoped<ITrackableRepository<Cities>, TrackableRepository<Cities>>();

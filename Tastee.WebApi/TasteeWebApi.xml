@@ -52,6 +52,13 @@
             <param name="model"></param>
             <returns></returns>
         </member>
+        <member name="M:Tastee.WebApi.Controllers.BrandsController.BrandDecoration_Init(Tastee.Shared.Models.Brands.BrandDecorations.InitBrandDecorationModel)">
+            <summary>
+            Init Brand Decoration
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
         <member name="M:Tastee.WebApi.Controllers.MenusController.GetMenuDetail(System.String)">
             <summary>
             Get menu detail
