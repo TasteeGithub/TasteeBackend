@@ -15,7 +15,7 @@ namespace Tastee.Shared.Models.Brands.BrandDecorations
         public MenuWidgetModel MenuWidget { get; set; }
         [JsonProperty("singel_banner_widgets", NullValueHandling = NullValueHandling.Ignore)]
         public List<SingelBannerWidgetModel> SingelBannerWidget { get; set; }
-        [JsonProperty("silder_banner_widgets", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("slider_banner_widgets", NullValueHandling = NullValueHandling.Ignore)]
         public List<SliderBannerWidgetModel> SliderBannerWidget { get; set; }
         [JsonProperty("group_item_widgets", NullValueHandling = NullValueHandling.Ignore)]
         public List<GroupItemWidgetModel> GroupItemWidget { get; set; }

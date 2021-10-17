@@ -36,7 +36,10 @@ namespace Tastee.Application.Interfaces
         BrandDecorations GetBrandDecorationByBrandId(string brandId);
         WidgetsModel BuildDefaultBrandDecoration(Brands brand);
         WidgetsModel BuildBrandDecoration(BrandDecorations brandDecoration);
+        Task<WidgetImages> GetWidgetImageByIdAsync(string id);
         Task<PaggingModel<WidgetImage>> GetWidgetImageAsync(GetWidgetImageModel requestModel);
+        Task<Response> UpdateDecorationImageAsync(UpdateDecorationImageModel updateImage);
+        Task<Response> DeleteDecorationImageAsync(string id);
         #endregion
 
     }

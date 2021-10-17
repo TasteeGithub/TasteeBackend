@@ -379,6 +379,55 @@ namespace Tastee.WebApi.Controllers
             return new JsonResult(
                     new { model.Draw, recordsFiltered = 0, recordsTotal = 0, data = new List<WidgetImage>() });
         }
+
+        [HttpPost]
+        [Route("decoration/images/update")]
+        public async Task<IActionResult> DecorationImages_Update(UpdateDecorationImageModel model)
+        {
+            bool isActionSuccess = false;
+            try
+            {
+                var updateCommand = new UpdateDecorationImageCommand()
+                {
+                    Model = model
+                };
+                return Ok(await Mediator.Send(updateCommand));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Update Decoration Image, Data: {0}", model);
+            }
+            finally
+            {
+                _logger.LogInformation("Update Decoration Image, Data: {0}, Result status: {1}", model, isActionSuccess);
+            }
+            return Ok(new { Successful = false, Error = "Has error when update" });
+        }
+
+        [HttpPost]
+        [Route("decoration/images/delete")]
+        public async Task<IActionResult> DecorationImages_Delete(string Id)
+        {
+            bool isActionSuccess = false;
+            try
+            {
+                var deleteCommand = new DeleteDecorationImageCommand()
+                {
+                    ID = Id
+                };
+
+                return Ok(await Mediator.Send(deleteCommand));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Delete DecorationImage, ID: {0}", Id);
+            }
+            finally
+            {
+                _logger.LogInformation("Delete DecorationImage, id: {0}, Result status: {1}", Id, isActionSuccess);
+            }
+            return Ok(new { Successful = false, Error = "Has error when delete" });
+        }
         #endregion
     }
 }

@@ -8,7 +8,6 @@ namespace Tastee.Shared.Models.Brands.BrandDecorations
 {
     public class UpdateBrandDecorationModel
     {
-        [Required]
         public List<FormImageDecoration> Files { get; set; }
 
         [Required]

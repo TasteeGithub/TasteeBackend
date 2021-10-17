@@ -450,6 +450,13 @@ namespace Tastee.Application.Services
         #endregion
 
         #region BrandDecoration
+        /// <summary>
+        /// InsertBrandDecorationAsync
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="brandId"></param>
+        /// <param name="userEmail"></param>
+        /// <returns></returns>
         public async Task<Response> InsertBrandDecorationAsync(WidgetsModel model, string brandId, string userEmail)
         {
             var decoration = new BrandDecorations
@@ -475,16 +482,12 @@ namespace Tastee.Application.Services
             return new Response { Successful = true, Message = "Add successed" };
         }
 
-        public async Task<Response> InsertWidgetImagesAsync(List<WidgetImages> items)
-        {
-            foreach (var item in items)
-            {
-                _serviceWidgetImages.Insert(item);
-            }
-            await _unitOfWork.SaveChangesAsync();
-            return new Response { Successful = true, Message = "Add successed" };
-        }
-
+        /// <summary>
+        /// UpdateBrandDecorationAsync
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="widgets"></param>
+        /// <returns></returns>
         public async Task<Response> UpdateBrandDecorationAsync(BrandDecorations item, WidgetsModel widgets)
         {
             if (item.Id != null && item.Id.Length > 0)
@@ -526,6 +529,11 @@ namespace Tastee.Application.Services
             return new Response { Successful = false, Message = "Please input id" };
         }
 
+        /// <summary>
+        /// GetBrandDecorationByBrandId
+        /// </summary>
+        /// <param name="brandId"></param>
+        /// <returns></returns>
         public BrandDecorations GetBrandDecorationByBrandId(string brandId)
         {
             ExpressionStarter<BrandDecorations> searchCondition = PredicateBuilder.New<BrandDecorations>(true);
@@ -533,6 +541,11 @@ namespace Tastee.Application.Services
             return _serviceBrandDecoration.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate).FirstOrDefault();
         }
 
+        /// <summary>
+        /// BuildDefaultBrandDecoration
+        /// </summary>
+        /// <param name="brand"></param>
+        /// <returns></returns>
         public WidgetsModel BuildDefaultBrandDecoration(Brands brand)
         {
             WidgetsModel widgets = new WidgetsModel
@@ -553,6 +566,11 @@ namespace Tastee.Application.Services
             return widgets;
         }
 
+        /// <summary>
+        /// BuildBrandDecoration
+        /// </summary>
+        /// <param name="brandDecoration"></param>
+        /// <returns></returns>
         public WidgetsModel BuildBrandDecoration(BrandDecorations brandDecoration)
         {
             WidgetsModel model = new WidgetsModel();
@@ -606,6 +624,51 @@ namespace Tastee.Application.Services
             return model;
         }
 
+        #region Widget
+        /// <summary>
+        /// GetWidgetByIdAsync
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Widgets> GetWidgetByIdAsync(string id)
+        {
+            var widget = await _serviceWidgets.FindAsync(id);
+            return widget;
+        }
+        #endregion
+
+        #region WidgetImages
+        /// <summary>
+        /// GetWidgetImageByIdAsync
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<WidgetImages> GetWidgetImageByIdAsync(string id)
+        {
+            var image = await _serviceWidgetImages.FindAsync(id);
+            return image;
+        }
+
+        /// <summary>
+        /// InsertWidgetImagesAsync
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        public async Task<Response> InsertWidgetImagesAsync(List<WidgetImages> items)
+        {
+            foreach (var item in items)
+            {
+                _serviceWidgetImages.Insert(item);
+            }
+            await _unitOfWork.SaveChangesAsync();
+            return new Response { Successful = true, Message = "Add successed" };
+        }
+
+        /// <summary>
+        /// GetWidgetImageAsync
+        /// </summary>
+        /// <param name="requestModel"></param>
+        /// <returns></returns>
         public async Task<PaggingModel<WidgetImage>> GetWidgetImageAsync(GetWidgetImageModel requestModel)
         {
             ExpressionStarter<WidgetImages> searchCondition = PredicateBuilder.New<WidgetImages>(true);
@@ -624,10 +687,18 @@ namespace Tastee.Application.Services
             {
                 DecorationIDs.Add(requestModel.DecorationId);
             }
+
+            var list_type = new List<int>
+            {
+                (int)WidgetType.SingelBanner,
+                (int)WidgetType.SliderBanner
+            };
+            var widget_query = _serviceWidgets.Queryable().Where(x => list_type.Contains(x.WidgetType));
             if (DecorationIDs.Count != 0)
             {
-                WidgetIds = _serviceWidgets.Queryable().Where(x => DecorationIDs.Contains(x.DecorationId)).Select(x => x.Id).ToList();
+                WidgetIds = widget_query.Where(x => DecorationIDs.Contains(x.DecorationId)).Select(x => x.Id).ToList();
             }
+
             if (!string.IsNullOrEmpty(requestModel.WidgetId))
             {
                 WidgetIds.Add(requestModel.WidgetId);
@@ -642,15 +713,86 @@ namespace Tastee.Application.Services
 
             var pagedListImages = await PaginatedList<WidgetImages>.CreateAsync(listImages, pageIndex, pageSize);
 
+            var listWidgets = new List<WidgetImage>();
+            foreach (var item in pagedListImages)
+            {
+                listWidgets.Add(await BuildModelFromWidgetImagesAsync(item));
+            }
+
             PaggingModel<WidgetImage> returnResult = new PaggingModel<WidgetImage>()
             {
-                ListData = pagedListImages.Select(x => BuildModelFromWidgetImages(x)).ToList(),
+                ListData = listWidgets,
                 TotalRows = pagedListImages.TotalRows,
             };
 
             return returnResult;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Response> DeleteDecorationImageAsync(string id)
+        {
+            var image = await GetWidgetImageByIdAsync(id);
+            if (image == null)
+                return new Response { Successful = false, Message = "Image not found" };
+
+            var widget = await GetWidgetByIdAsync(image.WidgetId);
+            if (widget != null)
+            {
+                if (widget.WidgetType == (int)WidgetType.SingelBanner)
+                {
+                    widget.ExtraData.TryParseJson(out SingelBannerWidgetModel uWidgetModel);
+                    uWidgetModel.Image = String.Empty;
+                    await UpdateWidgetExtraDataAsync(widget.Id, JsonConvert.SerializeObject(uWidgetModel));
+                }
+                else if (widget.WidgetType == (int)WidgetType.SliderBanner)
+                {
+                    widget.ExtraData.TryParseJson(out SliderBannerWidgetModel uWidgetModel);
+                    uWidgetModel.Images.Remove(image.Image);
+                    await UpdateWidgetExtraDataAsync(widget.Id, JsonConvert.SerializeObject(uWidgetModel));
+                }
+                else
+                {
+                    return new Response { Successful = false, Message = "Image invalid" };
+                }
+
+            }
+            await _unitOfWork.SaveChangesAsync();
+            return new Response { Successful = true, Message = "Delete successed" };
+        }
+
+        /// <summary>
+        /// UpdateDecorationImageAsync
+        /// </summary>
+        /// <param name="updateImage"></param>
+        /// <returns></returns>
+        public async Task<Response> UpdateDecorationImageAsync(UpdateDecorationImageModel updateImage)
+        {
+            if (updateImage.Id != null && updateImage.Id.Length > 0)
+            {
+                var image = await _serviceWidgetImages.FindAsync(updateImage.Id);
+                if (image != null)
+                {
+                    image.Status = updateImage.Status;
+                    _serviceWidgetImages.Update(image);
+
+                    await _unitOfWork.SaveChangesAsync();
+
+                    return new Response { Successful = true, Message = "Update Decoration Image success" };
+                }
+                else
+                {
+                    return new Response { Successful = false, Message = "Decoration Image not found" };
+                }
+            }
+
+            return new Response { Successful = false, Message = "Please input id" };
+        }
+
+        #endregion
         #endregion
 
         #region BrandMerchants
@@ -670,7 +812,7 @@ namespace Tastee.Application.Services
             public List<WidgetImages> Images { get; set; }
         }
 
-        private WidgetImage BuildModelFromWidgetImages(WidgetImages item)
+        private async Task<WidgetImage> BuildModelFromWidgetImagesAsync(WidgetImages item)
         {
             var rs = new WidgetImage()
             {
@@ -679,7 +821,7 @@ namespace Tastee.Application.Services
                 Status = item.Status,
                 WidgetId = item.WidgetId
             };
-            var widget = _serviceWidgets.Queryable().Where(x => x.Id == item.WidgetId).FirstOrDefault();
+            var widget = await GetWidgetByIdAsync(item.WidgetId);
             if (widget != null)
             {
                 var decoration = _serviceBrandDecoration.Queryable().Where(x => x.Id == widget.DecorationId).FirstOrDefault();
@@ -814,6 +956,29 @@ namespace Tastee.Application.Services
             }
 
             return rs;
+        }
+
+        private async Task<Response> UpdateWidgetExtraDataAsync(string Id, string ExtraData)
+        {
+            if (!String.IsNullOrEmpty(Id))
+            {
+                var widget = await _serviceWidgets.FindAsync(Id);
+                if (widget != null)
+                {
+                    widget.ExtraData = ExtraData;
+                    _serviceWidgets.Update(widget);
+
+                    await _unitOfWork.SaveChangesAsync();
+
+                    return new Response { Successful = true, Message = "Update widget success" };
+                }
+                else
+                {
+                    return new Response { Successful = false, Message = "Widget not found" };
+                }
+            }
+
+            return new Response { Successful = false, Message = "Please input id" };
         }
         #endregion
     }

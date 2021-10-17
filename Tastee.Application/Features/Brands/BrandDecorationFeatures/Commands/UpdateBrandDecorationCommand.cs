@@ -44,7 +44,7 @@ namespace Tastee.Application.Features.Brands.BrandDecorationFeatures.Commands
                 }
 
                 WidgetsModel cWidgetModel = _brandService.BuildBrandDecoration(decoration);
-                if (updateModel.Files.Count != 0)
+                if (updateModel.Files != null && updateModel.Files.Count != 0)
                 {
                     var rs = _fileService.UploadTmpFolder(updateModel.Files.Select(x => x.File).ToList());
                     var key_perfix = _fileService.GenerateS3KeyPrefix(decoration.Id, UploadFileType.Image, ObjectType.Decoration);
