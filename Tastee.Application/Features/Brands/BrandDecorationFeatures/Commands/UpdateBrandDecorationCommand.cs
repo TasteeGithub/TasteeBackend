@@ -88,8 +88,8 @@ namespace Tastee.Application.Features.Brands.BrandDecorationFeatures.Commands
                 //    currentImages.Add(widget.Image);
 
                 //}
-                if (uWidgetModel.SingelBannerWidget != null)
-                    foreach (var widget in uWidgetModel.SingelBannerWidget)
+                if (uWidgetModel.SingleBannerWidget != null)
+                    foreach (var widget in uWidgetModel.SingleBannerWidget)
                     {
                         if (imgDict.Keys.Contains(widget.Image))
                         {

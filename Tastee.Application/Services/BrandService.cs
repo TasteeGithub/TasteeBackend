@@ -608,9 +608,9 @@ namespace Tastee.Application.Services
                 else if (widget.WidgetType == (int)WidgetType.SingelBanner)
                 {
                     widget.ExtraData.TryParseJson(out SingelBannerWidgetModel singerModel);
-                    if (model.SingelBannerWidget == null)
-                        model.SingelBannerWidget = new List<SingelBannerWidgetModel>();
-                    model.SingelBannerWidget.Add(singerModel);
+                    if (model.SingleBannerWidget == null)
+                        model.SingleBannerWidget = new List<SingelBannerWidgetModel>();
+                    model.SingleBannerWidget.Add(singerModel);
                 }
                 else if (widget.WidgetType == (int)WidgetType.SliderBanner)
                 {
@@ -931,9 +931,9 @@ namespace Tastee.Application.Services
             }
 
             //SingerWidgets
-            if (model.SingelBannerWidget != null)
+            if (model.SingleBannerWidget != null)
             {
-                foreach (var item in model.SingelBannerWidget)
+                foreach (var item in model.SingleBannerWidget)
                 {
                     var singel = new Widgets()
                     {
