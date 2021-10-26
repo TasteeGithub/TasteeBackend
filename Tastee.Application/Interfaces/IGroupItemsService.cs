@@ -17,6 +17,7 @@ namespace Tastee.Application.Interfaces
         #endregion
 
         #region GroupItemsMapping
+        Task<PaggingModel<GroupItemMappingInfo>> GetGroupItemMappingAsync(GetGroupItemMappingViewModel requestModel);
         List<GroupItemMapping> GetGroupItemMappingByGroupIdAsync(string GroupId);
         Task<Response> InsertGroupItemMappingAsync(List<string> itemIds, string groupId, string createdBy);
         Task<Response> DeleteGroupItemMapping(List<string> itemIds, string groupId);

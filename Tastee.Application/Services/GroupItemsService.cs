@@ -19,16 +19,19 @@ namespace Tastee.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
 
+        private readonly IGenericService<MenuItems> _serviceMenuItems;
         private readonly IGenericService<GroupItems> _serviceGroupItems;
         private readonly IGenericService<GroupItemMapping> _serviceGroupItemMapping;
         public GroupItemsService(
             IUnitOfWork unitOfWork,
             IGenericService<GroupItems> serviceGroupItems,
-            IGenericService<GroupItemMapping> serviceGroupItemMapping)
+            IGenericService<GroupItemMapping> serviceGroupItemMapping,
+            IGenericService<MenuItems> serviceMenuItems)
         {
             _unitOfWork = unitOfWork;
             _serviceGroupItems = serviceGroupItems;
             _serviceGroupItemMapping = serviceGroupItemMapping;
+            _serviceMenuItems = serviceMenuItems;
         }
         #region GroupItem
         public async Task<GroupItems> GetByIdAsync(string id)
@@ -105,12 +108,52 @@ namespace Tastee.Application.Services
         public GroupItemDetail BuildGroupItemDetail(GroupItems group)
         {
             GroupItemDetail detail = group.Adapt<GroupItemDetail>();
-            detail.MenuItemIds = GetGroupItemMappingByGroupIdAsync(group.Id).Select(x=>x.ItemId).ToList();
+            detail.MenuItemIds = GetGroupItemMappingByGroupIdAsync(group.Id).Select(x => x.ItemId).ToList();
             return detail;
         }
         #endregion
 
         #region GroupItemsMapping
+        public async Task<PaggingModel<GroupItemMappingInfo>> GetGroupItemMappingAsync(GetGroupItemMappingViewModel requestModel)
+        {
+            ExpressionStarter<GroupItemMapping> searchCondition = PredicateBuilder.New<GroupItemMapping>(true);
+            int pageSize = Converters.StringToInteger(requestModel.Length, Constants.DEFAULT_PAGE_SIZE).Value;
+            int skip = Converters.StringToInteger(requestModel.Start).Value;
+            int pageIndex = skip / pageSize + 1;
+
+            if (!string.IsNullOrEmpty(requestModel.GroupId))
+            {
+                searchCondition = searchCondition.And(x => x.GroupId == requestModel.GroupId);
+            }
+
+
+            var listMapping = _serviceGroupItemMapping.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate);
+
+            var pagedListGroup = await PaginatedList<GroupItemMapping>.CreateAsync(listMapping, pageIndex, pageSize);
+
+            var groupIds = pagedListGroup.Select(x => x.GroupId).Distinct().ToList();
+            var itemIds = pagedListGroup.Select(x => x.ItemId).Distinct().ToList();
+
+            var menusItemDict = _serviceMenuItems.Queryable().Where(x => itemIds.Contains(x.Id)).ToDictionary(x => x.Id, x => x);
+            var groupDict = _serviceGroupItems.Queryable().Where(x => groupIds.Contains(x.Id)).ToDictionary(x => x.Id, x => x);
+
+            PaggingModel<GroupItemMappingInfo> returnResult = new PaggingModel<GroupItemMappingInfo>()
+            {
+                ListData = pagedListGroup.Select(x => new GroupItemMappingInfo()
+                {
+                    GroupId = x.GroupId,
+                    GroupName = groupDict[x.GroupId].Name,
+                    ItemId = x.ItemId,
+                    ItemName = menusItemDict[x.ItemId].Name,
+                    CreatedBy = x.CreatedBy,
+                    CreatedDate = x.CreatedDate
+                }).ToList(),
+                TotalRows = pagedListGroup.TotalRows,
+            };
+            return returnResult;
+        }
+
+
         public List<GroupItemMapping> GetGroupItemMappingByGroupIdAsync(string GroupId)
         {
             ExpressionStarter<GroupItemMapping> searchCondition = PredicateBuilder.New<GroupItemMapping>(true);

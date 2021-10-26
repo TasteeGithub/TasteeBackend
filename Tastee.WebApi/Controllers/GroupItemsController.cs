@@ -126,7 +126,8 @@ namespace Tastee.WebApi.Controllers
         #endregion
 
         #region GroupItemsMapping
-        // POST: api/GroupItems/Items
+     
+
         [HttpPost]
         [Route("items")]
         public async Task<IActionResult> GroupItemsMapping_Post(InsertGroupItemMappingViewModel model)
@@ -145,6 +146,35 @@ namespace Tastee.WebApi.Controllers
                 UserEmail = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value
             };
             return Ok(await Mediator.Send(createCommand));
+        }
+
+        [HttpPost]
+        [Route("items/load-data")]
+        public async Task<IActionResult> GroupItemMapping_LoadData([FromForm] GetGroupItemMappingViewModel model)
+        {
+            try
+            {
+                int recordsTotal = 0;
+                GetGroupItemMappingQuery groupQuery = new GetGroupItemMappingQuery { RequestModel = model };
+                var rs = await Mediator.Send(groupQuery);
+
+                //total number of rows counts
+                recordsTotal = rs.TotalRows;
+
+                //Paging
+                var data = rs.ListData;
+
+                //Returning Json Data
+                return new JsonResult(
+                    new { model.Draw, recordsFiltered = recordsTotal, recordsTotal, data });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "LoadData");
+            }
+
+            return new JsonResult(
+                    new { model.Draw, recordsFiltered = 0, recordsTotal = 0, data = new List<GroupItemMappingInfo>() });
         }
 
         [HttpPost]
