@@ -104,13 +104,17 @@ namespace Tastee.Application.Services
                 if (menu == null)
                     return new Response { Successful = false, Message = "Menu not found" };
                 var brandId = String.IsNullOrEmpty(updateMenus.BrandId) ? menu.BrandId : updateMenus.BrandId;
-                if (_serviceMenus.Queryable().Any(x => x.Name.ToLower() == updateMenus.Name.ToLower() && x.BrandId == brandId))
-                    return new Response { Successful = false, Message = "Menu name is exists" };
+                if (!string.IsNullOrEmpty(updateMenus.Name))
+                {
+                    if (_serviceMenus.Queryable().Any(x => x.Name.ToLower() == updateMenus.Name.ToLower() && x.BrandId == brandId && x.Id != updateMenus.Id))
+                        return new Response { Successful = false, Message = "Menu name is exists" };
+                }
                 menu.Name = updateMenus.Name ?? menu.Name;
                 menu.Status = updateMenus.Status;
                 menu.Order = updateMenus.Order >> menu.Order;
                 menu.UpdatedBy = updateMenus.UpdatedBy;
                 menu.UpdatedDate = DateTime.Now;
+                menu.BrandId = updateMenus.BrandId ?? menu.BrandId;
                 _serviceMenus.Update(menu);
                 await _unitOfWork.SaveChangesAsync();
                 return new Response { Successful = true, Message = "Update menu success" };

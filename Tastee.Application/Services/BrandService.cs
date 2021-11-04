@@ -137,15 +137,17 @@ namespace Tastee.Application.Services
                 _serviceBrands.Insert(newBrands);
 
 
-                var userId = _serviceUsers.Queryable().Where(x => x.Email == newBrands.UpdateBy).FirstOrDefault();
-                var brandMerchants = new BrandMerchants()
+                var user = _serviceUsers.Queryable().Where(x => x.Email == newBrands.UpdateBy).FirstOrDefault();
+                if (user != null)
                 {
-                    BrandId = newBrands.Id,
-                    UserId = userId.Id,
-                    Id = Guid.NewGuid().ToString()
-                };
-                _serviceBrandMerchants.Insert(brandMerchants);
-
+                    var brandMerchants = new BrandMerchants()
+                    {
+                        BrandId = newBrands.Id,
+                        UserId = user.Id,
+                        Id = Guid.NewGuid().ToString()
+                    };
+                    _serviceBrandMerchants.Insert(brandMerchants);
+                }
                 await _unitOfWork.SaveChangesAsync();
                 return new Response { Successful = true, Message = "Add brand successed" };
             }
