@@ -161,8 +161,9 @@ namespace Tastee.Application.Services
                 var brand = await _serviceBrands.FindAsync(updateBrand.Id);
                 if (brand == null)
                     return new Response { Successful = false, Message = "Brand not found" };
-                if (_serviceBrands.Queryable().Any(x => x.Uri.ToLower() == updateBrand.Uri.ToLower() && x.Id != brand.Id))
-                    return new Response { Successful = false, Message = "Uri is exists" };
+                if (!String.IsNullOrEmpty(updateBrand.Uri))
+                    if (_serviceBrands.Queryable().Any(x => x.Uri.ToLower() == updateBrand.Uri.ToLower() && x.Id != brand.Id))
+                        return new Response { Successful = false, Message = "Uri is exists" };
                 brand.Name = updateBrand.Name ?? brand.Name;
                 brand.Address = updateBrand.Address ?? brand.Address;
                 brand.Hotline = updateBrand.Hotline ?? brand.Hotline;
