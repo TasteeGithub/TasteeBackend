@@ -195,6 +195,7 @@ namespace Tastee.Application.Services
                 brand.StartDate = updateBrand.StartDate ?? brand.StartDate;
                 brand.EndDate = updateBrand.EndDate ?? brand.EndDate;
                 brand.Type = updateBrand.Type ?? brand.Type;
+                brand.WebMap = updateBrand.WebMap ?? brand.WebMap;
                 brand.UpdatedDate = DateTime.Now;
                 brand.UpdateBy = updateBrand.UpdateBy;
                 _serviceBrands.Update(brand);
@@ -234,6 +235,7 @@ namespace Tastee.Application.Services
                 Latitude = model.Latitude,
                 Longitude = model.Longitude,
                 MerchantId = model.MerchantId,
+                WebMap = model.WebMap,
                 OpenTimeA = Converters.StringToTimeSpan(model.OpenTimeA),
                 CloseTimeA = Converters.StringToTimeSpan(model.CloseTimeA),
                 OpenTimeP = Converters.StringToTimeSpan(model.OpenTimeP),
@@ -288,6 +290,7 @@ namespace Tastee.Application.Services
                 Latitude = brand.Latitude,
                 Longitude = brand.Longitude,
                 MerchantId = brand.MerchantId,
+                WebMap = brand.WebMap,
                 OpenTimeA = Converters.TimeSpanToString(brand.OpenTimeA),
                 CloseTimeA = Converters.TimeSpanToString(brand.CloseTimeA),
                 OpenTimeP = Converters.TimeSpanToString(brand.OpenTimeP),

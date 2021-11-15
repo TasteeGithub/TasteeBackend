@@ -2,7 +2,7 @@
 
 namespace Tastee.Domain.Entities
 {
-    public partial class Brand  : BaseEntity
+    public partial class Brand : BaseEntity
     {
         public string Name { get; set; }
         public string Address { get; set; }
@@ -37,5 +37,6 @@ namespace Tastee.Domain.Entities
         public long? StartDate { get; set; }
         public long? EndDate { get; set; }
         public short? Type { get; set; }
+        public string WebMap { get; set; }
     }
 }

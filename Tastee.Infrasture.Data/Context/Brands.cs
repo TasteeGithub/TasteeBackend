@@ -40,5 +40,6 @@ namespace Tastee.Infrastucture.Data.Context
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public short? Type { get; set; }
+        public string WebMap { get; set; }
     }
 }
