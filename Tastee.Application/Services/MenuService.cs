@@ -111,7 +111,7 @@ namespace Tastee.Application.Services
                 }
                 menu.Name = updateMenus.Name ?? menu.Name;
                 menu.Status = updateMenus.Status;
-                menu.Order = updateMenus.Order >> menu.Order;
+                menu.Order = updateMenus.Order;
                 menu.UpdatedBy = updateMenus.UpdatedBy;
                 menu.UpdatedDate = DateTime.Now;
                 menu.BrandId = updateMenus.BrandId ?? menu.BrandId;

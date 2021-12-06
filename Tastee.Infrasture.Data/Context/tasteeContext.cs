@@ -157,7 +157,7 @@ namespace Tastee.Infrastucture.Data.Context
 
                 entity.Property(e => e.City).HasMaxLength(100);
 
-                entity.Property(e => e.WebMap).HasMaxLength(200);
+                entity.Property(e => e.WebMap).HasMaxLength(500);
 
                 entity.Property(e => e.CloseTimeA).HasColumnName("CloseTime_A");
 
