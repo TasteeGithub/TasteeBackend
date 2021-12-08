@@ -518,7 +518,16 @@ namespace Tastee.Application.Services
                         _serviceWidgets.Delete(widget);
                     //Insert new data
                     foreach (var widget in summary.Widgets)
+                    {
                         _serviceWidgets.Insert(widget);
+                        if(widget.WidgetType == (int)WidgetType.Info)
+                        {
+                            var brand = _serviceBrands.Queryable().Where(x => x.Id == decoration.BrandId).FirstOrDefault();
+                            widget.ExtraData.TryParseJson(out InfoWidgetModel infomodel);
+                            brand.RestaurantImages = infomodel.BrandImage;
+                        }
+                    }
+                  
                     foreach (var img in summary.Images)
                         _serviceWidgetImages.Insert(img);
 
