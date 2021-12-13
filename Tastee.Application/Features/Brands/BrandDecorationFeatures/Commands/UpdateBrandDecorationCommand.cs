@@ -55,7 +55,6 @@ namespace Tastee.Application.Features.Brands.BrandDecorationFeatures.Commands
                     }
                     _fileService.DeleteFolder(rs.FolderPath);
 
-                    var listWidgetImages = new List<WidgetImages>();
                     var imgDict = new Dictionary<string, string>();
                     var listKeys = rs.ImgDictionary.Keys.ToList();
                     for (int i = 0; i < listKeys.Count(); i++)

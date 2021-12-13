@@ -845,7 +845,7 @@ namespace Tastee.Application.Services
             var rs = new WidgetsSummary()
             {
                 Widgets = new List<Widgets>(),
-                Images = new List<WidgetImages>(0)
+                Images = new List<WidgetImages>()
             };
 
             //InfoWidget
@@ -858,15 +858,19 @@ namespace Tastee.Application.Services
                     WidgetType = (int)WidgetType.Info,
                     ExtraData = JsonConvert.SerializeObject(model.InfoWidget)
                 };
-                var infoImage = new WidgetImages()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    WidgetId = info.Id,
-                    Image = model.InfoWidget.BrandImage,
-                    Status = (int)WidgetImageStatus.Default
-                };
                 rs.Widgets.Add(info);
-                rs.Images.Add(infoImage);
+
+                if (!String.IsNullOrEmpty(model.InfoWidget.BrandImage))
+                {
+                    var infoImage = new WidgetImages()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        WidgetId = info.Id,
+                        Image = model.InfoWidget.BrandImage,
+                        Status = (int)WidgetImageStatus.Default
+                    };
+                    rs.Images.Add(infoImage);
+                }
             }
 
             //BrandImageWidget
@@ -921,17 +925,22 @@ namespace Tastee.Application.Services
                         ExtraData = JsonConvert.SerializeObject(item)
                     };
 
-                    foreach (var image in item.Images)
+                    if (item.Images.Count != 0)
                     {
-                        rs.Images.Add(new WidgetImages()
+                        foreach (var image in item.Images)
                         {
-                            Id = Guid.NewGuid().ToString(),
-                            WidgetId = slider.Id,
-                            Image = image,
-                            Status = (int)WidgetImageStatus.Default
-                        });
+                            if (!string.IsNullOrEmpty(image))
+                                rs.Images.Add(new WidgetImages()
+                                {
+                                    Id = Guid.NewGuid().ToString(),
+                                    WidgetId = slider.Id,
+                                    Image = image,
+                                    Status = (int)WidgetImageStatus.Default
+                                });
+                        }
                     }
                     rs.Widgets.Add(slider);
+
                 }
 
             }
@@ -949,13 +958,14 @@ namespace Tastee.Application.Services
                         ExtraData = JsonConvert.SerializeObject(item)
                     };
 
-                    rs.Images.Add(new WidgetImages()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        WidgetId = singel.Id,
-                        Image = item.Image,
-                        Status = (int)WidgetImageStatus.Default
-                    });
+                    if (!string.IsNullOrEmpty(item.Image))
+                        rs.Images.Add(new WidgetImages()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            WidgetId = singel.Id,
+                            Image = item.Image,
+                            Status = (int)WidgetImageStatus.Default
+                        });
 
                     rs.Widgets.Add(singel);
                 }
