@@ -480,7 +480,8 @@ namespace Tastee.Application.Services
                 DecorationId = decoration.Id,
                 Id = Guid.NewGuid().ToString(),
                 ExtraData = JsonConvert.SerializeObject(model.InfoWidget),
-                WidgetType = (int)WidgetType.Info
+                WidgetType = (int)WidgetType.Info,
+                DisplayOrder = 0
             };
             _serviceWidgets.Insert(infoWidget);
 
@@ -520,14 +521,14 @@ namespace Tastee.Application.Services
                     foreach (var widget in summary.Widgets)
                     {
                         _serviceWidgets.Insert(widget);
-                        if(widget.WidgetType == (int)WidgetType.Info)
+                        if (widget.WidgetType == (int)WidgetType.Info)
                         {
                             var brand = _serviceBrands.Queryable().Where(x => x.Id == decoration.BrandId).FirstOrDefault();
                             widget.ExtraData.TryParseJson(out InfoWidgetModel infomodel);
                             brand.RestaurantImages = infomodel.BrandImage;
                         }
                     }
-                  
+
                     foreach (var img in summary.Images)
                         _serviceWidgetImages.Insert(img);
 
@@ -865,7 +866,8 @@ namespace Tastee.Application.Services
                     DecorationId = decorationId,
                     Id = Guid.NewGuid().ToString(),
                     WidgetType = (int)WidgetType.Info,
-                    ExtraData = JsonConvert.SerializeObject(model.InfoWidget)
+                    ExtraData = JsonConvert.SerializeObject(model.InfoWidget),
+                    DisplayOrder = model.InfoWidget.DisplayOrder
                 };
                 rs.Widgets.Add(info);
 
@@ -890,7 +892,8 @@ namespace Tastee.Application.Services
                     DecorationId = decorationId,
                     Id = Guid.NewGuid().ToString(),
                     WidgetType = (int)WidgetType.BrandImage,
-                    ExtraData = JsonConvert.SerializeObject(model.BrandImageWidget)
+                    ExtraData = JsonConvert.SerializeObject(model.BrandImageWidget),
+                    DisplayOrder = model.BrandImageWidget.DisplayOrder
                 });
             }
 
@@ -902,7 +905,8 @@ namespace Tastee.Application.Services
                     DecorationId = decorationId,
                     Id = Guid.NewGuid().ToString(),
                     WidgetType = (int)WidgetType.Menu,
-                    ExtraData = JsonConvert.SerializeObject(model.MenuWidget)
+                    ExtraData = JsonConvert.SerializeObject(model.MenuWidget),
+                    DisplayOrder = model.MenuWidget.DisplayOrder
                 });
             }
 
@@ -916,7 +920,8 @@ namespace Tastee.Application.Services
                         DecorationId = decorationId,
                         Id = Guid.NewGuid().ToString(),
                         WidgetType = (int)WidgetType.GroupItem,
-                        ExtraData = JsonConvert.SerializeObject(item)
+                        ExtraData = JsonConvert.SerializeObject(item),
+                        DisplayOrder = item.DisplayOrder
                     });
                 }
             }
@@ -931,7 +936,8 @@ namespace Tastee.Application.Services
                         DecorationId = decorationId,
                         Id = Guid.NewGuid().ToString(),
                         WidgetType = (int)WidgetType.SliderBanner,
-                        ExtraData = JsonConvert.SerializeObject(item)
+                        ExtraData = JsonConvert.SerializeObject(item),
+                        DisplayOrder = item.DisplayOrder
                     };
 
                     if (item.Images.Count != 0)
@@ -964,7 +970,8 @@ namespace Tastee.Application.Services
                         DecorationId = decorationId,
                         Id = Guid.NewGuid().ToString(),
                         WidgetType = (int)WidgetType.SingelBanner,
-                        ExtraData = JsonConvert.SerializeObject(item)
+                        ExtraData = JsonConvert.SerializeObject(item),
+                        DisplayOrder = item.DisplayOrder
                     };
 
                     if (!string.IsNullOrEmpty(item.Image))

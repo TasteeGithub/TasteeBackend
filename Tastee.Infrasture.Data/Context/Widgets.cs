@@ -10,5 +10,6 @@ namespace Tastee.Infrastucture.Data.Context
         public string DecorationId { get; set; }
         public int WidgetType { get; set; }
         public string ExtraData { get; set; }
+        public int? DisplayOrder { get; set; }
     }
 }
