@@ -32,7 +32,7 @@ namespace Tastee.Shared.Models.Brands.BrandDecorations
 
     public class GroupItemWidgetModel : GeneralWidgetModel
     {
-        public int GroupId { get; set; }
+        public string GroupId { get; set; }
         [JsonProperty("background_color")]
         public string BackgroundColor { get; set; }
         [JsonProperty("font_color")]
