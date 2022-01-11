@@ -8,6 +8,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAPeEx9YPY4km7LgciaINJCgAAAAACAAAAAAAQZgAAAAEAACAAAAAtjndFEABrmIXD3v9hc/M8LV5911YLeh10bTHuH3p65gAAAAAOgAAAAAIAACAAAABNoZNgdcWRy7+yIxuDngPxHW2epZJ02M1zKuXFF2XHxjAAAAAUqhp18uCSOG+Fddw3RsgCqyhBWYddcm8vUryTX7ZB66AJY5k3HAaaXC6dPM+KVnZAAAAAh2UQaE81bo5AXoT8NGzscbJk19Bd/l2YzujgQBCQSOhYWk29jGwpQyhKxtjoJxw6/lC6ghdxXb8HoAjopggvvA==</EncryptedPassword>
     <_PublishTargetUrl>ftp://s2d36.cloudnetwork.vn/httpdocs/</_PublishTargetUrl>
+    <History>False|2021-11-15T09:49:32.8986530Z;</History>
   </PropertyGroup>
   <ItemGroup>
     <File Include="appsettings.Development.json">

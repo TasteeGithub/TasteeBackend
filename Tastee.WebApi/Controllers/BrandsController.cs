@@ -327,6 +327,60 @@ namespace Tastee.WebApi.Controllers
         }
 
         [HttpPost]
+        [Route("decoration/load-data")]
+        public async Task<IActionResult> Decoration_LoadData([FromForm] GetDecorationViewModel model)
+        {
+            try
+            {
+                int recordsTotal = 0;
+                GetDecorationQuery query = new GetDecorationQuery { RequestModel = model };
+                var rs = await Mediator.Send(query);
+
+                //total number of rows counts
+                recordsTotal = rs.TotalRows;
+
+                //Paging
+                var data = rs.ListData;
+
+                //Returning Json Data
+                return new JsonResult(
+                    new { model.Draw, recordsFiltered = recordsTotal, recordsTotal, data });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Decoration_LoadData");
+            }
+
+            return new JsonResult(
+                    new { model.Draw, recordsFiltered = 0, recordsTotal = 0, data = new List<WidgetImage>() });
+        }
+
+        [HttpPost]
+        [Route("decoration/update_status")]
+        public async Task<IActionResult> BrandDecoration_UpdateStatus(UpdateDecorationStatusViewModel request)
+        {
+            try
+            {
+                UpdateBrandDecorationStatusCommand rq = new UpdateBrandDecorationStatusCommand
+                {
+                    Model = request,
+                    UserEmail = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value
+                };
+                return Ok(await Mediator.Send(rq));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Update brand decoration status, brand id: {0}, status: {1}", request.Id, request.Status);
+            }
+            finally
+            {
+                _logger.LogInformation("Update brand decoration status, brand Id {0}, status: {1}", request.Id, request.Status);
+            }
+            return Ok(new Response<Brand>("Has error"));
+        }
+
+
+        [HttpPost]
         [Route("decoration/update")]
         public async Task<IActionResult> BrandDecoration_Update([FromForm] UpdateBrandDecorationModel request)
         {

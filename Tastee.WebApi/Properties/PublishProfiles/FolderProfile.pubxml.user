@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PublishTargetUrl>C:\Users\PC\Desktop\Tastee</_PublishTargetUrl>
+    <History>True|2022-01-10T19:02:03.4983771Z;True|2021-12-29T01:44:32.0785914+07:00;True|2021-12-21T01:29:57.5213260+07:00;True|2021-12-19T02:18:09.9878325+07:00;True|2021-12-14T01:31:19.9308495+07:00;True|2021-12-14T00:14:05.4247108+07:00;True|2021-11-30T15:10:58.6781903+07:00;True|2021-11-30T15:07:11.9000564+07:00;True|2021-11-30T14:42:20.5699699+07:00;True|2021-11-19T16:20:01.5330108+07:00;True|2021-11-19T16:19:12.1492174+07:00;True|2021-11-19T16:10:37.5018749+07:00;True|2021-11-15T16:50:04.2692558+07:00;</History>
+  </PropertyGroup>
+</Project>

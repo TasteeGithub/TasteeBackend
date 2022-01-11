@@ -76,7 +76,7 @@ namespace Tastee.Application.Features.Brands.BrandDecorationFeatures.Commands
 
                 // InfoWidget
                 //currentImages.Add(cWidgetModel.InfoWidget.BrandImage);
-                if (imgDict.Keys.Contains(uWidgetModel.InfoWidget.BrandImage))
+                if (!string.IsNullOrEmpty(uWidgetModel.InfoWidget.BrandImage) && imgDict.Keys.Contains(uWidgetModel.InfoWidget.BrandImage))
                 {
                     uWidgetModel.InfoWidget.BrandImage = imgDict[uWidgetModel.InfoWidget.BrandImage];
                 }
@@ -90,7 +90,7 @@ namespace Tastee.Application.Features.Brands.BrandDecorationFeatures.Commands
                 if (uWidgetModel.SingleBannerWidget != null)
                     foreach (var widget in uWidgetModel.SingleBannerWidget)
                     {
-                        if (imgDict.Keys.Contains(widget.Image))
+                        if (!string.IsNullOrEmpty(widget.Image) && imgDict.Keys.Contains(widget.Image))
                         {
                             widget.Image = imgDict[widget.Image];
                         }

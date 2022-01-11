@@ -101,7 +101,8 @@
     public enum BrandDecorationStatus
     {
         Draft,
-        Approved
+        Approved,
+        Deleted
     }
 
     public enum WidgetImageStatus

@@ -456,6 +456,42 @@ namespace Tastee.Application.Services
         #endregion
 
         #region BrandDecoration
+
+        public async Task<PaggingModel<BrandDecoration>> GetBrandDecorationAsync(GetDecorationViewModel requestModel)
+        {
+            ExpressionStarter<BrandDecorations> searchCondition = PredicateBuilder.New<BrandDecorations>(true);
+            int pageSize = Converters.StringToInteger(requestModel.Length, Constants.DEFAULT_PAGE_SIZE).Value;
+            int skip = Converters.StringToInteger(requestModel.Start).Value;
+            int pageIndex = skip / pageSize + 1;
+
+            if (!string.IsNullOrEmpty(requestModel.BrandId))
+            {
+                searchCondition = searchCondition.And(x => x.BrandId == requestModel.BrandId);
+            }
+
+            if (!string.IsNullOrEmpty(requestModel.DecorationId))
+            {
+                searchCondition = searchCondition.And(x => x.Id == requestModel.DecorationId);
+            }
+
+            if (requestModel.Status != null)
+            {
+                searchCondition = searchCondition.And(x => x.Status == (int)requestModel.Status.Value);
+            }
+
+            var listBrandDecorations = _serviceBrandDecoration.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate);
+
+            var pagedListUser = await PaginatedList<BrandDecorations>.CreateAsync(listBrandDecorations, pageIndex, pageSize);
+
+            PaggingModel<BrandDecoration> returnResult = new PaggingModel<BrandDecoration>()
+            {
+                ListData = pagedListUser.Select(x => x.Adapt<BrandDecoration>()).ToList(),
+                TotalRows = pagedListUser.TotalRows,
+            };
+
+            return returnResult;
+        }
+
         /// <summary>
         /// InsertBrandDecorationAsync
         /// </summary>
@@ -639,6 +675,46 @@ namespace Tastee.Application.Services
 
             return model;
         }
+
+        public async Task<Response> UpdateDecorationStatusAsync(UpdateDecorationStatusViewModel requestModel, string updateBy)
+        {
+            if (requestModel.Id != null && requestModel.Id.Length > 0)
+            {
+
+                var decoration = await _serviceBrandDecoration.FindAsync(requestModel.Id);
+                if (decoration != null)
+                {
+                   
+                    decoration.Status = (int)requestModel.Status;
+                    decoration.UpdatedDate = Converters.DateTimeToUnixTimeStamp(DateTime.Now);
+                    decoration.UpdatedBy = updateBy;
+                    _serviceBrandDecoration.Update(decoration);
+
+                    if (requestModel.Status == BrandDecorationStatus.Approved)
+                    {
+                        var currentDecorations = _serviceBrandDecoration.Queryable().Where(x => x.Id != requestModel.Id && x.Status == (int)BrandDecorationStatus.Approved && x.BrandId == decoration.BrandId).ToList();
+                        foreach (var item in currentDecorations)
+                        {
+                            item.Status = (int)BrandDecorationStatus.Deleted;
+                            item.UpdatedDate = Converters.DateTimeToUnixTimeStamp(DateTime.Now);
+                            item.UpdatedBy = updateBy;
+                            _serviceBrandDecoration.Update(item);
+                        }
+                    }
+                    await _unitOfWork.SaveChangesAsync();
+
+                    return new Response { Successful = true, Message = "Update Decoration status success" };
+                }
+                else
+                {
+                    return new Response { Successful = false, Message = "Decoration not found" };
+                }
+            }
+
+            return new Response { Successful = false, Message = "Please input id" };
+        }
+
+        
 
         #region Widget
         /// <summary>
