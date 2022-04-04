@@ -6,21 +6,19 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using System.Text;
 using Tastee.Application.Interfaces;
 using Tastee.Application.Services;
 using Tastee.Infrastructure.IoC;
-using Tastee.Infrastucture.Data.Context;
 using Tastee.WebApi.HealthChecks;
 
 namespace TasteeWebApi
@@ -77,6 +75,7 @@ namespace TasteeWebApi
             {
                 services.AddSwaggerGen(c =>
                 {
+                    c.SchemaGeneratorOptions.UseInlineDefinitionsForEnums = true;
                     c.SwaggerDoc("v1", new OpenApiInfo
                     {
                         Title = "Tastee Api",

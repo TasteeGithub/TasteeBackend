@@ -17,6 +17,24 @@
         Closed
     }
 
+    public enum SuggestBrandStatus
+    {
+        /// <summary>
+        /// Chờ kích hoạt
+        /// </summary>
+        Pending,
+
+        /// <summary>
+        /// Đang hoạt động
+        /// </summary>
+        Approved,
+
+        /// <summary>
+        /// Tạm ngừng
+        /// </summary>
+        UnApproved
+    }
+
     public enum BrandStatus
     {
         /// <summary>
@@ -100,8 +118,17 @@
 
     public enum BrandDecorationStatus
     {
+        /// <summary>
+        /// Draft
+        /// </summary>
         Draft,
+        /// <summary>
+        /// Approved
+        /// </summary>
         Approved,
+        /// <summary>
+        /// Deleted
+        /// </summary>
         Deleted
     }
 
@@ -112,11 +139,24 @@
 
     public enum WidgetType
     {
-       Info,
-       BrandImage,
-       Menu,
-       SingelBanner,
-       SliderBanner,
-       GroupItem
+        Info,
+        SingelBanner,
+        SliderBanner,
+        BrandImage,
+        GroupItem,
+        Menu
+    }
+
+    public enum CommonStatus
+    {
+        /// <summary>
+        /// Đang hoạt động
+        /// </summary>
+        Active,
+
+        /// <summary>
+        /// Tạm ngừng
+        /// </summary>
+        InActive
     }
 }

@@ -142,6 +142,63 @@ namespace Tastee.WebApi.Controllers
             }
             return Ok(new { Successful = false, Error = "Has error when update" });
         }
+
+
+        [HttpPost]
+        [Route("suggest-brand/load-data")]
+        public async Task<IActionResult> SuggestBrand_LoadData([FromForm] GetSuggestBrandsViewModel model)
+        {
+            try
+            {
+                int recordsTotal = 0;
+                GetSuggestBrandsQuery brandsQuery = new GetSuggestBrandsQuery { RequestModel = model };
+                var rs = await Mediator.Send(brandsQuery);
+
+                //total number of rows counts
+                recordsTotal = rs.TotalRows;
+
+                //Paging
+                var data = rs.ListData;
+
+                //Returning Json Data
+                return new JsonResult(
+                    new { model.Draw, recordsFiltered = recordsTotal, recordsTotal, data });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "LoadData");
+            }
+
+            return new JsonResult(
+                    new { model.Draw, recordsFiltered = 0, recordsTotal = 0, data = new List<SuggestBrandModel>() });
+        }
+
+
+        [HttpPost]
+        [Route("suggest-brand/update")]
+        public async Task<IActionResult> UpdateSuggestBrand(UpdateSuggestBrandModel model)
+        {
+            try
+            {
+                var updateCommand = new UpdateSuggestBrandCommand()
+                {
+                    Model = model,
+                    Email = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value
+                };
+
+                return Ok(await Mediator.Send(updateCommand));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Update SuggestBrand {0}", model);
+            }
+            finally
+            {
+                _logger.LogInformation("Update SuggestBrand data: {0}", model );
+            }
+            return Ok(new { Successful = false, Error = "Has error when update" });
+        }
+
         #endregion
 
         #region BrandImages
@@ -326,6 +383,11 @@ namespace Tastee.WebApi.Controllers
             return Ok(new Response<Brand>("Has error"));
         }
 
+        /// <summary>
+        /// Decoration_LoadData
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("decoration/load-data")]
         public async Task<IActionResult> Decoration_LoadData([FromForm] GetDecorationViewModel model)

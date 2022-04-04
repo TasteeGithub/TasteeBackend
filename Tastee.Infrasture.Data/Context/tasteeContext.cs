@@ -19,11 +19,14 @@ namespace Tastee.Infrastucture.Data.Context
         public virtual DbSet<Banners> Banners { get; set; }
         public virtual DbSet<BrandDecorations> BrandDecorations { get; set; }
         public virtual DbSet<BrandImages> BrandImages { get; set; }
+        public virtual DbSet<BrandMerchants> BrandMerchants { get; set; }
         public virtual DbSet<Brands> Brands { get; set; }
         public virtual DbSet<Cities> Cities { get; set; }
-        public virtual DbSet<BrandMerchants> BrandMerchants { get; set; }
+        public virtual DbSet<CollectionBrands> CollectionBrands { get; set; }
+        public virtual DbSet<Collections> Collections { get; set; }
         public virtual DbSet<GroupItemMapping> GroupItemMapping { get; set; }
         public virtual DbSet<GroupItems> GroupItems { get; set; }
+        public virtual DbSet<GroupToppings> GroupToppings { get; set; }
         public virtual DbSet<MenuItems> MenuItems { get; set; }
         public virtual DbSet<Menus> Menus { get; set; }
         public virtual DbSet<Nlogs> Nlogs { get; set; }
@@ -31,7 +34,11 @@ namespace Tastee.Infrastucture.Data.Context
         public virtual DbSet<Operators> Operators { get; set; }
         public virtual DbSet<ProductSliders> ProductSliders { get; set; }
         public virtual DbSet<Roles> Roles { get; set; }
+        public virtual DbSet<SuggestBrands> SuggestBrands { get; set; }
+        public virtual DbSet<Toppings> Toppings { get; set; }
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<WidgetImages> WidgetImages { get; set; }
+        public virtual DbSet<Widgets> Widgets { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -157,8 +164,6 @@ namespace Tastee.Infrastucture.Data.Context
 
                 entity.Property(e => e.City).HasMaxLength(100);
 
-                entity.Property(e => e.WebMap).HasMaxLength(500);
-
                 entity.Property(e => e.CloseTimeA).HasColumnName("CloseTime_A");
 
                 entity.Property(e => e.CloseTimeP).HasColumnName("CloseTime_P");
@@ -223,6 +228,8 @@ namespace Tastee.Infrastucture.Data.Context
                 entity.Property(e => e.Uri)
                     .IsRequired()
                     .HasMaxLength(100);
+
+                entity.Property(e => e.WebMap).HasMaxLength(200);
             });
 
             modelBuilder.Entity<Cities>(entity =>
@@ -230,6 +237,32 @@ namespace Tastee.Infrastucture.Data.Context
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(200);
+            });
+
+           modelBuilder.Entity<CollectionBrands>(entity =>
+            {
+                entity.Property(e => e.Id).HasMaxLength(50);
+
+                entity.Property(e => e.BrandId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CollectionId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Collections>(entity =>
+            {
+                entity.Property(e => e.Id).HasMaxLength(50);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.Uid)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<GroupItemMapping>(entity =>
@@ -259,6 +292,29 @@ namespace Tastee.Infrastucture.Data.Context
                     .HasMaxLength(50);
 
                 entity.Property(e => e.Name).HasMaxLength(100);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<GroupToppings>(entity =>
+            {
+                entity.Property(e => e.Id).HasMaxLength(50);
+
+                entity.Property(e => e.BrandId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.MenuItemId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(50);
             });
@@ -440,6 +496,64 @@ namespace Tastee.Infrastucture.Data.Context
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<SuggestBrands>(entity =>
+            {
+                entity.Property(e => e.Id).HasMaxLength(50);
+
+                entity.Property(e => e.Address).IsRequired();
+
+                entity.Property(e => e.Area)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.City)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Description).IsRequired();
+
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Name).IsRequired();
+
+                entity.Property(e => e.Phone)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RestaurantImages)
+                    .IsRequired()
+                    .HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<Toppings>(entity =>
+            {
+                entity.Property(e => e.Id).HasMaxLength(50);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.GroupToppingId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Note).HasMaxLength(200);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Users>(entity =>

@@ -23,6 +23,7 @@ namespace Tastee.Application.Services
         private readonly IUnitOfWork _unitOfWork;
 
         private readonly IGenericService<Brands> _serviceBrands;
+        private readonly IGenericService<SuggestBrands> _serviceSuggestBrands;
         private readonly IGenericService<BrandImages> _serviceBrandImage;
         private readonly IGenericService<BrandDecorations> _serviceBrandDecoration;
         private readonly IGenericService<WidgetImages> _serviceWidgetImages;
@@ -36,6 +37,7 @@ namespace Tastee.Application.Services
            IUnitOfWork unitOfWork,
            IGenericService<Brands> serviceBrands,
            IGenericService<BrandImages> serviceBrandImage,
+            IGenericService<SuggestBrands> serviceSuggestBrands,
            IGenericService<BrandDecorations> serviceBrandDecoration,
            IGenericService<WidgetImages> serviceWidgetImages,
            IGenericService<Menus> serviceMenus,
@@ -47,6 +49,7 @@ namespace Tastee.Application.Services
         {
             _unitOfWork = unitOfWork;
             _serviceBrands = serviceBrands;
+            _serviceSuggestBrands = serviceSuggestBrands;
             _serviceBrandImage = serviceBrandImage;
             _serviceBrandDecoration = serviceBrandDecoration;
             _serviceMenus = serviceMenus;
@@ -126,6 +129,52 @@ namespace Tastee.Application.Services
             return returnResult;
         }
 
+        public async Task<PaggingModel<SuggestBrandModel>> GetSuggestBrandsAsync(GetSuggestBrandsViewModel requestModel)
+        {
+            ExpressionStarter<SuggestBrands> searchCondition = PredicateBuilder.New<SuggestBrands>(true);
+            int pageSize = Converters.StringToInteger(requestModel.Length, Constants.DEFAULT_PAGE_SIZE).Value;
+            int skip = Converters.StringToInteger(requestModel.Start).Value;
+            int pageIndex = skip / pageSize + 1;
+
+            if (!string.IsNullOrEmpty(requestModel.Name))
+            {
+                searchCondition = searchCondition.And(x => x.Name.ToLower().Contains(requestModel.Name.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(requestModel.Phone))
+            {
+                searchCondition = searchCondition.And(x => x.Phone.Contains(requestModel.Phone));
+            }
+
+            if (!string.IsNullOrEmpty(requestModel.Email))
+            {
+                searchCondition = searchCondition.And(x => x.Email != null && x.Email.ToLower().Contains(requestModel.Email.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(requestModel.City))
+            {
+                searchCondition = searchCondition.And(x => x.City != null && x.City.ToLower().Contains(requestModel.City.ToLower()));
+            }
+
+
+            if (requestModel.Status != null)
+            {
+                searchCondition = searchCondition.And(x => x.Status == (int)requestModel.Status);
+            }
+
+            var listBrands = _serviceSuggestBrands.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate);
+
+            var pagedSuggestBrand = await PaginatedList<SuggestBrands>.CreateAsync(listBrands, pageIndex, pageSize);
+
+            PaggingModel<SuggestBrandModel> returnResult = new PaggingModel<SuggestBrandModel>()
+            {
+                ListData = pagedSuggestBrand.Select(x => x.Adapt<SuggestBrandModel>()).ToList(),
+                TotalRows = pagedSuggestBrand.TotalRows,
+            };
+
+            return returnResult;
+        }
+
         public async Task<Response> InsertAsync(Brands newBrands)
         {
             if (!_serviceBrands.Queryable().Any(x => x.Name.ToLower() == newBrands.Name.ToLower()))
@@ -172,7 +221,6 @@ namespace Tastee.Application.Services
                 brand.HeadOffice = updateBrand.HeadOffice ?? brand.HeadOffice;
                 brand.Uri = updateBrand.Uri ?? brand.Uri;
                 brand.Logo = updateBrand.Logo ?? brand.Logo;
-                brand.RestaurantImages = updateBrand.RestaurantImages ?? brand.RestaurantImages;
                 brand.City = updateBrand.City ?? brand.City;
                 brand.Area = updateBrand.Area ?? brand.Area;
                 brand.MinPrice = updateBrand.MinPrice ?? brand.MinPrice;
@@ -198,6 +246,19 @@ namespace Tastee.Application.Services
                 brand.WebMap = updateBrand.WebMap ?? brand.WebMap;
                 brand.UpdatedDate = DateTime.Now;
                 brand.UpdateBy = updateBrand.UpdateBy;
+                if (!String.IsNullOrEmpty(updateBrand.RestaurantImages))
+                {
+                    brand.RestaurantImages = updateBrand.RestaurantImages;
+                    var decorations = _serviceBrandDecoration.Queryable().Where(x => x.BrandId == updateBrand.Id && x.Status == (int)BrandDecorationStatus.Approved).FirstOrDefault();
+                    if (decorations != null)
+                    {
+                        var infoWidget = _serviceWidgets.Queryable().Where(x => x.DecorationId == decorations.Id && x.WidgetType == (int)WidgetType.Info).FirstOrDefault();
+                        infoWidget.ExtraData.TryParseJson(out InfoWidgetModel infomodel);
+                        infomodel.BrandImage = updateBrand.RestaurantImages;
+                        infoWidget.ExtraData = JsonConvert.SerializeObject(infomodel);
+                        _serviceWidgets.Update(infoWidget);
+                    }
+                }
                 _serviceBrands.Update(brand);
 
                 await _unitOfWork.SaveChangesAsync();
@@ -327,6 +388,59 @@ namespace Tastee.Application.Services
             if (brandIdsFromMenu.Count != 1 || brandIdsFromMenu.FirstOrDefault() != brandId)
                 return new Response() { Successful = false, Message = String.Format("Items not belong brand") };
             return new Response() { Successful = true };
+        }
+
+        public async Task<Response> UpdateSuggestBrandAsync(UpdateSuggestBrandModel model, string email)
+        {
+            bool createFlag = false;
+            if (model.Id != null && model.Id.Length > 0)
+            {
+                var suggestBrand = await _serviceSuggestBrands.FindAsync(model.Id);
+                if (suggestBrand != null)
+                {
+                    if (suggestBrand.Status != (int)SuggestBrandStatus.Approved && model.Status == (int)SuggestBrandStatus.Approved)
+                    {
+                        createFlag = true;
+                    }
+                    suggestBrand.Status = model.Status;
+                    _serviceSuggestBrands.Update(suggestBrand);
+
+                    if (createFlag)
+                    {
+                        var brand = new Brands()
+                        {
+                            UpdateBy = email,
+                            UpdatedDate = DateTime.Now,
+                            Id = suggestBrand.Id,
+                            Name = suggestBrand.Name,
+                            RestaurantImages = suggestBrand.RestaurantImages,
+                            Address = suggestBrand.Address,
+                            City = suggestBrand.City,
+                            Area = suggestBrand.Area,
+                            SeoDescription = suggestBrand.Description,
+                            Email = suggestBrand.Email,
+                            Phone = suggestBrand.Phone,
+                            Status = BrandStatus.Active.ToString(),
+                            CreatedDate = Converters.UnixTimeStampToDateTime(suggestBrand.CreatedDate).Value,
+                            HeadOffice = string.Empty,
+                            Uri = suggestBrand.Id,
+                            Hotline = suggestBrand.Phone
+                        };
+
+                        _serviceBrands.Insert(brand);
+                    }
+
+                    await _unitOfWork.SaveChangesAsync();
+
+                    return new Response { Successful = true, Message = "Update SuggestBrand success" };
+                }
+                else
+                {
+                    return new Response { Successful = false, Message = "SuggestBrand not found" };
+                }
+            }
+
+            return new Response { Successful = false, Message = "Please input id" };
         }
         #endregion
 
@@ -505,7 +619,7 @@ namespace Tastee.Application.Services
             {
                 BrandId = brandId,
                 CreatedBy = userEmail,
-                Status = (int)BrandDecorationStatus.Draft,
+                Status = (int)BrandDecorationStatus.Approved,
             };
             decoration.CreatedDate = Converters.DateTimeToUnixTimeStamp(DateTime.Now).Value;
             decoration.Id = Guid.NewGuid().ToString();
@@ -589,7 +703,7 @@ namespace Tastee.Application.Services
         public BrandDecorations GetBrandDecorationByBrandId(string brandId)
         {
             ExpressionStarter<BrandDecorations> searchCondition = PredicateBuilder.New<BrandDecorations>(true);
-            searchCondition = searchCondition.And(x => x.BrandId == brandId && x.Status == (int)BrandDecorationStatus.Draft);
+            searchCondition = searchCondition.And(x => x.BrandId == brandId && x.Status == (int)BrandDecorationStatus.Approved);
             return _serviceBrandDecoration.Queryable().Where(searchCondition).OrderByDescending(x => x.CreatedDate).FirstOrDefault();
         }
 
@@ -684,7 +798,7 @@ namespace Tastee.Application.Services
                 var decoration = await _serviceBrandDecoration.FindAsync(requestModel.Id);
                 if (decoration != null)
                 {
-                   
+
                     decoration.Status = (int)requestModel.Status;
                     decoration.UpdatedDate = Converters.DateTimeToUnixTimeStamp(DateTime.Now);
                     decoration.UpdatedBy = updateBy;
@@ -714,7 +828,7 @@ namespace Tastee.Application.Services
             return new Response { Successful = false, Message = "Please input id" };
         }
 
-        
+
 
         #region Widget
         /// <summary>

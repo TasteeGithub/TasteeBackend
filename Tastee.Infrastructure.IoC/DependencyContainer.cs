@@ -36,6 +36,7 @@ namespace Tastee.Infrastructure.IoC
             services.AddScoped<IGenericService<Users>, GenericService<Users>>();
 
             services.AddScoped<ITrackableRepository<Brands>, TrackableRepository<Brands>>();
+            services.AddScoped<ITrackableRepository<SuggestBrands>, TrackableRepository<SuggestBrands>>();
             services.AddScoped<ITrackableRepository<BrandDecorations>, TrackableRepository<BrandDecorations>>();
             services.AddScoped<ITrackableRepository<WidgetImages>, TrackableRepository<WidgetImages>>();
             services.AddScoped<ITrackableRepository<Widgets>, TrackableRepository<Widgets>>();
@@ -43,6 +44,7 @@ namespace Tastee.Infrastructure.IoC
             services.AddScoped<ITrackableRepository<BrandMerchants>, TrackableRepository<BrandMerchants>>();
 
             services.AddScoped<IGenericService<Brands>, GenericService<Brands>>();
+            services.AddScoped<IGenericService<SuggestBrands>, GenericService<SuggestBrands>>();
             services.AddScoped<IGenericService<BrandDecorations>, GenericService<BrandDecorations>>();
             services.AddScoped<IGenericService<WidgetImages>, GenericService<WidgetImages>>();
             services.AddScoped<IGenericService<Widgets>, GenericService<Widgets>>();
@@ -74,12 +76,17 @@ namespace Tastee.Infrastructure.IoC
 
             services.AddScoped<IFileService, FileService>();
 
-
             services.AddScoped<ITrackableRepository<GroupItems>, TrackableRepository<GroupItems>>();
             services.AddScoped<IGenericService<GroupItems>, GenericService<GroupItems>>();
             services.AddScoped<ITrackableRepository<GroupItemMapping>, TrackableRepository<GroupItemMapping>>();
             services.AddScoped<IGenericService<GroupItemMapping>, GenericService<GroupItemMapping>>();
             services.AddScoped<IGroupItemsService, GroupItemsService>();
+
+            services.AddScoped<ITrackableRepository<GroupToppings>, TrackableRepository<GroupToppings>>();
+            services.AddScoped<IGenericService<GroupToppings>, GenericService<GroupToppings>>();
+            services.AddScoped<ITrackableRepository<Toppings>, TrackableRepository<Toppings>>();
+            services.AddScoped<IGenericService<Toppings>, GenericService<Toppings>>();
+            services.AddScoped<IToppingService, ToppingService>();
 
             services.AddMediatR(System.AppDomain.CurrentDomain.GetAssemblies());
 

@@ -17,6 +17,8 @@ namespace Tastee.Application.Interfaces
         Brands BuildBrandFromModel(Brand model);
         Brand BuildModelFromBrand(Brands brand);
         Task<Response> CheckMenuItemsBelongBrand(List<string> itemIds, string brandId);
+        Task<PaggingModel<SuggestBrandModel>> GetSuggestBrandsAsync(GetSuggestBrandsViewModel requestModel);
+        Task<Response> UpdateSuggestBrandAsync(UpdateSuggestBrandModel model, string email);
         #endregion
 
         #region RestaurantSpace
