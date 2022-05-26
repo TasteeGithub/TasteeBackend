@@ -4,7 +4,7 @@ using URF.Core.EF.Trackable;
 
 namespace Tastee.Infrastucture.Data.Context
 {
-    public partial class Brands : Entity
+    public partial class Brands: Entity
     {
         public string Id { get; set; }
         public string Name { get; set; }
@@ -41,5 +41,10 @@ namespace Tastee.Infrastucture.Data.Context
         public DateTime? EndDate { get; set; }
         public short? Type { get; set; }
         public string WebMap { get; set; }
+        public short? Partner { get; set; }
+        public short BusinessType { get; set; }
+        public string Tax { get; set; }
+        public string RefCode { get; set; }
+        public bool IsOffline { get; set; }
     }
 }

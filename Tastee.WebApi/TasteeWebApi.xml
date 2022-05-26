@@ -59,6 +59,13 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="M:Tastee.WebApi.Controllers.BrandsController.Decoration_LoadData(Tastee.Application.ViewModel.GetDecorationViewModel)">
+            <summary>
+            Decoration_LoadData
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
         <member name="M:Tastee.WebApi.Controllers.MenusController.GetMenuDetail(System.String)">
             <summary>
             Get menu detail

@@ -61,7 +61,7 @@ namespace Tastee.Application.Features.Brands.BrandDecorationFeatures.Commands
                     {
                         var key = listKeys[i];
                         string bucketName = _configuration["AWS:BucketName"];
-                        var url = _fileService.GenerateAwsFileUrl(bucketName, String.Format("{0}/{1}", key_perfix, rs.ImgDictionary[key])).Data;
+                        var url = _fileService.GenerateAwsFileUrl(String.Format("{0}/{1}", key_perfix, rs.ImgDictionary[key])).Data;
                         imgDict.Add(updateModel.Files[i].Name, url);
                     }
                     ReplaceImage(ref uWidgetModel, cWidgetModel, imgDict);

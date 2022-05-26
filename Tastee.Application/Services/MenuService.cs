@@ -232,13 +232,13 @@ namespace Tastee.Application.Services
                 if (menuItem != null)
                 {
                     menuItem.Name = updateMenuItems.Name ?? menuItem.Name;
-                    menuItem.Status = updateMenuItems.Status ?? menuItem.Status;
+                    menuItem.Status = updateMenuItems.Status;
                     menuItem.Order = updateMenuItems.Order ?? menuItem.Order;
                     menuItem.MenuId = updateMenuItems.MenuId ?? menuItem.MenuId;
                     menuItem.Image = updateMenuItems.Image ?? menuItem.Image;
                     menuItem.Description = updateMenuItems.Description ?? menuItem.Description;
                     menuItem.ShortDescription = updateMenuItems.ShortDescription ?? menuItem.ShortDescription;
-                    menuItem.Price = updateMenuItems.Price ?? menuItem.Price;
+                    menuItem.Price = updateMenuItems.Price;
                     menuItem.LikeNumber = updateMenuItems.LikeNumber ?? menuItem.LikeNumber;
                     menuItem.UpdatedBy = updateMenuItems.UpdatedBy;
                     menuItem.UpdatedDate = DateTime.Now;

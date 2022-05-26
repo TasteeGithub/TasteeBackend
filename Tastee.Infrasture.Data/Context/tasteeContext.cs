@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -21,12 +21,15 @@ namespace Tastee.Infrastucture.Data.Context
         public virtual DbSet<BrandImages> BrandImages { get; set; }
         public virtual DbSet<BrandMerchants> BrandMerchants { get; set; }
         public virtual DbSet<Brands> Brands { get; set; }
+        public virtual DbSet<Categories> Categories { get; set; }
         public virtual DbSet<Cities> Cities { get; set; }
         public virtual DbSet<CollectionBrands> CollectionBrands { get; set; }
         public virtual DbSet<Collections> Collections { get; set; }
+        public virtual DbSet<Customers> Customers { get; set; }
         public virtual DbSet<GroupItemMapping> GroupItemMapping { get; set; }
         public virtual DbSet<GroupItems> GroupItems { get; set; }
         public virtual DbSet<GroupToppings> GroupToppings { get; set; }
+        public virtual DbSet<MenuItemToppingMappings> MenuItemToppingMappings { get; set; }
         public virtual DbSet<MenuItems> MenuItems { get; set; }
         public virtual DbSet<Menus> Menus { get; set; }
         public virtual DbSet<Nlogs> Nlogs { get; set; }
@@ -34,9 +37,12 @@ namespace Tastee.Infrastucture.Data.Context
         public virtual DbSet<Operators> Operators { get; set; }
         public virtual DbSet<ProductSliders> ProductSliders { get; set; }
         public virtual DbSet<Roles> Roles { get; set; }
+        public virtual DbSet<ShippingAddresses> ShippingAddresses { get; set; }
         public virtual DbSet<SuggestBrands> SuggestBrands { get; set; }
         public virtual DbSet<Toppings> Toppings { get; set; }
+        public virtual DbSet<UserTokens> UserTokens { get; set; }
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<VerifySms> VerifySms { get; set; }
         public virtual DbSet<WidgetImages> WidgetImages { get; set; }
         public virtual DbSet<Widgets> Widgets { get; set; }
 
@@ -160,6 +166,8 @@ namespace Tastee.Infrastucture.Data.Context
 
                 entity.Property(e => e.Area).HasMaxLength(100);
 
+                entity.Property(e => e.BusinessType).HasDefaultValueSql("((1))");
+
                 entity.Property(e => e.Categories).HasMaxLength(100);
 
                 entity.Property(e => e.City).HasMaxLength(100);
@@ -206,6 +214,8 @@ namespace Tastee.Infrastucture.Data.Context
                     .HasMaxLength(10)
                     .IsUnicode(false);
 
+                entity.Property(e => e.RefCode).HasMaxLength(50);
+
                 entity.Property(e => e.RestaurantImages).HasMaxLength(200);
 
                 entity.Property(e => e.SeoImage)
@@ -221,6 +231,8 @@ namespace Tastee.Infrastucture.Data.Context
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Tax).HasMaxLength(200);
+
                 entity.Property(e => e.UpdateBy).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedDate).HasColumnType("smalldatetime");
@@ -232,6 +244,23 @@ namespace Tastee.Infrastucture.Data.Context
                 entity.Property(e => e.WebMap).HasMaxLength(200);
             });
 
+            modelBuilder.Entity<Categories>(entity =>
+            {
+                entity.Property(e => e.Id).HasMaxLength(50);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Image).HasMaxLength(200);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(50);
+            });
+
             modelBuilder.Entity<Cities>(entity =>
             {
                 entity.Property(e => e.Name)
@@ -239,7 +268,7 @@ namespace Tastee.Infrastucture.Data.Context
                     .HasMaxLength(200);
             });
 
-           modelBuilder.Entity<CollectionBrands>(entity =>
+            modelBuilder.Entity<CollectionBrands>(entity =>
             {
                 entity.Property(e => e.Id).HasMaxLength(50);
 
@@ -263,6 +292,39 @@ namespace Tastee.Infrastucture.Data.Context
                 entity.Property(e => e.Uid)
                     .IsRequired()
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Customers>(entity =>
+            {
+                entity.Property(e => e.Id).HasMaxLength(50);
+
+                entity.Property(e => e.Address).HasMaxLength(200);
+
+                entity.Property(e => e.BrandId).HasMaxLength(50);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Email).HasMaxLength(100);
+
+                entity.Property(e => e.Gender)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Note).HasMaxLength(500);
+
+                entity.Property(e => e.Phone)
+                    .IsRequired()
+                    .HasMaxLength(15);
+
+                entity.Property(e => e.Type).HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(50);
             });
 
             modelBuilder.Entity<GroupItemMapping>(entity =>
@@ -308,9 +370,7 @@ namespace Tastee.Infrastucture.Data.Context
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.MenuItemId)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.MenuItemId).HasMaxLength(50);
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -319,11 +379,30 @@ namespace Tastee.Infrastucture.Data.Context
                 entity.Property(e => e.UpdatedBy).HasMaxLength(50);
             });
 
+            modelBuilder.Entity<MenuItemToppingMappings>(entity =>
+            {
+                entity.Property(e => e.Id).HasMaxLength(50);
+
+                entity.Property(e => e.MenuItemId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.RefId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<MenuItems>(entity =>
             {
                 entity.Property(e => e.Id)
                     .HasMaxLength(200)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Barcode).HasMaxLength(15);
+
+                entity.Property(e => e.BrandId).HasMaxLength(50);
+
+                entity.Property(e => e.CapitalPrice).HasColumnType("money");
 
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
@@ -333,12 +412,9 @@ namespace Tastee.Infrastucture.Data.Context
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
 
-                entity.Property(e => e.Description).IsRequired();
-
                 entity.Property(e => e.Image).HasMaxLength(200);
 
                 entity.Property(e => e.MenuId)
-                    .IsRequired()
                     .HasMaxLength(200)
                     .IsUnicode(false);
 
@@ -348,11 +424,19 @@ namespace Tastee.Infrastucture.Data.Context
 
                 entity.Property(e => e.Price).HasColumnType("money");
 
+                entity.Property(e => e.ProductCode).HasMaxLength(50);
+
+                entity.Property(e => e.PromotionPrice).HasColumnType("money");
+
                 entity.Property(e => e.ShortDescription).HasMaxLength(500);
+
+                entity.Property(e => e.Unit).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(50);
 
                 entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.WholesalePrice).HasColumnType("money");
             });
 
             modelBuilder.Entity<Menus>(entity =>
@@ -498,6 +582,34 @@ namespace Tastee.Infrastucture.Data.Context
                     .HasMaxLength(100);
             });
 
+            modelBuilder.Entity<ShippingAddresses>(entity =>
+            {
+                entity.Property(e => e.Id).HasMaxLength(50);
+
+                entity.Property(e => e.Address).IsRequired();
+
+                entity.Property(e => e.Area)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.City)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Phone)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UserId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<SuggestBrands>(entity =>
             {
                 entity.Property(e => e.Id).HasMaxLength(50);
@@ -539,13 +651,13 @@ namespace Tastee.Infrastucture.Data.Context
             {
                 entity.Property(e => e.Id).HasMaxLength(50);
 
+                entity.Property(e => e.BrandId).HasMaxLength(50);
+
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.GroupToppingId)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.GroupToppingId).HasMaxLength(50);
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -554,6 +666,17 @@ namespace Tastee.Infrastucture.Data.Context
                 entity.Property(e => e.Note).HasMaxLength(200);
 
                 entity.Property(e => e.UpdatedBy).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<UserTokens>(entity =>
+            {
+                entity.Property(e => e.Token)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.Uid)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<Users>(entity =>
@@ -600,9 +723,29 @@ namespace Tastee.Infrastucture.Data.Context
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
+                entity.Property(e => e.RefCode).HasMaxLength(11);
+
+                entity.Property(e => e.RefId).HasMaxLength(50);
+
                 entity.Property(e => e.Status)
                     .HasMaxLength(10)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<VerifySms>(entity =>
+            {
+                entity.ToTable("VerifySMS");
+
+                entity.Property(e => e.Id).HasMaxLength(50);
+
+                entity.Property(e => e.PhoneNumber)
+                    .IsRequired()
+                    .HasMaxLength(11)
+                    .HasDefaultValueSql("('')");
+
+                entity.Property(e => e.VerifyCode)
+                    .IsRequired()
+                    .HasMaxLength(6);
             });
 
             modelBuilder.Entity<WidgetImages>(entity =>

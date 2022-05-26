@@ -113,7 +113,8 @@
     public enum ObjectType
     {
         Brand,
-        Decoration
+        Decoration,
+        Category
     }
 
     public enum BrandDecorationStatus

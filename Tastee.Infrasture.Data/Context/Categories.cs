@@ -4,17 +4,14 @@ using URF.Core.EF.Trackable;
 
 namespace Tastee.Infrastucture.Data.Context
 {
-    public partial class GroupToppings: Entity
+    public partial class Categories: Entity
     {
         public string Id { get; set; }
-        public string BrandId { get; set; }
-        public string MenuItemId { get; set; }
         public string Name { get; set; }
-        public int Status { get; set; }
-        public int? DisplayOrder { get; set; }
-        public bool IsRequired { get; set; }
-        public int? Min { get; set; }
-        public int? Max { get; set; }
+        public string Image { get; set; }
+        public int DisplayOrder { get; set; }
+        public int Type { get; set; }
+        public bool IsDisplay { get; set; }
         public long CreatedDate { get; set; }
         public string CreatedBy { get; set; }
         public string UpdatedBy { get; set; }

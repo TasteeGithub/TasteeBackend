@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using URF.Core.EF.Trackable;
 
 namespace Tastee.Infrastucture.Data.Context
 {
-    public partial class Users : Entity
+    public partial class Users: Entity
     {
         public string Id { get; set; }
         public string Email { get; set; }
@@ -20,5 +21,7 @@ namespace Tastee.Infrastucture.Data.Context
         public string Qrcode { get; set; }
         public int? LoginFailedCount { get; set; }
         public bool? IsMerchant { get; set; }
+        public string RefCode { get; set; }
+        public string RefId { get; set; }
     }
 }

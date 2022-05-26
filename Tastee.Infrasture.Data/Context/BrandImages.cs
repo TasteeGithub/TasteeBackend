@@ -4,7 +4,7 @@ using URF.Core.EF.Trackable;
 
 namespace Tastee.Infrastucture.Data.Context
 {
-    public partial class BrandImages : Entity
+    public partial class BrandImages: Entity
     {
         public string Id { get; set; }
         public string BrandId { get; set; }

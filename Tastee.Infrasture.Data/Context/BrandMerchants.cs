@@ -9,5 +9,6 @@ namespace Tastee.Infrastucture.Data.Context
         public string Id { get; set; }
         public string BrandId { get; set; }
         public string UserId { get; set; }
+        public bool IsDefault { get; set; }
     }
 }

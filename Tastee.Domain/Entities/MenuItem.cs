@@ -11,10 +11,10 @@ namespace Tastee.Domain.Entities
         public string Image { get; set; }
         public string Description { get; set; }
         public string ShortDescription { get; set; }
-        public decimal? Price { get; set; }
+        public decimal Price { get; set; }
         public int? LikeNumber { get; set; }
         public int? SaleNumber { get; set; }
-        public int? Status { get; set; }
+        public int Status { get; set; }
         public int? Order { get; set; }
         public long CreatedDate { get; set; }
         public string CreatedBy { get; set; }

@@ -4,7 +4,7 @@ using URF.Core.EF.Trackable;
 
 namespace Tastee.Infrastucture.Data.Context
 {
-    public partial class Widgets : Entity
+    public partial class Widgets: Entity
     {
         public string Id { get; set; }
         public string DecorationId { get; set; }

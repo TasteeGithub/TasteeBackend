@@ -92,7 +92,7 @@ namespace Tastee.Application.Services
                 await _transferUtility.UploadAsync(transferUtilityRequest);
 
                 // Retrieve Url
-                var ImageUrl = GenerateAwsFileUrl(bucketName, trustedStorageName).Data;
+                var ImageUrl = GenerateAwsFileUrl(trustedStorageName).Data;
 
                 _logger.LogInformation("File uploaded to Amazon S3 bucket successfully");
                 return new AWSUploadResult<string>
@@ -159,7 +159,7 @@ namespace Tastee.Application.Services
         /// <param name="key"></param>
         /// <param name="useRegion"></param>
         /// <returns></returns>
-        public AWSUploadResult<string> GenerateAwsFileUrl(string bucketName, string key, bool useRegion = true)
+        public AWSUploadResult<string> GenerateAwsFileUrl(string key, bool useRegion = true)
         {
             // URL patterns: Virtual hosted style and path style
             // Virtual hosted style
@@ -168,6 +168,8 @@ namespace Tastee.Application.Services
 
             // Path style: DEPRECATED
             // 3. http://s3.[regionName].amazonaws.com/[bucketName]/[key]
+
+            string bucketName = _configuration["AWS:BucketName"];
             string publicUrl = string.Empty;
             if (useRegion)
             {
@@ -301,6 +303,12 @@ namespace Tastee.Application.Services
             {
                 objectFolder = _configuration["Path:UploadBrandDecorationPath"];
             }
+            else if (objectType == ObjectType.Category)
+            {
+                objectFolder = _configuration["Path:UploadCategoryPath"];
+            }
+
+
             return String.Format("{0}{1}{2}", fileTypeFolder, objectFolder, objectId);
         }
 

@@ -60,6 +60,10 @@ namespace Tastee.Infrastructure.IoC
             services.AddScoped<IGenericService<Banners>, GenericService<Banners>>();
             services.AddScoped<IBannerService, BannerService>();
 
+            services.AddScoped<ITrackableRepository<Categories>, TrackableRepository<Categories>>();
+            services.AddScoped<IGenericService<Categories>, GenericService<Categories>>();
+            services.AddScoped<ICategoryService, CategoryService>();
+
             services.AddScoped<ITrackableRepository<ProductSliders>, TrackableRepository<ProductSliders>>();
             services.AddScoped<IGenericService<ProductSliders>, GenericService<ProductSliders>>();
             services.AddScoped<IProductSliderService, ProductSliderService>();
