@@ -73,5 +73,28 @@ namespace Tastee.WebApi.Controllers
             
             return Ok(await Mediator.Send(createCommand));
         }
+
+        [HttpPost]
+        [Route("delete")]
+        public async Task<IActionResult> Category_Delete(string Id)
+        {
+            try
+            {
+                var deleteCommand = new DeleteCategoryCommand()
+                {
+                    Id = Id
+                };
+                return Ok(await Mediator.Send(deleteCommand));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Delete category, Id: {0}", Id);
+            }
+            finally
+            {
+                _logger.LogInformation("Delete category, Id: {0}", Id);
+            }
+            return Ok(new { Successful = false, Error = "Has error when delete" });
+        }
     }
 }

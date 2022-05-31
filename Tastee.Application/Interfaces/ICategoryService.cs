@@ -13,5 +13,6 @@ namespace Tastee.Application.Interfaces
     {
         Task<Response> UpdateImageAsync(string categoryId, string image);
         Task<PaggingModel<Category>> GetCategoriesAsync(GetCategoriesViewModel requestModel);
+        Task<Response> DeleteCategoryAsync(string Id);
     }
 }

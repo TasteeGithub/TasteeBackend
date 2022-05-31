@@ -35,9 +35,22 @@ namespace Tastee.Application.Services
             _serviceCategory = serviceCategory;
         }
 
-        public Task<Categories> GetByIdAsync(string id)
+        public async Task<Categories> GetByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            return  await _serviceCategory.FindAsync(id);
+        }
+
+        public async Task<Response> DeleteCategoryAsync(string Id)
+        {
+      
+            var category = await GetByIdAsync(Id);
+            if (category == null)
+            {
+                return new Response { Successful = true, Message = "Delete category successed" };
+            }
+            _serviceCategory.Delete(category);
+            await _unitOfWork.SaveChangesAsync();
+            return new Response { Successful = true, Message = "Delete category successed" };
         }
 
         public async Task<Response> InsertAsync(Categories model)
