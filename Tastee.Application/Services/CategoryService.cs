@@ -72,9 +72,29 @@ namespace Tastee.Application.Services
             return new Response { Successful = true, Message = "update category image successed" };
         }
 
-        public Task<Response> UpdateAsync(Categories model)
+        public async Task<Response> UpdateAsync(Categories updateCategory)
         {
-            throw new NotImplementedException();
+            if (updateCategory.Id != null && updateCategory.Id.Length > 0)
+            {
+                var category = await _serviceCategory.FindAsync(updateCategory.Id);
+                if (category == null)
+                    return new Response { Successful = false, Message = "Category not found" };
+
+
+                category.Name = updateCategory.Name ?? category.Name;
+                category.Image = updateCategory.Image ?? category.Image;
+                category.DisplayOrder = updateCategory.DisplayOrder;
+                category.Type = updateCategory.Type;
+                category.IsDisplay = updateCategory.IsDisplay;
+                category.UpdatedBy = updateCategory.UpdatedBy;
+                category.UpdatedDate = Converters.DateTimeToUnixTimeStamp(DateTime.Now).Value;
+
+                _serviceCategory.Update(category);
+                await _unitOfWork.SaveChangesAsync();
+                return new Response { Successful = true, Message = "Update category success" };
+
+            }
+            return new Response { Successful = false, Message = "Please input id" };
         }
 
         public async Task<PaggingModel<Category>> GetCategoriesAsync(GetCategoriesViewModel requestModel)

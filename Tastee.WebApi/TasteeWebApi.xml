@@ -66,6 +66,13 @@
             <param name="model"></param>
             <returns></returns>
         </member>
+        <member name="M:Tastee.WebApi.Controllers.CategoryController.Update(Tastee.Shared.Models.Categories.UpdateCategoryViewModel)">
+            <summary>
+            Update Category
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
         <member name="M:Tastee.WebApi.Controllers.MenusController.GetMenuDetail(System.String)">
             <summary>
             Get menu detail

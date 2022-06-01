@@ -70,7 +70,7 @@ namespace Tastee.WebApi.Controllers
                 Model = model,
                 CreateBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value
             };
-            
+
             return Ok(await Mediator.Send(createCommand));
         }
 
@@ -95,6 +95,36 @@ namespace Tastee.WebApi.Controllers
                 _logger.LogInformation("Delete category, Id: {0}", Id);
             }
             return Ok(new { Successful = false, Error = "Has error when delete" });
+        }
+
+        /// <summary>
+        /// Update Category
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("update")]
+        public async Task<IActionResult> Update([FromForm] UpdateCategoryViewModel model)
+        {
+            bool isActionSuccess = false;
+            try
+            {
+                var updateCommand = new UpdateCategoryCommand()
+                {
+                    CategoryModel = model,
+                    UpdateBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value
+                };
+                return Ok(await Mediator.Send(updateCommand));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Update category, data: {0}", model);
+            }
+            finally
+            {
+                _logger.LogInformation("Update category, data: {0}, Result status: {1}", model, isActionSuccess);
+            }
+            return Ok(new { Successful = false, Error = "Has error when update category" });
         }
     }
 }
