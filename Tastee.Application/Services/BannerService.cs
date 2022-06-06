@@ -119,5 +119,18 @@ namespace Tastee.Application.Services
             }
             return new Response { Successful = false, Message = "Please input id" };
         }
+
+        public async Task<Response> DeleteBannerAsync(string Id)
+        {
+
+            var banner = await _serviceBanners.FindAsync(Id);
+            if (banner == null)
+            {
+                return new Response { Successful = true, Message = "Delete banner successed" };
+            }
+            _serviceBanners.Delete(banner);
+            await _unitOfWork.SaveChangesAsync();
+            return new Response { Successful = true, Message = "Delete banner successed" };
+        }
     }
 }

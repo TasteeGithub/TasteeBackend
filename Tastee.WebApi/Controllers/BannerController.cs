@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Tastee.Application.Features.Banners.Commands;
 using Tastee.Application.Wrappers;
 using Tastee.Domain.Entities;
 using Tastee.Feature.Banners.Queries;
@@ -135,5 +136,30 @@ namespace Tastee.WebApi.Controllers
             }
             return Ok(new { Successful = false, Error = "Has error when update banner" });
         }
+
+
+        [HttpPost]
+        [Route("delete")]
+        public async Task<IActionResult> Delete(string Id)
+        {
+            try
+            {
+                var deleteCommand = new DeleteBannerCommand()
+                {
+                    Id = Id
+                };
+                return Ok(await Mediator.Send(deleteCommand));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Delete Banner, Id: {0}", Id);
+            }
+            finally
+            {
+                _logger.LogInformation("Delete Banner, Id: {0}", Id);
+            }
+            return Ok(new { Successful = false, Error = "Has error when delete" });
+        }
+
     }
 }
