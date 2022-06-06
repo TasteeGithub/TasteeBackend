@@ -87,6 +87,7 @@ namespace Tastee.Application.Services
                 category.Type = updateCategory.Type;
                 category.IsDisplay = updateCategory.IsDisplay;
                 category.UpdatedBy = updateCategory.UpdatedBy;
+                category.Navigation = updateCategory.Navigation ?? category.Navigation;
                 category.UpdatedDate = Converters.DateTimeToUnixTimeStamp(DateTime.Now).Value;
 
                 _serviceCategory.Update(category);

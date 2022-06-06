@@ -19,5 +19,6 @@ namespace Tastee.Shared.Models.Categories
         public int Type { get; set; }
         [Required]
         public bool IsDisplay { get; set; }
+        public int? Navigation { get; set; }
     }
 }

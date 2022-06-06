@@ -4,7 +4,7 @@ using URF.Core.EF.Trackable;
 
 namespace Tastee.Infrastucture.Data.Context
 {
-    public partial class Categories: Entity
+    public partial class Categories : Entity
     {
         public string Id { get; set; }
         public string Name { get; set; }
@@ -16,5 +16,6 @@ namespace Tastee.Infrastucture.Data.Context
         public string CreatedBy { get; set; }
         public string UpdatedBy { get; set; }
         public long? UpdatedDate { get; set; }
+        public int? Navigation { get; set; }
     }
 }
