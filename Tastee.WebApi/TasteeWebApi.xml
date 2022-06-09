@@ -163,6 +163,13 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Tastee.WebApi.Controllers.VideosController.Update(Tastee.Shared.Models.Videos.UpdateVideoViewModel)">
+            <summary>
+            Update Category
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
         <member name="M:Tastee.Models.DTO.User.SetPassword(System.String)">
              <summary>
             

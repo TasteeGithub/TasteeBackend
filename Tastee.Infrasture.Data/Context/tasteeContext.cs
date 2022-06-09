@@ -43,6 +43,7 @@ namespace Tastee.Infrastucture.Data.Context
         public virtual DbSet<UserTokens> UserTokens { get; set; }
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<VerifySms> VerifySms { get; set; }
+        public virtual DbSet<Videos> Videos { get; set; }
         public virtual DbSet<WidgetImages> WidgetImages { get; set; }
         public virtual DbSet<Widgets> Widgets { get; set; }
 
@@ -746,6 +747,31 @@ namespace Tastee.Infrastucture.Data.Context
                 entity.Property(e => e.VerifyCode)
                     .IsRequired()
                     .HasMaxLength(6);
+            });
+
+            modelBuilder.Entity<Videos>(entity =>
+            {
+                entity.Property(e => e.Id).HasMaxLength(50);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.Image).HasMaxLength(200);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(50);
+
+                entity.Property(e => e.Video)
+                    .IsRequired()
+                    .HasMaxLength(200);
             });
 
             modelBuilder.Entity<WidgetImages>(entity =>

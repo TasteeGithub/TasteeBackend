@@ -307,7 +307,10 @@ namespace Tastee.Application.Services
             {
                 objectFolder = _configuration["Path:UploadCategoryPath"];
             }
-
+            else if (objectType == ObjectType.VideoImage)
+            {
+                objectFolder = _configuration["Path:UploadVideoImagePath"];
+            }
 
             return String.Format("{0}{1}{2}", fileTypeFolder, objectFolder, objectId);
         }

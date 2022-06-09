@@ -114,7 +114,8 @@
     {
         Brand,
         Decoration,
-        Category
+        Category,
+        VideoImage
     }
 
     public enum BrandDecorationStatus
