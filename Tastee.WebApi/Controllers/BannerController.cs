@@ -13,6 +13,7 @@ using Tastee.Feature.Banners.Queries;
 using Tastee.Features.Banners.Commands;
 using Tastee.Features.Banners.Queries;
 using Tastee.Shared;
+using Tastee.Shared.Models.Banners;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -46,9 +47,11 @@ namespace Tastee.WebApi.Controllers
             [FromForm] string start,
             [FromForm] string length,
             [FromForm] string name,
-            [FromForm] DateTime? fromDate,
-            [FromForm] DateTime? toDate,
-            [FromForm] string status
+            [FromForm] long? fromDate,
+            [FromForm] long? toDate,
+            [FromForm] string status,
+            [FromForm] int? type,
+            [FromForm] bool? isDisplay
             )
         {
             try
@@ -57,7 +60,16 @@ namespace Tastee.WebApi.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int pageIndex = skip / pageSize + 1;
                 int recordsTotal = 0;
-                GetBannersQuery bannersQuery = new GetBannersQuery { PageIndex = pageIndex, PageSize = pageSize, BannerName = name, FromDate=fromDate, ToDate = toDate, Status = status };
+                GetBannersQuery bannersQuery = new GetBannersQuery { 
+                    PageIndex = pageIndex, 
+                    PageSize = pageSize, 
+                    BannerName = name, 
+                    FromDate=fromDate, 
+                    ToDate = toDate, 
+                    Status = status,
+                    Type = type,
+                    IsDisplay = isDisplay
+                };
                 var rs = await Mediator.Send(bannersQuery);
 
                 //total number of rows counts
@@ -101,7 +113,7 @@ namespace Tastee.WebApi.Controllers
 
         // POST api/<BannerController>
         [HttpPost]
-        public async Task<IActionResult> Post(CreateBannerCommand bannerModel)
+        public async Task<IActionResult> Post([FromForm] SetBannerViewModel bannerModel)
         {
             if (!ModelState.IsValid)
             {
@@ -111,28 +123,36 @@ namespace Tastee.WebApi.Controllers
 
                 return Ok(new Response { Successful = false, Message = string.Join(",", errorMessage) });
             }
-            bannerModel.CreatedBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-            return Ok(await Mediator.Send(bannerModel));
+            var createCommand = new CreateBannerCommand()
+            {
+                Model = bannerModel,
+                CreateBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value
+            };
+
+            return Ok(await Mediator.Send(createCommand));
         }
 
         [HttpPost]
         [Route("update")]
-        public async Task<IActionResult> Update(UpdateBannerCommand model)
+        public async Task<IActionResult> Update([FromForm] UpdateBannerViewModel model)
         {
             bool isActionSuccess = false;
             try
             {
-                model.UpdateBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-
-                return Ok(await Mediator.Send(model));
+                var updateCommand = new UpdateBannerCommand()
+                {
+                    Model = model,
+                    UpdateBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value
+                };
+                return Ok(await Mediator.Send(updateCommand));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Update banner, Banner: {0}", model);
+                _logger.LogError(ex, "Update banner, data: {0}", model);
             }
             finally
             {
-                _logger.LogInformation("Update Banner, Banner: {0}, Result status: {1}", model, isActionSuccess);
+                _logger.LogInformation("Update banner, data: {0}, Result status: {1}", model, isActionSuccess);
             }
             return Ok(new { Successful = false, Error = "Has error when update banner" });
         }

@@ -8,7 +8,8 @@ namespace Tastee.Application.Interfaces
 {
     public interface IBannerService : ITasteeServices<Banner>
     {
-        Task<PaggingModel<Banner>> GetBannersAsync(int pageSize, int? pageIndex, string name,DateTime? fromDate,DateTime? toDate, string status);
+        Task<PaggingModel<BannerSimple>> GetBannersAsync(int pageSize, int? pageIndex, string name, long? fromDate,long? toDate, string status, int? type, bool? isDisplay);
         Task<Response> DeleteBannerAsync(string Id);
+        Task<Response> UpdateImageAsync(string id, string url);
     }
 }

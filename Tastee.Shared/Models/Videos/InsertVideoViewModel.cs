@@ -9,6 +9,7 @@ namespace Tastee.Shared.Models.Videos
     public class InsertVideoViewModel
     {
         public IFormFile File { get; set; }
+        [Required]
         public string Name { get; set; }
         [Required]
         public int DisplayOrder { get; set; }

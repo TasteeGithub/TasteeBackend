@@ -4,7 +4,7 @@
         <name>Tastee.WebApi</name>
     </assembly>
     <members>
-        <member name="M:Tastee.WebApi.Controllers.BannerController.LoadData(System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String)">
+        <member name="M:Tastee.WebApi.Controllers.BannerController.LoadData(System.String,System.String,System.String,System.String,System.Nullable{System.Int64},System.Nullable{System.Int64},System.String,System.Nullable{System.Int32},System.Nullable{System.Boolean})">
             <summary>
             Load dữ liệu có phân trang cho table .net
             </summary>

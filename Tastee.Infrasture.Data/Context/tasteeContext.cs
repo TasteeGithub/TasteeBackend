@@ -81,29 +81,25 @@ namespace Tastee.Infrastucture.Data.Context
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.CreatedDate).HasColumnType("smalldatetime");
-
-                entity.Property(e => e.EndDate).HasColumnType("smalldatetime");
-
                 entity.Property(e => e.Image)
                     .IsRequired()
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.IsDisplay)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.Link).IsRequired();
 
                 entity.Property(e => e.Name).IsRequired();
 
-                entity.Property(e => e.StartDate).HasColumnType("smalldatetime");
-
                 entity.Property(e => e.Status)
                     .IsRequired()
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Title).HasMaxLength(200);
 
                 entity.Property(e => e.UpdateBy).HasMaxLength(50);
-
-                entity.Property(e => e.UpdateDate).HasColumnType("smalldatetime");
             });
 
             modelBuilder.Entity<BrandDecorations>(entity =>
