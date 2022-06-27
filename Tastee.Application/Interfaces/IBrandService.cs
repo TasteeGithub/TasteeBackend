@@ -19,6 +19,12 @@ namespace Tastee.Application.Interfaces
         Task<Response> CheckMenuItemsBelongBrand(List<string> itemIds, string brandId);
         Task<PaggingModel<SuggestBrandModel>> GetSuggestBrandsAsync(GetSuggestBrandsViewModel requestModel);
         Task<Response> UpdateSuggestBrandAsync(UpdateSuggestBrandModel model, string email);
+        List<Brands> GetAllActiveBrands();
+        List<Brands> GeBrandsByIds(List<string> Ids);
+        #endregion
+
+        #region BrandMerchants
+        List<BrandMerchants> GetByBrandIds(List<string> Ids);
         #endregion
 
         #region RestaurantSpace

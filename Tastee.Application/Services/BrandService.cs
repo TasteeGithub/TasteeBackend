@@ -442,6 +442,23 @@ namespace Tastee.Application.Services
 
             return new Response { Successful = false, Message = "Please input id" };
         }
+
+        public List<Brands> GetAllActiveBrands()
+        {
+            return _serviceBrands.Queryable().Where(x=>x.Status == BrandStatus.Active.ToString()).ToList();
+        }
+
+        public List<Brands> GeBrandsByIds(List<string> Ids)
+        {
+            return _serviceBrands.Queryable().Where(x => Ids.Contains(x.Id) && x.Status == BrandStatus.Active.ToString()).ToList();
+        }
+        #endregion
+
+        #region BrandMerchants
+        public List<BrandMerchants> GetByBrandIds(List<string> Ids)
+        {
+            return _serviceBrandMerchants.Queryable().Where(x => Ids.Contains(x.BrandId)).ToList();
+        }
         #endregion
 
         #region RestaurantSpace

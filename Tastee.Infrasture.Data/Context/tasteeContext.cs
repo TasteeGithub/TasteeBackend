@@ -26,6 +26,7 @@ namespace Tastee.Infrastucture.Data.Context
         public virtual DbSet<CollectionBrands> CollectionBrands { get; set; }
         public virtual DbSet<Collections> Collections { get; set; }
         public virtual DbSet<Customers> Customers { get; set; }
+        public virtual DbSet<DeviceTokens> DeviceTokens { get; set; }
         public virtual DbSet<GroupItemMapping> GroupItemMapping { get; set; }
         public virtual DbSet<GroupItems> GroupItems { get; set; }
         public virtual DbSet<GroupToppings> GroupToppings { get; set; }
@@ -33,6 +34,8 @@ namespace Tastee.Infrastucture.Data.Context
         public virtual DbSet<MenuItems> MenuItems { get; set; }
         public virtual DbSet<Menus> Menus { get; set; }
         public virtual DbSet<Nlogs> Nlogs { get; set; }
+        public virtual DbSet<NotificationMapping> NotificationMapping { get; set; }
+        public virtual DbSet<Notifications> Notifications { get; set; }
         public virtual DbSet<OperatorRoles> OperatorRoles { get; set; }
         public virtual DbSet<Operators> Operators { get; set; }
         public virtual DbSet<ProductSliders> ProductSliders { get; set; }
@@ -324,6 +327,24 @@ namespace Tastee.Infrastucture.Data.Context
                 entity.Property(e => e.UpdatedBy).HasMaxLength(50);
             });
 
+            modelBuilder.Entity<DeviceTokens>(entity =>
+            {
+                entity.HasIndex(e => new { e.UserId, e.AllowPush })
+                    .HasName("NonClusteredIndex-20220626-163928");
+
+                entity.Property(e => e.AllowPush)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.DeviceToken)
+                    .IsRequired()
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.UserId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<GroupItemMapping>(entity =>
             {
                 entity.HasKey(e => new { e.GroupId, e.ItemId })
@@ -481,6 +502,43 @@ namespace Tastee.Infrastucture.Data.Context
                 entity.Property(e => e.Logger).HasMaxLength(250);
 
                 entity.Property(e => e.Message).IsRequired();
+            });
+
+            modelBuilder.Entity<NotificationMapping>(entity =>
+            {
+                entity.HasIndex(e => new { e.NotificationId, e.UserId, e.BrandId, e.Status })
+                    .HasName("idx_notidication_id_ref_id");
+
+                entity.Property(e => e.BrandId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.NotificationId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UserId)
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Notifications>(entity =>
+            {
+                entity.Property(e => e.Id).HasMaxLength(50);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Description).IsRequired();
+
+                entity.Property(e => e.Image).HasMaxLength(200);
+
+                entity.Property(e => e.Title)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.UpdatedBy).HasMaxLength(50);
             });
 
             modelBuilder.Entity<OperatorRoles>(entity =>

@@ -315,6 +315,11 @@ namespace Tastee.Application.Services
             {
                 objectFolder = _configuration["Path:UploadBannerImagePath"];
             }
+            else if (objectType == ObjectType.Notification)
+            {
+                objectFolder = _configuration["Path:UploadNotificationImagePath"];
+            }
+
 
             return String.Format("{0}{1}{2}", fileTypeFolder, objectFolder, objectId);
         }

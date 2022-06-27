@@ -106,8 +106,8 @@
 
     public enum UploadFileType
     {
-       File,
-       Image
+        File,
+        Image
     }
 
     public enum ObjectType
@@ -116,7 +116,8 @@
         Decoration,
         Category,
         VideoImage,
-        Banner
+        Banner,
+        Notification
     }
 
     public enum BrandDecorationStatus
@@ -161,5 +162,18 @@
         /// Tạm ngừng
         /// </summary>
         InActive
+    }
+
+    public enum NotificationType
+    {
+        Brand = 1,
+        User = 2
+    }
+
+    public enum NotifyPushType
+    {
+        Notification = 1,
+        Push = 2,
+        All = 3
     }
 }
