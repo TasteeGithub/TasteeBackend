@@ -17,6 +17,7 @@ namespace Tastee.Application.Interfaces
 
         #region Firebase
         Task<int> SendNotification(Notifications notification, List<string> UserIds);
+        Task<Response> DeleteCategoryAsync(string id);
         #endregion
     }
 }
