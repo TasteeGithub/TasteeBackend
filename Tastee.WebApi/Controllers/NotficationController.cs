@@ -75,5 +75,27 @@ namespace Tastee.WebApi.Controllers
 
             return Ok(await Mediator.Send(createCommand));
         }
+
+
+        [HttpPost]
+        [Route("delete")]
+        public async Task<IActionResult> Delete(string Id)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errorMessage = ModelState.Values
+                    .SelectMany(x => x.Errors)
+                    .Select(x => x.ErrorMessage);
+
+                return Ok(new Response { Successful = false, Message = string.Join(",", errorMessage) });
+            }
+            var createCommand = new CreateNotificationCommand()
+            {
+                Model = model,
+                CreateBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value
+            };
+
+            return Ok(await Mediator.Send(createCommand));
+        }
     }
 }

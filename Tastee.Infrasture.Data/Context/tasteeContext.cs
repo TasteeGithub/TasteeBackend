@@ -537,8 +537,6 @@ namespace Tastee.Infrastucture.Data.Context
                 entity.Property(e => e.Title)
                     .IsRequired()
                     .HasMaxLength(500);
-
-                entity.Property(e => e.UpdatedBy).HasMaxLength(50);
             });
 
             modelBuilder.Entity<OperatorRoles>(entity =>

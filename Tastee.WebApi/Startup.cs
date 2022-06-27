@@ -1,6 +1,8 @@
 ﻿using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Transfer;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;

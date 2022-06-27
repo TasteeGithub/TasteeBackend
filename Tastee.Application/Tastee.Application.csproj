@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="3.7.1.21" />
+    <PackageReference Include="FirebaseAdmin" Version="2.3.0" />
     <PackageReference Include="Json.Net" Version="1.0.33" />
     <PackageReference Include="LinqKit" Version="1.1.17" />
     <PackageReference Include="Mapster" Version="6.5.0" />

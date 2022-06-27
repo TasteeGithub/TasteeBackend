@@ -17,6 +17,12 @@ using Tastee.Shared.Models.Notifications;
 
 namespace Tastee.Application.Features.Notficaitions.Commands
 {
+    public class NotificationTaskData
+    {
+        public Tastee.Infrastucture.Data.Context.Notifications notification { get; set; }
+        public List<string> sendToIds { get; set; }
+    }
+
     public class CreateNotificationCommand : IRequest<Response>
     {
         public InsertNotificationViewModel Model;
@@ -28,12 +34,14 @@ namespace Tastee.Application.Features.Notficaitions.Commands
         private readonly INotificationService _notificationService;
         private readonly IFileService _fileService;
         private readonly IBrandService _brandService;
+        private readonly IGenericService<Infrastucture.Data.Context.Users> _userService;
 
-        public CreateNotificationCommandHandler(INotificationService notificationService, IFileService fileService, IBrandService brandService)
+        public CreateNotificationCommandHandler(INotificationService notificationService, IFileService fileService, IBrandService brandService, IGenericService<Infrastucture.Data.Context.Users> userService)
         {
             _notificationService = notificationService;
             _fileService = fileService;
             _brandService = brandService;
+            _userService = userService;
         }
 
         public async Task<Response> Handle(CreateNotificationCommand request, CancellationToken cancellationToken)
@@ -70,16 +78,29 @@ namespace Tastee.Application.Features.Notficaitions.Commands
             if (!response.Successful)
                 return response;
 
+            ThreadPool.QueueUserWorkItem(BackgroundNotificationTaskWithObject, new NotificationTaskData { notification = notification, sendToIds = request.Model.SendToIds ?? new List<string>() });
+
             return new Response() { Successful = true, Message = "Insert Successful" };
         }
 
-        private async void CreateNotificationMappings(Tastee.Infrastucture.Data.Context.Notifications notification, List<string> sendToIds)
+        private void BackgroundNotificationTaskWithObject(Object stateInfo)
+        {
+            NotificationTaskData data = (NotificationTaskData)stateInfo;
+            var userIds = CreateNotificationMappings(data.notification, data.sendToIds);
+            if (userIds.Count > 0)
+            {
+                SendFCM(data.notification, userIds);
+            }
+        }
+
+
+        private List<string> CreateNotificationMappings(Tastee.Infrastucture.Data.Context.Notifications notification, List<string> sendToIds)
         {
             List<Tastee.Infrastucture.Data.Context.NotificationMapping> mappings = new List<Infrastucture.Data.Context.NotificationMapping>();
             if (notification.Type == (int)NotificationType.Brand)
             {
                 List<Tastee.Infrastucture.Data.Context.Brands> brands = new List<Tastee.Infrastucture.Data.Context.Brands>();
-                
+
                 if (notification.SendAll)
                 {
                     brands = _brandService.GetAllActiveBrands();
@@ -93,19 +114,55 @@ namespace Tastee.Application.Features.Notficaitions.Commands
                 {
                     var brandIds = brands.Select(x => x.Id).ToList();
                     List<Tastee.Infrastucture.Data.Context.BrandMerchants> merchants = _brandService.GetByBrandIds(brandIds);
-                    foreach (var brand in brands)
+                    foreach (var merchant in merchants)
                     {
                         mappings.Add(new Infrastucture.Data.Context.NotificationMapping()
                         {
-                            BrandId = brand.Id,
+                            BrandId = merchant.BrandId,
                             NotificationId = notification.Id,
-                            UserId = 
+                            UserId = merchant.UserId,
                         });
                     }
 
                 }
 
             }
+            else
+            {
+                List<string> userIds = new List<string>();
+                if (notification.SendAll)
+                {
+                    userIds = _userService.Queryable().Where(x => x.Status == AccountStatus.Active.ToString()).Select(x => x.Id).ToList();
+                }
+                else
+                {
+                    userIds = _userService.Queryable().Where(x => sendToIds.Contains(x.Id) && x.Status == AccountStatus.Active.ToString()).Select(x => x.Id).ToList();
+                }
+                if (userIds.Count > 0)
+                {
+                    foreach (var userId in userIds)
+                    {
+                        mappings.Add(new Infrastucture.Data.Context.NotificationMapping()
+                        {
+                            NotificationId = notification.Id,
+                            UserId = userId,
+                        });
+                    }
+                }
+            }
+
+            if (mappings.Count > 0)
+            {
+                _notificationService.InsertMappingAsync(mappings);
+            }
+            return mappings.Select(x => x.UserId).ToList();
         }
+
+        private void SendFCM(Infrastucture.Data.Context.Notifications notificiation, List<string> userIds)
+        {
+            _notificationService.SendNotification(notificiation, userIds);
+        }
+
+
     }
 }
