@@ -50,6 +50,9 @@ namespace Tastee.Application.Features.Notficaitions.Commands
             {
                 return new UploadFilesResponse { Successful = false, Message = "Invalid file" };
             }
+            if (request.Model.SendToIds == null) {
+                request.Model.SendToIds = new List<string>();
+            }
             var notification = request.Model.Adapt<Tastee.Infrastucture.Data.Context.Notifications>();
             notification.CreatedDate = Converters.DateTimeToUnixTimeStamp(DateTime.Now).Value;
             notification.CreatedBy = request.CreateBy;
@@ -78,7 +81,13 @@ namespace Tastee.Application.Features.Notficaitions.Commands
             if (!response.Successful)
                 return response;
 
-            ThreadPool.QueueUserWorkItem(BackgroundNotificationTaskWithObject, new NotificationTaskData { notification = notification, sendToIds = request.Model.SendToIds ?? new List<string>() });
+            // TODO: move to another thread, check entity framework
+            //ThreadPool.QueueUserWorkItem(BackgroundNotificationTaskWithObject, new NotificationTaskData { notification = notification, sendToIds = request.Model.SendToIds ?? new List<string>() });
+            var userIds = CreateNotificationMappings(notification, request.Model.SendToIds);
+            if (userIds.Count > 0)
+            {
+                SendFCM(notification, userIds);
+            }
 
             return new Response() { Successful = true, Message = "Insert Successful" };
         }

@@ -96,6 +96,15 @@ namespace Tastee.Infrastructure.IoC
             services.AddScoped<IGenericService<Toppings>, GenericService<Toppings>>();
             services.AddScoped<IToppingService, ToppingService>();
 
+            services.AddScoped<ITrackableRepository<Notifications>, TrackableRepository<Notifications>>();
+            services.AddScoped<IGenericService<Notifications>, GenericService<Notifications>>();
+            services.AddScoped<ITrackableRepository<NotificationMapping>, TrackableRepository<NotificationMapping>>();
+            services.AddScoped<IGenericService<NotificationMapping>, GenericService<NotificationMapping>>();
+            services.AddScoped<INotificationService, NotificationService>();
+
+            services.AddScoped<ITrackableRepository<DeviceTokens>, TrackableRepository<DeviceTokens>>();
+            services.AddScoped<IGenericService<DeviceTokens>, GenericService<DeviceTokens>>();
+
             services.AddMediatR(System.AppDomain.CurrentDomain.GetAssemblies());
 
         }

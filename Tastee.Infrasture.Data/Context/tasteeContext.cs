@@ -510,7 +510,6 @@ namespace Tastee.Infrastucture.Data.Context
                     .HasName("idx_notidication_id_ref_id");
 
                 entity.Property(e => e.BrandId)
-                    .IsRequired()
                     .HasMaxLength(50);
 
                 entity.Property(e => e.NotificationId)

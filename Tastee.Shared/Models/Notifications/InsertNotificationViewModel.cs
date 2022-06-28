@@ -13,7 +13,7 @@ namespace Tastee.Shared.Models.Notifications
         [Required]
         public string Title { get; set; }
         [Required]
-        public int Description { get; set; }
+        public string Description { get; set; }
         [Required]
         public NotificationType Type { get; set; }
         public List<string> SendToIds { get; set; }

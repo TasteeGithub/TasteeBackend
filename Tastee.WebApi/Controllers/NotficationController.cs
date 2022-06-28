@@ -89,10 +89,9 @@ namespace Tastee.WebApi.Controllers
 
                 return Ok(new Response { Successful = false, Message = string.Join(",", errorMessage) });
             }
-            var createCommand = new CreateNotificationCommand()
+            var createCommand = new DeleteNotficaitionsCommand()
             {
-                Model = model,
-                CreateBy = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value
+                Id = Id
             };
 
             return Ok(await Mediator.Send(createCommand));

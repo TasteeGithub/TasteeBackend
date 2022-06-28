@@ -21,7 +21,6 @@ using Tastee.Shared.Models.Categories;
 using Tastee.Shared.Models.Notifications;
 using Tastee.Shared.Models.Notifications.Firebase;
 using URF.Core.Abstractions;
-using static Tastee.Shared.Models.Notifications.Firebase.GoogleNotification;
 
 namespace Tastee.Application.Services
 {
@@ -54,7 +53,7 @@ namespace Tastee.Application.Services
 
         public Task<Notifications> GetByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            return _serviceNotifications.FindAsync(id);
         }
 
         public async Task<Response> InsertAsync(Notifications model)
@@ -101,9 +100,9 @@ namespace Tastee.Application.Services
             NotificationModel model = notification.Adapt<NotificationModel>();
             if (!model.SendAll)
                 if (model.Type == (int)NotificationType.Brand)
-                    model.SendToIds = listMapping.Select(x => x.BrandId).ToList();
+                    model.SendToIds = listMapping.Where(x => x.NotificationId == notification.Id).Select(x => x.BrandId).ToList();
                 else
-                    model.SendToIds = listMapping.Select(x => x.UserId).ToList();
+                    model.SendToIds = listMapping.Where(x => x.NotificationId == notification.Id).Select(x => x.UserId).ToList();
             return model;
         }
 
@@ -146,7 +145,7 @@ namespace Tastee.Application.Services
                     Credential = GoogleCredential.FromJson(json),
                 });
 
-                var registrationTokens = _serviceDeviceTokens.Queryable().Where(x => UserIds.Contains(x.UserId) && x.AllowPush == true).Select(x=>x.DeviceToken).ToList();
+                var registrationTokens = _serviceDeviceTokens.Queryable().Where(x => UserIds.Contains(x.UserId) && x.AllowPush == true).Select(x => x.DeviceToken).ToList();
                 if (registrationTokens.Count > 0)
                 {
                     var message = new MulticastMessage()
