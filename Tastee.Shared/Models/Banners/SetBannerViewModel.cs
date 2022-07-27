@@ -20,7 +20,6 @@ namespace Tastee.Shared.Models.Banners
         public long EndDate { get; set; }
 
         public string Note { get; set; }
-        [Required]
         public string BrandId { get; set; }
         public string Title { get; set; }
         [Required]

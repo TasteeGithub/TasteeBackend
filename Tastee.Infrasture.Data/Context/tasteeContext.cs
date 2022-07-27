@@ -76,7 +76,6 @@ namespace Tastee.Infrastucture.Data.Context
                     .IsUnicode(false);
 
                 entity.Property(e => e.BrandId)
-                    .IsRequired()
                     .HasMaxLength(200)
                     .IsUnicode(false);
 

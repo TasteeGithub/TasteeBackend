@@ -140,10 +140,11 @@ namespace Tastee.Application.Services
                 _configuration.Bind("Firebase", fbconfig);
 
                 var json = JsonConvert.SerializeObject(fbconfig);
-                FirebaseApp.Create(new AppOptions()
-                {
-                    Credential = GoogleCredential.FromJson(json),
-                });
+                if (FirebaseApp.DefaultInstance == null)
+                    FirebaseApp.Create(new AppOptions()
+                    {
+                        Credential = GoogleCredential.FromJson(json),
+                    });
 
                 var registrationTokens = _serviceDeviceTokens.Queryable().Where(x => UserIds.Contains(x.UserId) && x.AllowPush == true).Select(x => x.DeviceToken).ToList();
                 if (registrationTokens.Count > 0)
@@ -154,11 +155,14 @@ namespace Tastee.Application.Services
                         {
                             Title = notification.Title,
                             Body = notification.Description,
-                            ImageUrl = notification.Image ?? ""
                         },
                         Tokens = registrationTokens,
                         Data = new Dictionary<string, string>() { { "title", notification.Title }, { "body", notification.Description }, },
                     };
+                    if (!String.IsNullOrEmpty(notification.Image))
+                    {
+                        message.Notification.ImageUrl = notification.Image;
+                    }
                     var response = await FirebaseMessaging.DefaultInstance.SendMulticastAsync(message).ConfigureAwait(true);
                     return response.SuccessCount;
                 }
