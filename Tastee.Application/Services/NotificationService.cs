@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -95,6 +96,11 @@ namespace Tastee.Application.Services
             return returnResult;
         }
 
+        public List<string> GetDeviceToken(List<string> userIds)
+        {
+            return _serviceDeviceTokens.Queryable().Where(x => userIds.Contains(x.UserId) && x.AllowPush == true).Select(x => x.DeviceToken).ToList();
+        }
+
         private NotificationModel BuildNotificationModel(Notifications notification, List<NotificationMapping> listMapping)
         {
             NotificationModel model = notification.Adapt<NotificationModel>();
@@ -132,22 +138,25 @@ namespace Tastee.Application.Services
             return new Response { Successful = true, Message = "Delete notfication successed" };
         }
         #region Firebase
-        public async Task<int> SendNotification(Notifications notification, List<string> UserIds)
+        public async Task<int> SendNotification(Notifications notification, List<string> tokens)
         {
             try
             {
-                FirebaseConfig fbconfig = new FirebaseConfig();
-                _configuration.Bind("Firebase", fbconfig);
 
-                var json = JsonConvert.SerializeObject(fbconfig);
                 if (FirebaseApp.DefaultInstance == null)
+                {
+                    FirebaseConfig fbconfig = new FirebaseConfig();
+                    _configuration.Bind("Firebase", fbconfig);
+
+                    var json = JsonConvert.SerializeObject(fbconfig);
                     FirebaseApp.Create(new AppOptions()
                     {
                         Credential = GoogleCredential.FromJson(json),
                     });
+                }
 
-                var registrationTokens = _serviceDeviceTokens.Queryable().Where(x => UserIds.Contains(x.UserId) && x.AllowPush == true).Select(x => x.DeviceToken).ToList();
-                if (registrationTokens.Count > 0)
+             
+                if (tokens.Count > 0)
                 {
                     var message = new MulticastMessage()
                     {
@@ -156,7 +165,7 @@ namespace Tastee.Application.Services
                             Title = notification.Title,
                             Body = notification.Description,
                         },
-                        Tokens = registrationTokens,
+                        Tokens = tokens,
                         Data = new Dictionary<string, string>() { { "title", notification.Title }, { "body", notification.Description }, },
                     };
                     if (!String.IsNullOrEmpty(notification.Image))
@@ -164,6 +173,7 @@ namespace Tastee.Application.Services
                         message.Notification.ImageUrl = notification.Image;
                     }
                     var response = await FirebaseMessaging.DefaultInstance.SendMulticastAsync(message).ConfigureAwait(true);
+                    _logger.LogInformation("send FCM success count: {0}, failed count: {1}", response.SuccessCount, response.FailureCount);
                     return response.SuccessCount;
                 }
                 return 0;

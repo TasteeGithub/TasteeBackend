@@ -14,9 +14,10 @@ namespace Tastee.Application.Interfaces
     {
         Task<PaggingModel<NotificationModel>> GetNotificationAsync(GetNotifycationViewModel requestModel);
         Task<Response> InsertMappingAsync(List<NotificationMapping> mappings);
+        List<string> GetDeviceToken(List<string> userIds);
 
         #region Firebase
-        Task<int> SendNotification(Notifications notification, List<string> UserIds);
+        Task<int> SendNotification(Notifications notification, List<string> tokens);
         Task<Response> DeleteCategoryAsync(string id);
         #endregion
     }

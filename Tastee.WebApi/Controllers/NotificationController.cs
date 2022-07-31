@@ -9,7 +9,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Tastee.Application.Features.Notficaitions.Commands;
 using Tastee.Application.Features.Notifications.Queries;
-using Tastee.Application.Wrappers;
 using Tastee.Shared;
 using Tastee.Shared.Models.Notifications;
 
@@ -18,10 +17,10 @@ namespace Tastee.WebApi.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class NotficationController : BaseApiController
+    public class NotificationController : BaseApiController
     {
         private readonly ILogger<ToppingController> _logger;
-        public NotficationController(ILogger<ToppingController> logger)
+        public NotificationController(ILogger<ToppingController> logger)
         {
             _logger = logger;
         }

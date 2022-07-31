@@ -50,7 +50,8 @@ namespace Tastee.Application.Features.Notficaitions.Commands
             {
                 return new UploadFilesResponse { Successful = false, Message = "Invalid file" };
             }
-            if (request.Model.SendToIds == null) {
+            if (request.Model.SendToIds == null)
+            {
                 request.Model.SendToIds = new List<string>();
             }
             var notification = request.Model.Adapt<Tastee.Infrastucture.Data.Context.Notifications>();
@@ -83,27 +84,28 @@ namespace Tastee.Application.Features.Notficaitions.Commands
 
             // TODO: move to another thread, check entity framework
             //ThreadPool.QueueUserWorkItem(BackgroundNotificationTaskWithObject, new NotificationTaskData { notification = notification, sendToIds = request.Model.SendToIds ?? new List<string>() });
-            var userIds = CreateNotificationMappings(notification, request.Model.SendToIds);
+            var userIds = await CreateNotificationMappingsAsync(notification, request.Model.SendToIds);
             if (userIds.Count > 0)
             {
-                SendFCM(notification, userIds);
+                var tokens = _notificationService.GetDeviceToken(userIds);
+                await SendFCM(notification, tokens);
             }
 
-            return new Response() { Successful = true, Message = "Insert Successful" };
+            return new Response() { Successful = true, Message = "Insert Successfu" };
         }
 
-        private void BackgroundNotificationTaskWithObject(Object stateInfo)
+        private async Task BackgroundNotificationTaskWithObjectAsync(Object stateInfo)
         {
             NotificationTaskData data = (NotificationTaskData)stateInfo;
-            var userIds = CreateNotificationMappings(data.notification, data.sendToIds);
+            var userIds = await CreateNotificationMappingsAsync(data.notification, data.sendToIds);
             if (userIds.Count > 0)
             {
-                SendFCM(data.notification, userIds);
+               await SendFCM(data.notification, userIds);
             }
         }
 
 
-        private List<string> CreateNotificationMappings(Tastee.Infrastucture.Data.Context.Notifications notification, List<string> sendToIds)
+        private async Task<List<string>> CreateNotificationMappingsAsync(Tastee.Infrastucture.Data.Context.Notifications notification, List<string> sendToIds)
         {
             List<Tastee.Infrastucture.Data.Context.NotificationMapping> mappings = new List<Infrastucture.Data.Context.NotificationMapping>();
             if (notification.Type == (int)NotificationType.Brand)
@@ -132,7 +134,6 @@ namespace Tastee.Application.Features.Notficaitions.Commands
                             UserId = merchant.UserId,
                         });
                     }
-
                 }
 
             }
@@ -162,16 +163,17 @@ namespace Tastee.Application.Features.Notficaitions.Commands
 
             if (mappings.Count > 0)
             {
-                _notificationService.InsertMappingAsync(mappings);
+                await _notificationService.InsertMappingAsync(mappings);
             }
+
             return mappings.Select(x => x.UserId).ToList();
         }
 
-        private void SendFCM(Infrastucture.Data.Context.Notifications notificiation, List<string> userIds)
+        private async Task<int> SendFCM(Infrastucture.Data.Context.Notifications notificiation, List<string> tokens)
         {
-            _notificationService.SendNotification(notificiation, userIds);
+            if (tokens.Count == 0)
+                return 0;
+            return await _notificationService.SendNotification(notificiation, tokens);
         }
-
-
     }
 }
